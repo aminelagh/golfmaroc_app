@@ -95,40 +95,7 @@ class UpdateController extends Controller
         }
     }
 
-    //Valider la modification de user password
-    public function submitUpdatePasswordUser()
-    {
-        if (strlen(request()->get('password')) < 8)
-            return redirect()->back()->withInput()->with('alert_danger', "Le mot de passe doit contenir, au moins, 7 caractères.");
 
-        $item = User::find(request()->get('id_user'));
-        $item->update([
-            'password' => Hash::make(request()->get('passowrd'))
-        ]);
-        echo "notification !!!!!";
-        return redirect()->route('admin.info', ['p_id' => request()->get('id_user'), 'p_table' => 'users'])->with('alert_success', 'Modification du mot de passe de l\'utilisateur reussi.');
-    }
-
-    //valider la modification d'un utilisateur
-    public function submitUpdateUser()
-    {
-        if (EmailExist_2(request()->get('email'), request()->get('id_user')))
-            return redirect()->back()->withInput()->with('alert_danger', ' <i>' . request()->get('email') . '</i> est deja utilisé pour un autre utilisateur.');
-        else {
-            $item = User::find(request()->get('id_user'));
-            $item->update([
-                'id_role' => request()->get('id_role'),
-                'id_magasin' => request()->get('id_magasin'),
-                'nom' => request()->get('nom'),
-                'prenom' => request()->get('prenom'),
-                'ville' => request()->get('ville'),
-                'telephone' => request()->get('telephone'),
-                'email' => request()->get('email'),
-                'description' => request()->get('description')
-            ]);
-            return redirect()->route('admin.info', ['p_id' => request()->get('id_user'), 'p_table' => 'users'])->with('alert_success', 'Modification de l\'utilisateur reussi.');
-        }
-    }
 
     //Valider la modification d un article
     public function submitUpdateArticle()

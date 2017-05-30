@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Session;
 use Auth;
 use DB;
 use Hash;
@@ -100,10 +101,6 @@ class ShowController extends Controller
     public function lister($p_table)
     {
         switch ($p_table) {
-            case 'users':
-                $data = User::whereDeleted(false)->orWhere('deleted', null)->get();
-                return view('Espace_Admin.liste-users')->with('data', $data);
-                break;
             case 'agents':
                 $data = Agent::whereDeleted(false)->orWhere('deleted', null)->get();
                 return view('Espace_Magas.liste-agents')->with('data', $data);
@@ -136,4 +133,6 @@ class ShowController extends Controller
                 return back()->withInput()->with('alert_warning', 'Vous avez pris le mauvais chemin. ==> ShowController@lister');
         }
     }
+
+
 }

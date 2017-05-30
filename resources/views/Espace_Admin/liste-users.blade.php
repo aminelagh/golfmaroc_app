@@ -42,7 +42,7 @@
                 @else @foreach( $data as $item )
                         <tr>
                             <td>{{ $loop->index+1 }}</td>
-                            <td>{{ getRoleName( $item->id_role ) }}</td>
+                            <td>{{  $item->id_role }}</td>
                             <td>{{ $item->nom }} {{ $item->prenom }}</td>
                             <td>{{ $item->ville }}</td>
                             <td>{{ $item->email }}</td>
@@ -50,14 +50,81 @@
                                 <a href=""> {!! getMagasinName( $item->id_magasin )!=null ? getMagasinName( $item->id_magasin ) : '<i>Aucun</i>'   !!}</a>
                             </td>
                             <td>
-                                <a href="{{ Route('admin.info',['p_id' => $item->id_user, 'p_table' => 'users' ] ) }}"
-                                   title="Detail"><i class="glyphicon glyphicon-user"></i></a>
-                                <a href="{{ Route('admin.update',['p_id' => $item->id_user, 'p_table' => 'users' ]) }}"
-                                   title="Modifier"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'utilisateur: {{ $item->nom }} {{ $item->prenom }} ?')"
-                                   href="{{ Route('admin.delete',['p_id' => $item->id_user , 'p_table' => 'users' ]) }}"
-                                   title="Supprimer"><i class="glyphicon glyphicon-trash"></i></a>
+                                <div class="btn-group pull-right">
+                                    <button type="button"
+                                            class="btn green btn-sm btn-outline dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-left" role="menu">
+                                        <li>
+                                            <a href="{{ Route('magas.info',['p_table' => 'articles', 'p_id'=> $item->id_article ]) }}"
+                                                    {!! setPopOver("","Afficher plus de detail") !!}><i
+                                                        class="glyphicon glyphicon-eye-open"></i> Plus de
+                                                detail</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ Route('magas.update',['p_table' => 'articles', 'p_id' => $item->id_article ]) }}"
+                                                    {!! setPopOver("","Modifier") !!}><i
+                                                        class="glyphicon glyphicon-pencil"></i> Modifier</a>
+                                        </li>
+                                        <li>
+                                            <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation_c }} ?')"
+                                               href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
+                                                    {!! setPopOver("","Effacer l'article") !!}><i
+                                                        class="glyphicon glyphicon-trash"></i> Effacer</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
+                                                        class="glyphicon glyphicon-info-sign"
+                                                        aria-hidden="false"></i> Info-Bull</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
                             </td>
+
+                            {{-- Modal (pour afficher les details de chaque article) --}}
+                            <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">
+                                                &times;
+                                            </button>
+                                            <h4 class="modal-title">{{ $item->designation_c }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><b>numero</b> {{ $item->num_article }}</p>
+                                            <p><b>code a barres</b> {{ $item->code_barre }}</p>
+                                            <p><b>Taille</b> {{ $item->taille }}</p>
+                                            <p><b>Couleur</b> {{ $item->couleur }}</p>
+                                            <p><b>sexe</b> {{ $item->sexe }}</p>
+                                            <p><b>Prix d'achat</b></p>
+                                            <p>{{ number_format($item->prix_achat, 2) }} DH
+                                                HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
+                                                Dhs TTC </p>
+                                            <p><b>Prix de vente</b></p>
+                                            <p>{{ number_format($item->prix_vente, 2) }} DH
+                                                HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
+                                                DH TTC </p>
+                                            <p>{{ $item->designation_l }}</p>
+
+                                            @if( $item->image != null) <img
+                                                    src="{{ $item->image }}"
+                                                    width="150px">@endif
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal">Fermer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- fin Modal (pour afficher les details de chaque article) --}}
                         </tr>
                     @endforeach @endif @endif
                 </tbody>
@@ -91,7 +158,7 @@
         <a target="_blank" href="{{ Route('export',[ 'p_table' => 'users' ]) }}" type="button"
            class="btn btn-outline btn-default" title="Exporter la liste des utilisateur"> Export Excel</a>
 
-        <a href="{{ Route('admin.add',[ 'p_table' => 'users' ]) }}" type="button"
+        <a href="{{ Route('admin.home',[ 'p_table' => 'users' ]) }}" type="button"
            class="btn btn-outline btn-default" title="Exporter la liste des utilisateur"> Ajouter un utilisateur</a>
     </div>
 @endsection

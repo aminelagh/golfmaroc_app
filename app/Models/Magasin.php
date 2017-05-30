@@ -16,15 +16,20 @@ class Magasin extends Model
         'deleted',
     ];
 
-    static function getNextID()
+    public static function getNextID()
     {
         $lastRecord = DB::table('magasins')->orderBy('id_magasin', 'desc')->first();
         $result = ($lastRecord == null ? 1 : $lastRecord->id_magasin + 1);
         return $result;
     }
 
+    public static function getLibelle($id_magasin)
+    {
+        return Magasin::where('id_magasin', $id_magasin)->first()->libelle;
+    }
 
-    static function Exists($field, $value)
+
+    public static function Exists($field, $value)
     {
         $data = Magasin::where($field, $value)->get()->first();
         if ($data == null) return false;

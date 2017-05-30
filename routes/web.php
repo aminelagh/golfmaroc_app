@@ -1,12 +1,20 @@
 <?php
 
-
+use App\Models\User;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
+});
+Route::get('/home', function () {
+    return view('home');
 });
 
 Route::get('/s', function () {
+
+    $x = App\Models\Magasin::where('id_magasin',1)->first()->libelle;
+    dump($x);
+
+    dump( Hash::make('123456789'));
     dump(Sentinel::check());
     dump(Session::all());
     dump(request());
@@ -15,54 +23,51 @@ Route::get('/s', function () {
 });
 
 
-Route::get('/a', function () {
-    return "admin";
-})->middleware('admin');
-
-Route::get('/m', function () {
-    return "magas";
-})->middleware('magas');
-
-Route::get('/v', function () {
-    return "vend";
-})->middleware('vend');
-
-Route::get('/d', function () {
-    return "direct";
-})->middleware('direct');
-
-
+/***************************************
+ * Admin routes protected by adminMiddlewxare
+ ****************************************/
 Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/admin', 'AdminController@home')->name('admin.home');
 
-    Route::get('/admin/add/{p_table}', 'AddController@addForm')->name('admin.add')->middleware('admin');
-    Route::post('/admin/submitAdd/{p_table}', 'AddController@submitAdd')->name('admin.submitAdd');
+    //turn it into post
+    Route::get('/admin/delete/users/{p_id}', 'AdminController@deleteUsers')->name('admin.delete.users');
+    Route::get('/admin/delete/promotions/{p_id}', 'DeleteController@deletePromotions')->name('admin.delete.promotions');
 
+    //profile modifier
+    Route::get('/admin/profile', 'AdminController@profile')->name('admin.profile');
+    Route::post('/admin/updateProfile', 'AdminController@updateProfile')->name('admin.updateProfile');
+
+    //modifier mot de passe
+    Route::get('/admin/updatePassword', 'AdminController@updatePassword')->name('admin.updatePassword');
+    Route::post('/admin/submitUpdatePassword', 'AdminController@submitUpdatePassword')->name('admin.submitUpdatePassword');
+
+    //liste des utilisateurs
+    Route::get('/admin/users', 'AdminController@listeUsers')->name('admin.users');
+    Route::get('/admin/user/{p_id}', 'AdminController@infoUser')->name('admin.user');
+    Route::get('/admin/updateUser/{p_id}', 'AdminController@updateUser')->name('admin.updateUser');
+    Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
+
+    Route::get('/admin/addUser}', 'AdminController@addUser')->name('admin.addUser');
+    Route::post('/admin/submitAddUser}', 'AdminController@submitAddUser')->name('admin.submitAddUser');
 });
+
 
 Route::group(['middleware' => 'magas'], function () {
-
     Route::get('/magas', 'MagasController@home')->name('magas.home');
 });
-
 Route::group(['middleware' => 'vend'], function () {
-
     Route::get('/vend', 'VendeurController@home')->name('vend.home');
 });
-
 Route::group(['middleware' => 'direct'], function () {
-
     Route::get('/direct', 'DirectController@home')->name('direct.home');
 });
-
 
 /***************************************
  * Authentification
  ****************************************/
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@submitLogin')->name('submitLogin');
-
 Route::get('/logout', 'AuthController@logout')->name('logout');
 /*********************************************************************************/
 
@@ -104,7 +109,7 @@ Route::post('/magas/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->n
 /**************************************
  * Routes Delete
  ***************************************/
-Route::get('/admin/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('admin.delete');
+
 Route::get('/direct/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('direct.delete');
 Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('magas.delete');
 /******************************************************************************/
@@ -141,4 +146,4 @@ Route::post('/magas/submitSupply', 'StockController@submitSupplyStock')->name('m
 
 //Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');

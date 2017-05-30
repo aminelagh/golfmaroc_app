@@ -37,11 +37,12 @@ class AuthController extends Controller
         {
             Session::put('id_user', $user->id);
             Session::put('id_magasin', $user->id_magasin);
+            Session::put('email', $user->email);
             Session::put('nom', $user->nom);
             Session::put('prenom', $user->prenom);
             return redirect()->route('admin.home');
         }
-        else return redirect()->back()->with("alert_danger", "Authentification echouee");
+        else return redirect()->back()->with("alert_danger", "<span class=\"glyphicon glyphicon-exclamation-sign\"> login et/ou mot de passe incorrect")->withInput();
     }
 
     public function logout()

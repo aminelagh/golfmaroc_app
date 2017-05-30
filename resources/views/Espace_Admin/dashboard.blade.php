@@ -8,7 +8,6 @@
 
     @if( Sentinel::check())
         <h1>Hello <small>{{ Sentinel::getUser()->prenom }}, {{ Sentinel::getUser()->nom }}</small></h1>
-        <h2><a href="/logout">Logout</a></h2>
 
     @else
         <h2><a href="/login">Login</a></h2>
