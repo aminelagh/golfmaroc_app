@@ -2,159 +2,113 @@
 
 @section('title') {{ $data->nom }} {{ $data->prenom }} @endsection
 
-@section('styles')
-    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
-@endsection
-
-@section('scripts')
-    <script src="{{  asset('js/jquery.js') }}"></script>
-    <script src="{{  asset('js/bootstrap.js') }}"></script>
-@endsection
-
 @section('main_content')
-    <!-- Page Heading -->
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">{{ $data->nom }} {{ $data->prenom }}
-                <small> {{ getRoleName($data->id_role) }}</small>
-            </h1>
+    <br>
 
-            <div id="page-wrapper">
+    @include('layouts.alerts')
 
-                <div class="row">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-8">
-                        {{-- Debut Alerts --}}
-                        @if (session('alert_success'))
-                            <div class="alert alert-success alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_success') !!}
-                            </div>
-                        @endif
+    <div class="col-lg-2"></div>
+    <form method="POST" action="{{ route('admin.updateUser',[ 'p_id' => $data->id ]) }}">
+        {{ csrf_field() }}
+        <input type="hidden" name="id_user" value="{{ $data->id }}">
 
-                        @if (session('alert_info'))
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_info') !!}
-                            </div>
-                        @endif
-
-                        @if (session('alert_warning'))
-                            <div class="alert alert-warning alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_warning') !!}
-                            </div>
-                        @endif
-
-                        @if (session('alert_danger'))
-                            <div class="alert alert-danger alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_danger') !!}
-                            </div>
-                        @endif
-                        {{-- Fin Alerts --}}
-                    </div>
-                    <div class="col-lg-2"></div>
-
+        <div class="col-lg-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Modification du Profile
                 </div>
-
-                <div class="container-fluid">
-                    <div class="col-lg-1"></div>
-                    <div class="col-lg-10">
-
-                        <!-- debut panel -->
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Profil de l'utilisateur
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Role</label>
+                                <input type="text" class="form-control" disabled placeholder="Company"
+                                       value="{{ \App\Models\User::getRole($data->id) }}">
                             </div>
-
-                            <!-- debut panel body -->
-                            <div class="panel-body">
-                                <table class="table table-hover" border="0" cellspacing="0" cellpadding="5">
-                                    <tr>
-                                        <td>Role</td>
-                                        <td><strong>{{ getRoleName($data->id_role) }} </strong></td>
-                                    </tr>
-                                    @if( $data->id_magasin != 0 )
-                                        <tr>
-                                            <td>Magasin</td>
-                                            <td><strong>{{ getMagasinName($data->id_magasin) }} </strong></td>
-                                        </tr>
-                                    @endif
-                                    <tr>
-                                        <td>Nom</td>
-                                        <td><strong>{{ $data->nom }}       </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Prenom</td>
-                                        <td><strong>{{ $data->prenom }}    </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ville</td>
-                                        <td><strong>{{ $data->ville }}     </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>E-mail</td>
-                                        <td><strong>{{ $data->email }}     </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Telephone</td>
-                                        <td><strong>{{ $data->telephone }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Date de creation</td>
-                                        <td><strong>{{ getDateHelper($data->created_at) }}
-                                                a {{ getTimeHelper($data->created_at) }}    </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Date de derniere modification</td>
-                                        <td><strong>{{ getDateHelper($data->updated_at) }}
-                                                a {{ getTimeHelper($data->updated_at) }}     </strong></td>
-                                    </tr>
-                                </table>
-
-
-                                @if( strlen($data->description) > 0 )
-                                    <div class="page-header">
-                                        <h3>Description</h3>
-                                    </div>
-                                    <div class="well">
-                                        <p>{{ $data->description }}</p>
-                                    </div>
-                                @endif
-
-                                <div class="col-lg-4"></div>
-                                <div class="col-lg-4">
-                                    <a href="{{ Route('admin.delete',['id' => $data->id_user , 'p_table' => 'users']) }}"
-                                       onclick="return confirm('Êtes-vous sure de vouloir effacer l\'utilisateur: {{ $data->nom }} {{ $data->prenom }} ?')"
-                                       type="button" class="btn btn-outline btn-danger">Supprimer </a>
-                                    <a href="{{ Route('admin.update',['id' => $data->id_user , 'p_table' => 'users']) }}"
-                                       type="button" class="btn btn-outline btn-info">Modifier </a>
-                                    <a href="{{ Route('admin.update',['p_id' => $data->id_user , 'p_table' => 'user_password' ]) }}"
-                                       onclick="return confirm('Êtes-vous sure de vouloir modifier le mot de passe de l\'utilisateur: {{ $data->nom }} {{ $data->prenom }} ?')"
-                                       type="button" class="btn btn-outline btn-warning">Modifier Mot de passe</a>
-                                </div>
-
-                            </div>
-                            <!-- fin panel body -->
-
                         </div>
-                        <!-- fin panel -->
+
+
+                        <div class="col-lg-5">
+                            {{-- Marque --}}
+                            <div class="form-group">
+                                <label>Marque</label>
+                                <select class="form-control" name="id_magasin">
+                                    @if( !$magasins->isEmpty() )
+                                        @foreach( $magasins as $item )
+                                            <option value="{{ $item->id_magasin }}"
+                                                    @if( $item->id_magasin == $data->id_magasin ) selected @endif > {{ $item->libelle }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
 
                     </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" name="email" class="form-control" placeholder="Email"
+                                       value="{{ $data->email }}">
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="col-lg-1"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nom</label>
+                                <input type="text" class="form-control" placeholder="Nom" name="nom"
+                                       value="{{ $data->nom }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Prenom</label>
+                                <input type="text" class="form-control" placeholder="Prenom" name="prenom"
+                                       value="{{ $data->prenom }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Ville</label>
+                                <input type="text" class="form-control" placeholder="Ville" name="ville"
+                                       value="{{ $data->ville }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Telephone</label>
+                                <input type="text" class="form-control" placeholder="Telephone" name="telephone"
+                                       value="{{ $data->telephone }}">
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Dernière connexion</label>
+                                <input type="text" class="form-control" placeholder="Prenom" name="prenom" disabled=""
+                                       value="{{ $data->last_login }}">
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
-                <!-- /.container-fluid -->
-
+                <div class="panel-footer" align="center">
+                    <input type="submit" value="Valider" class="btn btn-outline btn-primary">
+                    <a href="{{ route('admin.updateUserPassword',[ 'p_id' => $data->id ]) }}"
+                       onclick="return confirm('Êtes-vous sure de vouloir modifier votre mot de passe: {{ $data->nom }} {{ $data->prenom }} ?')"
+                       type="button" class="btn btn-outline btn-default">Modifier le mot de passe</a>
+                </div>
             </div>
-            <!-- /#page-wrapper -->
         </div>
-    </div>
-    <!-- /.row -->
+    </form>
+    <div class="col-lg-2"></div>
 @endsection
 
 @section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection

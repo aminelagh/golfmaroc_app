@@ -1,6 +1,9 @@
 <?php
 
 use App\Models\User;
+use App\Models\SentinelUser;
+use App\Models\SentinelRole;
+
 
 Route::get('/', function () {
     return view('home');
@@ -11,14 +14,30 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
-    $x = App\Models\Magasin::where('id_magasin',1)->first()->libelle;
-    dump($x);
+    $p_id = 4;
+    $role_id = \App\Models\Role_user::where('user_id',$p_id)->first()->role_id;
+    $role = \App\Models\Role::where('id',$role_id)->first()->name;
+    echo $role;
 
-    dump( Hash::make('123456789'));
-    dump(Sentinel::check());
-    dump(Session::all());
-    dump(request());
-    dump(session());
+
+
+
+    //$a = App\Models\Magasin::where('id_magasin',1)->first();
+    $b = App\Models\Role_user::where('user_id',2)->first();
+    $c = SentinelUser::where('id',1)->get();
+    $d = SentinelRole::get();
+
+    //dump($b->role_id);
+
+    //dump($c->first());
+    //dump($d);
+    //dump($a->libelle);
+    //dump($b);
+
+    //dump(Sentinel::check());
+    //dump(Session::all());
+    //dump(request());
+    //dump(session());
     //dump(session());
 });
 
@@ -44,8 +63,16 @@ Route::group(['middleware' => 'admin'], function () {
 
     //liste des utilisateurs
     Route::get('/admin/users', 'AdminController@listeUsers')->name('admin.users');
+
+    //info utilisateur
     Route::get('/admin/user/{p_id}', 'AdminController@infoUser')->name('admin.user');
+
+    //modifier un utilisateur
     Route::get('/admin/updateUser/{p_id}', 'AdminController@updateUser')->name('admin.updateUser');
+    Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
+
+    //Modifier le mot de passe d un utilisateur
+    Route::get('/admin/updateUserPassword/{p_id}', 'AdminController@updateUserPassword')->name('admin.updateUserPassword');
     Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
 
     Route::get('/admin/addUser}', 'AdminController@addUser')->name('admin.addUser');

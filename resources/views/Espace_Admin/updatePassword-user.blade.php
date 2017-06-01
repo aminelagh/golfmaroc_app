@@ -68,8 +68,7 @@
 
                 </div>
                 <div class="panel-footer" align="center">
-                    <input type="submit" value="Valider" class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
-                    <input type="reset" value="Réinitialiser" class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
+                    <input type="submit" value="Valider" class="btn btn-outline btn-primary">
                     <a href="{{ route('admin.updatePassword') }}"
                        onclick="return confirm('Êtes-vous sure de vouloir modifier votre mot de passe: {{ $data->nom }} {{ $data->prenom }} ?')"
                        type="button" class="btn btn-outline btn-default">Modifier le mot de passe</a>
@@ -80,11 +79,5 @@
     <div class="col-lg-2"></div>
 @endsection
 
-@section('scripts')
-
-
-@endsection
-
 @section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
-

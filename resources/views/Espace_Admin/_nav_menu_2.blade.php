@@ -7,7 +7,7 @@
       </li>
 
       <li>
-        <a href="{{ route('admin.lister', ['p_table' => 'users'] ) }}"><i class="fa fa-dashboard fa-fw"></i> Utilisateurs</a>
+        <a href="{{ route('admin.users' ) }}"><i class="fa fa-dashboard fa-fw"></i> Utilisateurs</a>
       </li>
 
       <li>

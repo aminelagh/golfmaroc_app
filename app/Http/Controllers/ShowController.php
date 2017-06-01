@@ -25,10 +25,7 @@ class ShowController extends Controller
     public function info($p_table, $p_id)
     {
         switch ($p_table) {
-            case 'users':
-                $item = User::find($p_id);
-                return ($item != null ? view('Espace_Admin.info-user')->with('data', $item) : back()->withInput()->with('alert_warning', "L'utilisateur choisi n'existe pas."));
-                break;
+
             case 'agents':
                 $item = Agent::find($p_id);
                 return ($item != null ? view('Espace_Magas.info-agent')->with('data', $item) : back()->withInput()->with('alert_warning', "L'agent choisi n'existe pas."));

@@ -35,7 +35,6 @@
 
     </nav>
 
-
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -49,18 +48,16 @@
     </div>
 </div>
 
-
-<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('vendor/metisMenu/metisMenu.min.js') }}"></script>
-<script src="{{ asset('vendor/raphael/raphael.min.js') }}"></script>
-<script src="{{ asset('vendor/morrisjs/morris.min.js') }}"></script>
-<script src="{{ asset('dist/js/sb-admin-2.js') }}"></script>
-
-
+<script src="{{ asset('js/datatables.min.js') }}"></script>
+<script src="{{ asset('js/metisMenu.min.js') }}"></script>
+<script src="{{ asset('js/sb-admin-2.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+</script>
 
 @yield('scripts')
-
 </body>
 
 </html>

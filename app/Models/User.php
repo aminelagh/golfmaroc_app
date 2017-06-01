@@ -54,7 +54,9 @@ class User extends Authenticatable
     public static function updateSession($p_id)
     {
         $user = User::where('id', $p_id)->first();
+
         Session::put('nom', $user->nom);
+        Session::put('role', $user->nom);
         Session::put('prenom', $user->prenom);
         Session::put('email', $user->email);
         Session::put('id_magasin', $user->id_magasin);
@@ -62,6 +64,8 @@ class User extends Authenticatable
 
     public static function getRole($p_id)
     {
-        $role_user = User::where('id', $p_id)->first();
+        $role_id = \App\Models\Role_user::where('user_id', $p_id)->first()->role_id;
+        $role = \App\Models\Role::where('id', $role_id)->first()->name;
+        return $role;
     }
 }
