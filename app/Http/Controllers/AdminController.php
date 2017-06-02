@@ -10,7 +10,9 @@ use Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Magasin;
+use Illuminate\Support\Facades\Input;
 use Session;
+use Sentinel;
 
 class AdminController extends Controller
 {
@@ -20,6 +22,9 @@ class AdminController extends Controller
         return view('Espace_Admin.dashboard');
     }
 
+    /********************************************************
+     * afficher et modifier le profile et mot de passe de l admin
+     **********************************************************/
     //Afficher le profil de l'administrateur pour modification
     public function profile()
     {
@@ -80,6 +85,8 @@ class AdminController extends Controller
         return redirect()->route('admin.profile')->with('alert_success', "Modification du mot de passe reussi.");
     }
 
+    /***********************************************************/
+
     //Afficher la liste des utilisateurs
     public function listeUsers()
     {
@@ -90,16 +97,21 @@ class AdminController extends Controller
     //afficher le profile de l utilisateur
     public function infoUser($p_id)
     {
+        if (Session::get('id_user') == $p_id)
+            return redirect()->back();
+
         $data = User::where('id', $p_id)->first();
         $magasins = Magasin::all();
-        if ($data == null) return redirect()->back()->with('alert_warning', "L'utilisateur choisit n'esxiste pas.");
+        if ($data == null)
+            return redirect()->back()->with('alert_warning', "L'utilisateur choisit n'esxiste pas.");
+
         return view('Espace_Admin.info-user')->withData($data)->withMagasins($magasins);
     }
 
     //valider la modification d'un utilisateur
-    public function updateUser()
+    public function submitUpdateUser()
     {
-        if (User::EmailExistForUpdate(request()->get('email')))
+        if (User::EmailExistForUpdateUser(request()->get('email'), request()->get('id_user')))
             return redirect()->back()->withInput()->with('alert_danger', "L'email: <b>" . request()->get('email') . "</b> est deja utilisé pour un autre utilisateur.");
 
         else {
@@ -113,13 +125,30 @@ class AdminController extends Controller
                     'telephone' => request()->get('telephone'),
                     'email' => request()->get('email')
                 ]);
-                //User::updateSession(request()->get('id_user'));
 
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification de l'utilisateur. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
             }
-            return redirect()->route('admin.user', ['p_id' => $user_id ])->with('alert_success', "Modification de l'utilisateur reussi.");
+            return redirect()->route('admin.user', ['p_id' => $user_id])->with('alert_success', "Modification de l'utilisateur reussi.");
         }
+    }
+
+
+    /********************************************************
+     * Modifier le mot de passe d un utilisateur
+     **********************************************************/
+    //Afficher le formulaire de modification de mot de passe pour l utilisateur
+    public function updateUserPassword($p_id)
+    {
+        if (Session::get('id_user') == $p_id)
+            return redirect()->back();
+
+        $data = User::where('id', $p_id)->first();
+        $magasins = Magasin::all();
+        if ($data == null)
+            return redirect()->back()->with('alert_warning', "L'utilisateur choisi n'existe pas.");
+
+        return view('Espace_Admin.updatePassword-user-form')->withData($data);
     }
 
     //Valider la modification de user password
@@ -128,7 +157,9 @@ class AdminController extends Controller
         if (strlen(request()->get('password')) < 8)
             return redirect()->back()->withInput()->with('alert_danger', "Le mot de passe doit contenir, au moins, 7 caractères.");
 
-        $item = User::find(request()->get('id_user'));
+        $id_user = request()->get('id_user');
+
+        $item = User::find($id_user);
         try {
             $item->update([
                 'password' => Hash::make(request()->get('password'))
@@ -137,22 +168,59 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification du mot de passe.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->route('admin.profile')->with('alert_success', "Modification du mot de passe reussi.");
+        return redirect()->route('admin.user', ['p_id' => $id_user])->with('alert_success', "Modification du mot de passe reussi.");
     }
 
-    public function addFormUser()
+    /***********************************************************/
+
+    /********************************************************
+     * Ajouter un nouvel utilisateur
+     **********************************************************/
+    public function addUser()
     {
-        $magasins = DB::table('magasins')->get();
-        $roles = DB::table('roles')->get();
+        $magasins = Magasin::all();
+        $roles = Role::all();
         return view('Espace_Admin.add-user-form')->with(['magasins' => $magasins, 'roles' => $roles]);
     }
 
-    public function deleteUser($id)
+    public function submitAddUser()
     {
-        $user = User::find($id);
-        $user->delete();
-        return redirect()->route('admin.lister')->with('alert_success', 'l\'Utilisateur a bien été effacé.');
+        $email = request()->get('email');
+        $password = request()->get('password');
+        $nom = request()->get('nom');
+        $prenom = request()->get('prenom');
+        $ville = request()->get('ville');
+        $telephone = request()->get('telephone');
+        $id_magasin = request()->get('id_magasin');
+        $role_name = request()->get('role_name');
+
+        if (User::EmailExist($email))
+            return redirect()->back()->withInput(request()->except(['password']))->with('alert_warning', "L'email: <b>" . $email . "</b> existe deja.");
+
+        $credentials = [
+            'email' => $email,
+            'password' => $password,
+            'nom' => $nom,
+            'prenom' => $prenom,
+            'ville' => $ville,
+            'telephone' => $telephone,
+            'id_magasin' => $id_magasin,
+            'deleted' => false,
+        ];
+        try {
+
+            $user = Sentinel::registerAndActivate($credentials);
+            $role = Sentinel::findRoleByName($role_name);
+            $role->users()->attach($user);
+
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de l'utilisateur.<br>Meessage d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success',"Creation de l'utilisateur <b>".$nom." ".$prenom."</b> reussi.");
+
+
     }
+    /***********************************************************/
 
 
 }

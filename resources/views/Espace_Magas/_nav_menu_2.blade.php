@@ -2,18 +2,31 @@
     <div class="sidebar-nav navbar-collapse">
         <ul class="nav" id="side-menu">
 
+            <li>
+                <a href="/magas"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+            </li>
 
             <li>
-                <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                <a href="{{ route('admin.users' ) }}"><i class="fa fa-dashboard fa-fw"></i> Utilisateurs</a>
             </li>
+
             <li>
-                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des Articles <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a href="#">Second Level Item</a>
+                        <a href="{{ Route('magas.articles') }}">Articles</a>
                     </li>
                     <li>
-                        <a href="#">Second Level Item</a>
+                        <a href="{{ Route('magas.fournisseurs') }}">Fournisseurs</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.categories') }}">Categories</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.agents') }}">Agents</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.marques') }}">Marques</a>
                     </li>
                     <li>
                         <a href="#">Third Level <span class="fa arrow"></span></a>
@@ -21,20 +34,9 @@
                             <li>
                                 <a href="#">Third Level Item</a>
                             </li>
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
                         </ul>
-                        <!-- /.nav-third-level -->
                     </li>
                 </ul>
-                <!-- /.nav-second-level -->
             </li>
 
         </ul>

@@ -51,6 +51,17 @@ class User extends Authenticatable
             return true;
     }
 
+    public static function EmailExistForUpdateUser($email, $id_user)
+    {
+        $x = User::where('email', $email)->first();
+        if ($x == null || $x->id == $id_user)
+            return false;
+        else
+            return true;
+    }
+
+
+
     public static function updateSession($p_id)
     {
         $user = User::where('id', $p_id)->first();

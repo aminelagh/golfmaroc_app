@@ -24,7 +24,6 @@
                                 <tr>
                                     <th> #</th>
                                     <th><i class="fa fa-fw fa-sort"></i> Marque</th>
-                                    <th><i class="fa fa-fw fa-sort"></i> Description</th>
                                     <th>Autres</th>
                                 </tr>
                                 </thead>
@@ -32,7 +31,6 @@
                                 <tr>
                                     <th></th>
                                     <th>Marque</th>
-                                    <th>Description</th>
                                     <th></th>
                                 </tr>
                                 </tfoot>
@@ -44,15 +42,13 @@
                                         <td></td>
                                         <td align="center"><i>Aucune marque</i></td>
                                         <td></td>
-                                        <td></td>
                                     </tr>
                                 @else
                                     @foreach( $data as $item )
                                         <tr class="odd gradeA">
                                             <td>{{ $loop->index+1 }}</td>
                                             <td>{{ $item->libelle }}</td>
-                                            <td>{{ $item->description }}</td>
-                                            <td>
+                                            <td align="center">
                                                 <div class="btn-group pull-right">
                                                     <button type="button"
                                                             class="btn green btn-sm btn-outline dropdown-toggle"
@@ -60,19 +56,14 @@
                                                         <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
                                                         <i class="fa fa-angle-down"></i>
                                                     </button>
+
                                                     <ul class="dropdown-menu pull-left" role="menu">
                                                         <li>
-                                                            <a href="{{ Route('magas.info',['p-table'=> 'marques', 'p_id'=> $item->id_marque ]) }}"
+                                                            <a href="{{ Route('magas.marque',['p_id' => $item->id_marque ]) }}"
                                                                     {!! setPopOver("","Afficher plus de detail") !!} ><i
                                                                         class="glyphicon glyphicon-eye-open"></i>
                                                                 Plus de detail
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ Route('magas.update',['p-table'=> 'marques', 'p_id'=> $item->id_marque ]) }}"
-                                                                    {!! setPopOver("","Modifier la marque") !!}><i
-                                                                        class="glyphicon glyphicon-pencil"></i>
-                                                                Modifier</a>
                                                         </li>
                                                         <li>
                                                             <a onclick="return confirm('Êtes-vous sure de vouloir effacer le Fournisseur: {{ $item->nom }} {{ $item->prenom }} ?')"
@@ -81,6 +72,7 @@
                                                                 Effacer</a>
                                                         </li>
                                                     </ul>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -96,7 +88,7 @@
 
                 <!-- row -->
                 <div class="row" align="center">
-                    <a href="{{ Route('magas.add',[ 'p_table' => 'marques' ]) }}" type="button"
+                    <a href="{{ Route('magas.addMarque') }}" type="button"
                        class="btn btn-outline btn-default" {!! setPopOver("","Ajouter une nouvelle marque") !!}>
                         <i class="glyphicon glyphicon-plus "></i> Ajouter une marque</a>
                 </div>
@@ -110,17 +102,7 @@
     </script>
 @endsection
 
-@section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection
-@section('menu_2') @include('Espace_Magas._nav_menu_2') @endsection
-
-@section('styles')
-    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
-@endsection
-
 @section('scripts')
-    <script src="{{  asset('table2/datatables.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
@@ -129,10 +111,7 @@
                 if (title == "Marque") {
                     $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                 }
-                if (title == "Description") {
-                    $(this).html('<input type="text" size="2" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                if (title != "") {
+                else if (title != "") {
                     $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                 }
             });
@@ -146,9 +125,9 @@
                 "info": true,
                 stateSave: false,
                 "columnDefs": [
-                    {"width": "05%", "targets": 0},
-                    {"width": "30%", "targets": 1},
-                    {"width": "10%", "targets": 3}
+                    {"width": "10%", "targets": 0},
+                    //{"width": "30%", "targets": 1},
+                    {"width": "10%", "targets": 2}
                 ]
             });
             // Apply the search
@@ -163,3 +142,6 @@
         });
     </script>
 @endsection
+
+@section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection
+@section('menu_2') @include('Espace_Magas._nav_menu_2') @endsection

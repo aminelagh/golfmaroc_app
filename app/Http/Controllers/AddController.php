@@ -25,128 +25,64 @@ use \Exception;
 
 class AddController extends Controller
 {
-
     /********************************************************
-     * Afficher le formulaire d'ajout pour tt les tables
+     * Afficher les formulaires et valider l'ajout
      *********************************************************/
-    public function addForm($p_table)
+    public function addMarque()
     {
-        switch ($p_table) {
-            case 'users':
-                return view('Espace_Admin.add-user-form')->with( [ 'magasins' => Magasin::all(), 'roles' => Role::all()]);
-                break;
-            case 'agents':
-                return view('Espace_Magas.add-agent-form')->with('fournisseurs', Fournisseur::all());
-                break;
-            case 'marques':
-                return view('Espace_Magas.add-marque-form');//->with('data', Marque::all() );
-                break;
-            case 'categories':
-                return view('Espace_Magas.add-categorie-form')->withData(Categorie::all());
-                break;
-            case 'fournisseurs':
-                return view('Espace_Magas.add-fournisseur-form');//->withData(Fournisseur::all())->withAgents(Agent::all());
-                break;
-            case 'magasins':
-                return view('Espace_Magas.add-magasin-form')->withData(Magasin::all());
-                break;
-            case 'articles':
-                return view('Espace_Magas.add-article-form')->with(['data' => Article::all(), 'fournisseurs' => Fournisseur::all(), 'categories' => Categorie::all(), 'marques' => Marque::all()]);
-                break;
-            case 'promotions':
-                return view('Espace_Direct.add-promotions-form')->with(['articles' => Article::all(), 'fournisseurs' => Fournisseur::all(), 'categories' => Categorie::all(), 'magasins' => Magasin::all()]);
-                break;
-            default:
-                return redirect()->back()->withInput()->with('alert_warning', 'Le formulaire d\'ajout choisi n\'existe pas.');
-                break;
-        }
+        return view('Espace_Magas.add-marque-form');
     }
 
-    /********************************************************
-     * Valider L'ajout: Fonction de principale
-     *********************************************************/
-    public function submitAdd($p_table)
+    public function addCategorie()
     {
-        switch ($p_table) {
-            case 'magasins':
-                return $this->submitAddMagasin();
-                break;
-            case 'fournisseurs':
-                return $this->submitAddFournisseur();
-                break;
-            case 'categories':
-                return $this->submitAddCategorie();
-                break;
-            case 'marques':
-                return $this->submitAddMarque();
-                break;
-            case 'agents':
-                return $this->submitAddAgent();
-                break;
-            case 'articles':
-                return $this->submitAddArticle();
-                break;
-            case 'stocks':
-                return "AddController@submitAdd";//$this->submitAddStock();
-                break;
-            case 'users':
-                return $this->submitAddUser();
-                break;
-            case 'promotions':
-                return $this->submitAddPromotions();
-                break;
-            default:
-                return redirect()->back()->withInput()->with("alert_warning", "<strong>Erreur !!</strong> Vous avez pris le mauvais chemin. ==> AddController@submitAdd");
-                break;
-        }
+        return view('Espace_Magas.add-categorie-form');
     }
 
-    //Valider l'ajout d un utilisateur
-    public function submitAddUser()
+    public function submitAddMarque()
     {
-        //creation d'un Directeur a partir des donnees du formulaire:
-        /*$item = new User();
-        //$item->id_role = request()->get('id_role');
-        $item->id_magasin = request()->get('id_magasin');
-        $item->nom = request()->get('nom');
-        $item->prenom = request()->get('prenom');
-        $item->ville = request()->get('ville');
-        $item->telephone = request()->get('telephone');
-        $item->email = request()->get('email');
-        $item->password = Hash::make(request()->get('password'));
+        $libelle = request()->get('libelle');
+        if (Marque::Exists($libelle))
+            return redirect()->back()->withInput()->with('alert_warning', "la marque <b>" . $libelle . "</b> existe deja.");
+        $item = new Marque;
+        $item->libelle = $libelle;
         $item->deleted = false;
-        $credentials = [
-            'id_magasin' => request()->get('id_magasin'),
-            'nom' => request()->get('nom'),
-            'prenom' => request()->get('prenom'),
-            'ville' => request()->get('ville'),
-            'telephone' => request()->get('telephone'),
-            'email' => request()->get('email'),
-            'password' => request()->get('password'),
-            'deleted' => false
-        ];*/
-
-        //return redirect()->back()->withInput()->with('alert_warning',"aaaaaaaaaaaaaaaaaaaaa");
-
-        //si l'email exist deja alors revenir au formulaire avec les donnees du formulaire et un message d'erreur
-        if (User::EmailExist(request()->get('email') ) )
-            return redirect()->back()->withInput()->with("alert_danger", "<li><i>" . request()->get('email') . "</i> est deja utilisé.");
-
-        //si le mot de passe et trop court:
-        if (strlen(request()->get('password')) < 7)
-            return redirect()->back()->withInput()->with("alert_danger", "<li>Mot de Passe trop court.");
-
         try {
-            $user = Sentinel::registerAndActivate(request()->all());
-            $role = Sentinel::findRoleById(request()->get('id_role'));
-            $role->users()->attach($user);
-
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->with("alert_danger", "l'ajout de " . request()->get('email') . " a echoue. <br> message d'erreur: " . $ex->getMessage() . ".");
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de la marque.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-
-        return redirect()->back()->with('alert_success', "ajout de  <strong>" . request()->get('email') . "</strong>  reussi");
+        return redirect()->back()->with('alert_success', "La marque <b>" . request()->get('libelle') . "</b> a bien été créer");
     }
+
+    public function submitAddCategorie()
+    {
+        $libelle = request()->get('libelle');
+        if (Categorie::Exists($libelle))
+            return redirect()->back()->withInput()->with('alert_warning', "la categorie <b>" . $libelle . "</b> existe deja.");
+        $item = new Categorie();
+        $item->libelle = $libelle;
+        $item->deleted = false;
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de la categorie.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été créer");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //Valider l'ajout de : Magasin
     public function submitAddMagasin()
@@ -165,7 +101,7 @@ class AddController extends Controller
         try {
             $item->save();
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->with('alert_danger', "Erreur d'ajout du magasin <b>".request()->get('libelle')."</b>.<br> Message d'erreur: <b>".$e->getMessage()."</b>.");
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur d'ajout du magasin <b>" . request()->get('libelle') . "</b>.<br> Message d'erreur: <b>" . $e->getMessage() . "</b>.");
         }
         return redirect()->back()->with('alert_success', "Le Magasin <b>" . request()->get('libelle') . "</b> a bien été ajouté");
 
@@ -191,47 +127,7 @@ class AddController extends Controller
 
     }
 
-    //Valider l'ajout de : Categorie
-    public function submitAddCategorie()
-    {
-        if (request()->get('libelle') == null)
-            return redirect()->back()->withInput()->with('alert_danger', "Veuillez remplir le champ <b>Categorie</b>");
 
-        if (Categorie::Exists('libelle', request()->get('libelle')))
-            return redirect()->back()->withInput()->with('alert_danger', "La categorie <b>" . request()->get('libelle') . "</b> existe déjà.");
-
-        $item = new Categorie;
-        $item->libelle = request()->get('libelle');
-        $item->description = request()->get('description');
-        $item->deleted = false;
-        try {
-            $item->save();
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->with('alert_danger', "L'ajout de la categorie: " . request()->get('libelle') . " a echoué. <br>message d'erreur: " . $ex->getMessage() . ".");
-        }
-        return redirect()->back()->with('alert_success', "Création de la catégorie " . request()->get('libelle') . " réussie.");
-    }
-
-    //Valider l'ajout de : Marque
-    public function submitAddMarque()
-    {
-        if (request()->get('libelle') == null)
-            return redirect()->back()->withInput()->with('alert_danger', "veuillez remplir le champ libelle");
-
-        if (Marque::Exists('libelle', request()->get('libelle')))
-            return redirect()->back()->withInput()->with('alert_warning', "La marque <b>" . request()->get('libelle') . "</b> existe déjà.");
-
-        $item = new Marque;
-        $item->libelle = request()->get('libelle');
-        $item->description = request()->get('description');
-        $item->deleted = false;
-        try {
-            $item->save();
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->with('alert_danger', "Erreur d'ajout de la marque <b>" . request()->get('libelle') . "</b><br/>Message d'erreur: <b>" . $ex->getMessage() . "</b>");
-        }
-        return redirect()->back()->with('alert_success', 'La Categorie <strong>' . request()->get('libelle') . '</strong> a bien été ajouté.');
-    }
 
     //Valider l'ajout de Fournisseur
     public function submitAddFournisseur()

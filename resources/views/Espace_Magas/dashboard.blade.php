@@ -7,7 +7,7 @@
         <div class="col-lg-12">
             <div class="row">
 
-                <h1 class="page-header">Bienvenue dans votre Espace magasion</h1>
+                <h1 class="page-header">Espace magasinier </h1>
 
                 @include('layouts.alerts')
 

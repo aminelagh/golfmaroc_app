@@ -13,7 +13,7 @@
             <table id="example" class="table table-striped table-bordered table-hover" width="100%">
                 <thead bgcolor="#DBDAD8">
                 <tr>
-                    <th>#</th>
+                    <th> # </th>
                     <th>Role</th>
                     <th>Nom et Prenom</th>
                     <th>Ville</th>
@@ -87,6 +87,46 @@
 
                         </td>
 
+                        {{-- Modal (pour afficher les details de chaque article) }}
+                        <div class="modal fade" id="myModal{{ $loop->index+1 }}" role="dialog">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            &times;
+                                        </button>
+                                        <h4 class="modal-title">{{ $item->designation_c }}</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><b>numero</b> {{ $item->num_article }}</p>
+                                        <p><b>code a barres</b> {{ $item->code_barre }}</p>
+                                        <p><b>Taille</b> {{ $item->taille }}</p>
+                                        <p><b>Couleur</b> {{ $item->couleur }}</p>
+                                        <p><b>sexe</b> {{ $item->sexe }}</p>
+                                        <p><b>Prix d'achat</b></p>
+                                        <p>{{ number_format($item->prix_achat, 2) }} DH
+                                            HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
+                                            Dhs TTC </p>
+                                        <p><b>Prix de vente</b></p>
+                                        <p>{{ number_format($item->prix_vente, 2) }} DH
+                                            HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
+                                            DH TTC </p>
+                                        <p>{{ $item->designation_l }}</p>
+
+                                        @if( $item->image != null) <img
+                                                src="{{ $item->image }}"
+                                                width="150px">@endif
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">Fermer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- fin Modal (pour afficher les details de chaque article) --}}
+
                     </tr>
                 @endforeach @endif
                 </tbody>
@@ -112,10 +152,8 @@
                 <li><a href="#">Separated link</a></li>
             </ul>
         </div>
-        <a target="_blank" href="{{ Route('export',[ 'p_table' => 'users' ]) }}" type="button"
-           class="btn btn-outline btn-default" {!! setPopOver("","Exporter la liste des utilisateur") !!}> Export Excel</a>
 
-        <a href="{{ Route('admin.home',[ 'p_table' => 'users' ]) }}" type="button"
+        <a href="{{ Route('admin.addUser') }}" type="button"
            class="btn btn-outline btn-default" {!! setPopOver("","Creer un nouvel utilisateur") !!}> Ajouter un utilisateur</a>
     </div>
 @endsection
@@ -146,7 +184,7 @@
                 "info": true,
                 stateSave: false,
                 "columnDefs": [
-                    {"width": "02%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
+                    {"width": "06%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
                     {"width": "05%", "targets": 1, "type": "string", "visible": true},
                     {"width": "05%", "targets": 2, "type": "string", "visible": true},
                     {"width": "08%", "targets": 3, "type": "string", "visible": true},

@@ -14,86 +14,94 @@ use App\Models\Magasin;
 use App\Models\Article;
 use App\Models\Fournisseur;
 use App\Models\Categorie;
+use Mockery\Exception;
 
 class UpdateController extends Controller
 {
-    /********************************************************
-     * afficher le formulaire de modification
-     ********************************************************/
-    public function updateForm($p_table, $p_id)
+
+    //Valider la modification de: marque
+    public function submitUpdateMarque()
     {
-        $categories = Categorie::all();
-        $fournisseurs = Fournisseur::all();
-        $magasins = Magasin::all();
-        $roles = Role::all();
-        $marques = Marque::all();
+        $id_marque = request()->get('id_marque');
+        $libelle = request()->get('libelle');
 
-        switch ($p_table) {
+        if (User::EmailExistForUpdateUser(request()->get('email'), request()->get('id_user')))
+            return redirect()->back()->withInput()->with('alert_danger', "L'email: <b>" . request()->get('email') . "</b> est deja utilisé pour un autre utilisateur.");
 
-            case 'users':
-                return view('Espace_Admin.update-user-form')->with(['data' => User::find($p_id), 'magasins' => $magasins, 'roles' => $roles]);
-                break;
-            case 'user_password':
-                return view('Espace_Admin.updatePassword-user-form')->with(['data' => User::find($p_id), 'magasins' => $magasins, 'roles' => $roles]);
-                break;
-            case 'categories':
-                return view('Espace_Magas.update-categorie-form')->withData(Categorie::find($p_id));
-                break;
-            case 'fournisseurs':
-                return view('Espace_Magas.update-fournisseur-form')->withData(Fournisseur::find($p_id));
-                break;
-            case 'agents':
-                return view('Espace_Magas.update-agent-form')->withData(Agent::find($p_id))->with('fournisseurs', Fournisseur::all());
-                break;
-            case 'marques':
-                return view('Espace_Magas.update-marque-form')->withData(Marque::find($p_id));
-                break;
-            case 'magasins':
-                return view('Espace_Magas.update-magasin-form')->withData(Magasin::find($p_id));
-                break;
-            case 'articles':
-                return view('Espace_Magas.update-article-form')->with(['data' => Article::find($p_id), 'fournisseurs' => $fournisseurs, 'categories' => $categories, 'marques' => $marques]);
-                break;
-            default:
-                return back()->withInput()->with('alert_warning', 'Erreur de redirection: UpdateController@updateForm($p_table, $p_id).');
+        $item = Marque::find($id_marque);
+        try {
+            $item->update([
+                'libelle' => $libelle,
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+        return redirect()->back()->with('alert_success', "Modification reussie.");
     }
 
-    /********************************************************
-     * Valider La modification
-     ********************************************************/
-    public function submitUpdate($p_table)
+    //Valider la modification de: categorie
+    public function submitUpdateCategorie()
     {
-        switch ($p_table) {
-            case 'users':
-                return $this->submitUpdateUser();
-                break;
-            case 'user_password':
-                return $this->submitUpdatePasswordUser();
-                break;
-            case 'magasins':
-                return $this->submitUpdateMagasin();
-                break;
-            case 'marques':
-                return $this->submitUpdateMarque();
-                break;
-            case 'agents':
-                return $this->submitUpdateAgent();
-                break;
-            case 'fournisseurs':
-                return $this->submitUpdateFournisseur();
-                break;
-            case 'categories':
-                return $this->submitUpdateCategorie();
-                break;
-            case 'articles':
-                return $this->submitUpdateArticle();
-                break;
-            default:
-                return back()->withInput()->with('alert_warning', 'Erreur de redirection: UpdateController@submitUpdate($p_table)');
-                break;
+        $id_categorie = request()->get('id_categorie');
+        $libelle = request()->get('libelle');
+        $item = Categorie::find($id_categorie);
+        try {
+            $item->update([
+                'libelle' => $libelle,
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+        return redirect()->back()->with('alert_success', "Modification reussie.");
     }
+
+    //Valider la modification de: fournisseur
+    public function submitUpdateFournisseur()
+    {
+        $id_fournisseur = request()->get('id_fournisseur');
+        $libelle = request()->get('libelle');
+        $code = request()->get('code');
+        $item = Fournisseur::find($id_fournisseur);
+        try {
+            $item->update([
+                'libelle' => $libelle,
+                'code' => $code,
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "Modification reussie.");
+    }
+
+    //Valider la modification de: agent
+    public function submitUpdateAgent()
+    {
+        $id_agent = request()->get('id_agent');
+        $id_fournisseur = request()->get('id_fournisseur');
+        $nom = request()->get('nom');
+        $prenom = request()->get('prenom');
+        $role = request()->get('role');
+        $ville = request()->get('ville');
+        $telephone = request()->get('telephone');
+        $email = request()->get('email');
+
+        $item = Agent::find($id_agent);
+        try {
+            $item->update([
+                'id_fournisseur' => $id_fournisseur,
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'role' => $role,
+                'ville' => $ville,
+                'telephone' => $telephone,
+                'email' => $email,
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "Modification reussie.");
+    }
+
 
 
 
@@ -127,55 +135,6 @@ class UpdateController extends Controller
         }
 
         return redirect()->route('magas.info', ['p_table' => 'articles', 'id' => $id_article])->with('alert_success', "Modification de l'article reussi.");
-    }
-
-    //Valider la modification d un Categorie
-    public function submitUpdateCategorie()
-    {
-        $item = Categorie::find(request()->get('id_categorie'));
-        $item->update([
-            'libelle' => request()->get('libelle'),
-            'description' => request()->get('description')
-        ]);
-        return redirect()->route('magas.info', ['p_table' => 'categories', 'p_id' => request()->get('id_categorie')])->with('alert_success', 'Modification du fournisseur reussi.');
-    }
-
-    //Valider la modification d un agent
-    public function submitUpdateAgent()
-    {
-        $item = Agent::find(request()->get('id_agent'));
-        $item->update([
-            'id_fournisseur' => request()->get('id_fournisseur'),
-            'nom' => request()->get('nom'),
-            'prenom' => request()->get('prenom'),
-            'email' => request()->get('email'),
-            'role' => request()->get('role'),
-            'telephone' => request()->get('telephone')
-        ]);
-        return redirect()->route('magas.info', ['p_table' => 'agents', 'p_id' => request()->get('id_agent')])->with('alert_success', "Modification de l'agent reussi.");
-    }
-
-    //Valider la modification d un marque
-    public function submitUpdateMarque()
-    {
-        $item = Marque::find(request()->get('id_marque'));
-        $item->update([
-            'libelle' => request()->get('libelle'),
-            'description' => request()->get('description')
-        ]);
-        return redirect()->route('magas.info', ['p_table' => 'marques', 'p_id' => request()->get('id_marque')])->with('alert_success', "Modification de la marque <b>" . request()->get('libelle') . "</b> reussi.");
-    }
-
-    //Valider la modification d un fournisseur
-    public function submitUpdateFournisseur()
-    {
-        $item = Fournisseur::find(request()->get('id_fournisseur'));
-        $item->update([
-            'code' => request()->get('code'),
-            'libelle' => request()->get('libelle'),
-            'description' => request()->get('description')
-        ]);
-        return redirect()->route('magas.info', ['p_table' => 'fournisseurs', 'id' => request()->get('id_fournisseur')])->with('alert_success', 'Modification du fournisseur reussi.');
     }
 
     //Valider la modification d un Magasin

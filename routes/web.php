@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Marque;
 use App\Models\SentinelUser;
 use App\Models\SentinelRole;
 
@@ -14,39 +15,52 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
-    $p_id = 4;
-    $role_id = \App\Models\Role_user::where('user_id',$p_id)->first()->role_id;
-    $role = \App\Models\Role::where('id',$role_id)->first()->name;
-    echo $role;
+    if(Marque::ExistForUpdate(2,'marque1'))
+        echo 'true';
+    else echo 'false';
 
 
-
-
-    //$a = App\Models\Magasin::where('id_magasin',1)->first();
-    $b = App\Models\Role_user::where('user_id',2)->first();
-    $c = SentinelUser::where('id',1)->get();
-    $d = SentinelRole::get();
-
-    //dump($b->role_id);
-
-    //dump($c->first());
-    //dump($d);
-    //dump($a->libelle);
-    //dump($b);
-
-    //dump(Sentinel::check());
-    //dump(Session::all());
-    //dump(request());
-    //dump(session());
-    //dump(session());
+    //dump(session()->all());
 });
 
+/***************************************
+ * Magas routes protected by adminMiddlewxare
+ ****************************************/
+Route::group(['middleware' => 'magas'], function () {
+
+    //Afficher la page d'accueil ==> Magas
+    Route::get('/magas', 'MagasController@home')->name('magas.home');
+
+    //Gestion des Articles: Lister
+    Route::get('/magas/categories', 'MagasController@categories')->name('magas.categories');
+    Route::get('/magas/fournisseurs', 'MagasController@fournisseurs')->name('magas.fournisseurs');
+    Route::get('/magas/agents', 'MagasController@agents')->name('magas.agents');
+    Route::get('/magas/articles', 'MagasController@articles')->name('magas.articles');
+
+    //Marque -----------------------------------------------------------------------------------------------------------
+    Route::get('/magas/marques', 'MagasController@marques')->name('magas.marques');
+    Route::get('/magas/marque/{p_id}', 'MagasController@marque')->name('magas.marque');
+    Route::get('/magas/addMarque', 'AddController@addMarque')->name('magas.addMarque');
+    Route::post('/magas/submitAddMarque', 'AddController@submitAddMarque')->name('magas.submitAddMarque');
+    Route::post('/magas/submitUpdateMarque', 'UpdateController@submitUpdateMarque')->name('magas.submitUpdateMarque');
+    //------------------------------------------------------------------------------------------------------------------
+
+    Route::get('/magas/addCategorie', 'AddController@addCategorie')->name('magas.addCategorie');
+    Route::get('/magas/addFournisseur', 'AddController@addFournisseur')->name('magas.addFournisseur');
+    Route::get('/magas/addAgent', 'AddController@addAgent')->name('magas.addAgent');
+    Route::get('/magas/addArticle', 'AddController@addArticle')->name('magas.addArticle');
+
+
+    //Gestion des Magasins
+    Route::get('/magas/magasins', 'MagasController@magasins')->name('magas.magasins');
+});
 
 /***************************************
  * Admin routes protected by adminMiddlewxare
  ****************************************/
 Route::group(['middleware' => 'admin'], function () {
 
+    //Afficher la page d'accueil ==> Admin
     Route::get('/admin', 'AdminController@home')->name('admin.home');
 
     //turn it into post
@@ -68,24 +82,28 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin/user/{p_id}', 'AdminController@infoUser')->name('admin.user');
 
     //modifier un utilisateur
-    Route::get('/admin/updateUser/{p_id}', 'AdminController@updateUser')->name('admin.updateUser');
     Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
 
     //Modifier le mot de passe d un utilisateur
     Route::get('/admin/updateUserPassword/{p_id}', 'AdminController@updateUserPassword')->name('admin.updateUserPassword');
-    Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
+    Route::post('/admin/submitUpdateUserPassword', 'AdminController@submitUpdateUserPassword')->name('admin.submitUpdateUserPassword');
 
-    Route::get('/admin/addUser}', 'AdminController@addUser')->name('admin.addUser');
-    Route::post('/admin/submitAddUser}', 'AdminController@submitAddUser')->name('admin.submitAddUser');
+    //add User
+    Route::get('/admin/addUser', 'AdminController@addUser')->name('admin.addUser');
+    Route::post('/admin/submitAddUser', 'AdminController@submitAddUser')->name('admin.submitAddUser');
 });
 
 
-Route::group(['middleware' => 'magas'], function () {
-    Route::get('/magas', 'MagasController@home')->name('magas.home');
-});
+/***************************************
+ * Vend routes protected by adminMiddlewxare
+ ****************************************/
 Route::group(['middleware' => 'vend'], function () {
     Route::get('/vend', 'VendeurController@home')->name('vend.home');
 });
+
+/***************************************
+ * Direct routes protected by adminMiddlewxare
+ ****************************************/
 Route::group(['middleware' => 'direct'], function () {
     Route::get('/direct', 'DirectController@home')->name('direct.home');
 });

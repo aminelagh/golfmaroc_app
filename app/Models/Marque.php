@@ -10,28 +10,32 @@ class Marque extends Model
     protected $primaryKey = 'id_marque';
 
     protected $fillable = [
-        'id_marque', 'libelle', 'description',
-        'deleted','image',
+        'id_marque', 'libelle',
+        'deleted', 'image',
     ];
 
-    public static function Exists($field, $value)
+    public static function Exists($libelle)
     {
-        $data = Marque::where($field, $value)->get()->first();
-        if ($data == null) return false;
-        else {
-            foreach ($data as $item) {
-                if ($item == $value)
-                    return true;
-            }
+        $data = Marque::where('libelle', $libelle)->get()->first();
+        if ($data == null)
             return false;
-        }
+        else return true;
     }
 
     public static function getLibelle($p_id)
     {
-        if($p_id==null)
+        if ($p_id == null)
             return "<i>null</i>";
         else return Marque::where('id_marque', $p_id)->get()->first()->libelle;
 
+    }
+
+    public static function ExistForUpdate($p_id, $libelle)
+    {
+        $x = Marque::where('libelle', $libelle)->where('id_marque', '!=', $p_id)->first();
+        if ($x == null)
+            return false;
+        else
+            return true;
     }
 }
