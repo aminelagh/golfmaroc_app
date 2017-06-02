@@ -15,7 +15,7 @@
 
     @include('layouts.alerts')
 
-    <form role="form" method="post"
+    <form role="form" method="post" enctype="multipart/form-data"
           action="{{ Route('magas.submitAddMarque') }}">
         {{ csrf_field() }}
 
@@ -35,6 +35,15 @@
                                    value="{{ old('libelle') }}" required autofocus>
                         </div>
                     </div>
+
+                    {{-- Image --}}
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Image </label>
+                            <input type="file" class="form-control-static" id="imageInput" name="image"/>
+                            <img id="showImage" src="#" alt="" width="100px"
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="panel-footer" align="center">
@@ -47,6 +56,24 @@
         </div>
     </form>
 
+@endsection
+
+@section('scripts')
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#showImage').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageInput").change(function () {
+            readURL(this);
+        });
+    </script>
 @endsection
 
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection

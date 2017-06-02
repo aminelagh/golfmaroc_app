@@ -3,103 +3,98 @@
 @section('title') Marques @endsection
 
 @section('main_content')
-    <div class="container-fluid">
-        <div class="col-lg-12">
-            <div class="row">
-                <h1 class="page-header">Liste des marques </h1>
+    <h1 class="page-header">Marques </h1>
 
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item ">Gestion des Articles</li>
-                    <li class="breadcrumb-item active">Liste des marques</li>
-                </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item ">Gestion des Articles</li>
+        <li class="breadcrumb-item active">Liste des marques</li>
+    </ol>
 
-                @include('layouts.alerts')
+    @include('layouts.alerts')
 
-                <div class="row">
-                    <div class="table-responsive">
-                        <div class="col-lg-12">
-                            <table id="example" class="table table-striped table-bordered table-hover">
-                                <thead bgcolor="#DBDAD8">
-                                <tr>
-                                    <th> #</th>
-                                    <th><i class="fa fa-fw fa-sort"></i> Marque</th>
-                                    <th>Autres</th>
-                                </tr>
-                                </thead>
-                                <tfoot bgcolor="#DBDAD8">
-                                <tr>
-                                    <th></th>
-                                    <th>Marque</th>
-                                    <th></th>
-                                </tr>
-                                </tfoot>
+    <div class="row">
+        <div class="table-responsive">
+            <div class="col-lg-12">
+                <table id="example" class="table table-striped table-bordered table-hover">
+                    <thead bgcolor="#DBDAD8">
+                    <tr>
+                        <th> #</th>
+                        <th>Marque</th>
+                        <td></td>
+                        <th>Autres</th>
+                    </tr>
+                    </thead>
+                    <tfoot bgcolor="#DBDAD8">
+                    <tr>
+                        <th></th>
+                        <th>Marque</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
 
-                                <tbody>
+                    <tbody>
 
-                                @if( $data->isEmpty() )
-                                    <tr>
-                                        <td></td>
-                                        <td align="center"><i>Aucune marque</i></td>
-                                        <td></td>
-                                    </tr>
-                                @else
-                                    @foreach( $data as $item )
-                                        <tr class="odd gradeA">
-                                            <td>{{ $loop->index+1 }}</td>
-                                            <td>{{ $item->libelle }}</td>
-                                            <td align="center">
-                                                <div class="btn-group pull-right">
-                                                    <button type="button"
-                                                            class="btn green btn-sm btn-outline dropdown-toggle"
-                                                            data-toggle="dropdown">
-                                                        <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                                        <i class="fa fa-angle-down"></i>
-                                                    </button>
+                    @if( $data->isEmpty() )
+                        <tr>
+                            <td></td>
+                            <td align="center"><i>Aucune marque</i></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    @else
+                        @foreach( $data as $item )
+                            <tr class="odd gradeA">
+                                <td>{{ $loop->index+1 }}</td>
+                                <td>{{ $item->libelle }}</td>
+                                <td>@if($item->image!=null)<img src="{{ asset($item->image) }}" height="60" width="60">@endif</td>
+                                <td align="center">
+                                    <div class="btn-group pull-right">
+                                        <button type="button"
+                                                class="btn green btn-sm btn-outline dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
+                                            <i class="fa fa-angle-down"></i>
+                                        </button>
 
-                                                    <ul class="dropdown-menu pull-left" role="menu">
-                                                        <li>
-                                                            <a href="{{ Route('magas.marque',['p_id' => $item->id_marque ]) }}"
-                                                                    {!! setPopOver("","Afficher plus de detail") !!} ><i
-                                                                        class="glyphicon glyphicon-eye-open"></i>
-                                                                Plus de detail
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a onclick="return confirm('Êtes-vous sure de vouloir effacer le Fournisseur: {{ $item->nom }} {{ $item->prenom }} ?')"
-                                                               href="{{ Route('magas.delete',['p_table' => 'agents' , 'p_id' => $item->id_agent ]) }}"
-                                                               title="effacer"><i class="glyphicon glyphicon-trash"></i>
-                                                                Effacer</a>
-                                                        </li>
-                                                    </ul>
+                                        <ul class="dropdown-menu pull-left" role="menu">
+                                            <li>
+                                                <a href="{{ Route('magas.marque',['p_id' => $item->id_marque ]) }}"
+                                                        {!! setPopOver("","Afficher plus de detail") !!} ><i
+                                                            class="glyphicon glyphicon-eye-open"></i>
+                                                    Plus de detail
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer le Fournisseur: {{ $item->nom }} {{ $item->prenom }} ?')"
+                                                   href="{{ Route('magas.delete',['p_table' => 'agents' , 'p_id' => $item->id_agent ]) }}"
+                                                   title="effacer"><i class="glyphicon glyphicon-trash"></i>
+                                                    Effacer</a>
+                                            </li>
+                                        </ul>
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <!-- row -->
-                <div class="row" align="center">
-                    <a href="{{ Route('magas.addMarque') }}" type="button"
-                       class="btn btn-outline btn-default" {!! setPopOver("","Ajouter une nouvelle marque") !!}>
-                        <i class="glyphicon glyphicon-plus "></i> Ajouter une marque</a>
-                </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+                </table>
             </div>
         </div>
+
     </div>
 
-    <script type="text/javascript">
-        // For demo to fit into DataTables site builder...
-        $('#example').removeClass('display').addClass('table table-striped table-bordered');
-    </script>
+
+    <!-- row -->
+    <div class="row" align="center">
+        <a href="{{ Route('magas.addMarque') }}" type="button"
+           class="btn btn-outline btn-default" {!! setPopOver("","Ajouter une nouvelle marque") !!}>
+            <i class="glyphicon glyphicon-plus "></i> Ajouter une marque</a>
+    </div>
+
+
 @endsection
 
 @section('scripts')
@@ -127,7 +122,8 @@
                 "columnDefs": [
                     {"width": "10%", "targets": 0},
                     //{"width": "30%", "targets": 1},
-                    {"width": "10%", "targets": 2}
+                    {"width": "05%", "targets": 2},
+                    {"width": "05%", "targets": 3},
                 ]
             });
             // Apply the search

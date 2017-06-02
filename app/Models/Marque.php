@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Marque extends Model
 {
@@ -13,6 +14,13 @@ class Marque extends Model
         'id_marque', 'libelle',
         'deleted', 'image',
     ];
+
+    static function getNextID()
+    {
+        $lastRecord = DB::table('marques')->orderBy('id_marque', 'desc')->first();
+        $result = ($lastRecord == null ? 1 : $lastRecord->id_marque + 1);
+        return $result;
+    }
 
     public static function Exists($libelle)
     {

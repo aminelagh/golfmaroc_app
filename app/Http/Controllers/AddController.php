@@ -38,14 +38,36 @@ class AddController extends Controller
         return view('Espace_Magas.add-categorie-form');
     }
 
+    public function addFournisseur()
+    {
+        return view('Espace_Magas.add-fournisseur-form');
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
     public function submitAddMarque()
     {
         $libelle = request()->get('libelle');
         if (Marque::Exists($libelle))
             return redirect()->back()->withInput()->with('alert_warning', "la marque <b>" . $libelle . "</b> existe deja.");
+
+        $id_marque = Marque::getNextID();
+
         $item = new Marque;
+        $item->id_marque = $id_marque;
         $item->libelle = $libelle;
         $item->deleted = false;
+
+        if (request()->hasFile('image')) {
+            $file_extension = request()->file('image')->extension();
+            //$file_size = request()->file('image')->getSize();
+            $file_name = "marque_" . $id_marque . "." . $file_extension;
+            request()->file('image')->move("uploads/images/marques", $file_name);
+            $item->image = "/uploads/images/marques/" . $file_name;
+        } else {
+            $item->image = false;
+        }
+
         try {
             $item->save();
         } catch (Exception $e) {
@@ -59,6 +81,7 @@ class AddController extends Controller
         $libelle = request()->get('libelle');
         if (Categorie::Exists($libelle))
             return redirect()->back()->withInput()->with('alert_warning', "la categorie <b>" . $libelle . "</b> existe deja.");
+
         $item = new Categorie();
         $item->libelle = $libelle;
         $item->deleted = false;
@@ -70,18 +93,28 @@ class AddController extends Controller
         return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été créer");
     }
 
+    public function submitAddFournisseur()
+    {
+        $libelle = request()->get('libelle');
+        $code = request()->get('code');
 
+        if (Fournisseur::CodeExists($code))
+            return redirect()->back()->withInput()->with('alert_warning', "le code <b>" . $code . "</b> est déjà utilisé pour un autre fournisseur.");
 
+        if (Fournisseur::LibelleExists($libelle))
+            return redirect()->back()->withInput()->with('alert_warning', "le fournisseur <b>" . $libelle . "</b> exist déjà.");
 
-
-
-
-
-
-
-
-
-
+        $item = new Fournisseur();
+        $item->libelle = $libelle;
+        $item->code = $code;
+        $item->deleted = false;
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de la categorie.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été créer");
+    }
 
 
     //Valider l'ajout de : Magasin
@@ -128,37 +161,6 @@ class AddController extends Controller
     }
 
 
-
-    //Valider l'ajout de Fournisseur
-    public function submitAddFournisseur()
-    {
-        if (request()->get('libelle') == null)
-            return redirect()->back()->withInput()->with('alert_danger', "Veuillez remplir le champ <b>libelle</b>.");
-        if (request()->get('code') == null)
-            return redirect()->back()->withInput()->with('alert_danger', "Veuillez remplir le champ <b>Code</b>.");
-
-        if (Fournisseur::Exists('code', request()->get('code')))
-            return redirect()->back()->withInput()->with('alert_danger', "Un fournisseur avec le code <b>" . request()->get('code') . "</b> existe déjà.");
-
-        if (Fournisseur::Exists('libelle', request()->get('libelle')))
-            return redirect()->back()->withInput()->with('alert_danger', "Le fournisseur <b>" . request()->get('libelle') . "</b>  existe déjà.");
-
-
-        $item = new Fournisseur;
-        $item->code = request()->get('code');
-        $item->libelle = request()->get('libelle');
-        $item->description = request()->get('description');
-        $item->deleted = false;
-
-        try {
-            $item->save();
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->with('alert_danger', "L'ajout du fournisseur: " . request()->get('libelle') . " a echoue. <br> message d'erreur: " . $ex->getMessage() . " ");
-        }
-        return redirect()->back()->with('alert_success', 'Le Fournisseur <strong>' . request()->get('code') . ': ' . request()->get('libelle') . '</strong> a bien été ajouté.');
-
-    }
-
     //Valider l'ajout de : Magasin
     public function submitAddArticle()
     {
@@ -190,15 +192,6 @@ class AddController extends Controller
         $item->deleted = false;
         $item->valide = false;
 
-        if (request()->hasFile('image')) {
-            $file_extension = request()->file('image')->extension();
-            //$file_size = request()->file('image')->getSize();
-            $file_name = "img" . $id_article . "." . $file_extension;
-            request()->file('image')->move("uploads/articles", $file_name);
-            $item->image = "/uploads/articles/" . $file_name;
-        } else {
-            $item->image = false;
-        }
 
         /*if (request()->has('force') && request()->get('force') == "true") {
             if (Exists('articles', 'designation_c', request()->get('designation_c'))) {

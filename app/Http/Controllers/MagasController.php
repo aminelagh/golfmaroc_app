@@ -65,8 +65,40 @@ class MagasController extends Controller
     public function marque($p_id)
     {
         $data = Marque::where('id_marque',$p_id)->get()->first();
+        if($data==null)
+            return redirect()->back()->with('alert_warning',"La marque choisie n'existe pas.");
+
         $articles = Article::where('id_marque',$p_id)->where('deleted',false)->where('valide',true)->get();
         return view('Espace_Magas.info-marque')->withData($data)->withArticles($articles);
+    }
+
+    public function categorie($p_id)
+    {
+        $data = Categorie::where('id_categorie',$p_id)->get()->first();
+        if($data==null)
+            return redirect()->back()->with('alert_warning',"La categorie choisie n'existe pas.");
+
+        $articles = Article::where('id_categorie',$p_id)->where('deleted',false)->where('valide',true)->get();
+        return view('Espace_Magas.info-categorie')->withData($data)->withArticles($articles);
+    }
+
+    public function fournisseur($p_id)
+    {
+        $data = Fournisseur::where('id_fournisseur',$p_id)->get()->first();
+        if($data==null)
+            return redirect()->back()->with('alert_warning',"La categorie choisie n'existe pas.");
+
+        $articles = Article::where('id_fournisseur',$p_id)->where('deleted',false)->where('valide',true)->get();
+        return view('Espace_Magas.info-fournisseur')->withData($data)->withArticles($articles);
+    }
+
+    public function agent($p_id)
+    {
+        $data = Agent::where('id_agent',$p_id)->get()->first();
+        if($data==null)
+            return redirect()->back()->with('alert_warning',"L'agent choisi n'existe pas.");
+
+        return view('Espace_Magas.info-agent')->withData($data)->withArticles($articles);
     }
 
 

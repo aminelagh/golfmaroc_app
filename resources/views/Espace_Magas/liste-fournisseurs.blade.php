@@ -2,28 +2,112 @@
 
 @section('title') Fournisseurs @endsection
 
-@section('styles')
-    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
+@section('main_content')
+    <h1 class="page-header">Fournisseurs </h1>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item ">Gestion des Articles</li>
+        <li class="breadcrumb-item active">Liste des fournisseurs</li>
+    </ol>
+
+    @include('layouts.alerts')
+
+    <div class="row">
+        <div class="table-responsive">
+            <div class="col-lg-12">
+                <table id="example" class="table table-striped table-bordered table-hover">
+                    <thead bgcolor="#DBDAD8">
+                    <tr>
+                        <th> #</th>
+                        <th>Code</th>
+                        <th>Fournisseur</th>
+                        <th>Autres</th>
+                    </tr>
+                    </thead>
+                    <tfoot bgcolor="#DBDAD8">
+                    <tr>
+                        <th></th>
+                        <th>Code</th>
+                        <th>Fournisseur</th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+
+                    <tbody>
+
+                    @if( $data->isEmpty() )
+                        <tr>
+                            <td></td>
+                            <td>Aucun fournisseur</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    @else
+                        @foreach( $data as $item )
+                            <tr class="odd gradeA">
+                                <td>{{ $loop->index+1 }}</td>
+                                <td>{{ $item->code }}</td>
+                                <td>{{ $item->libelle }}</td>
+                                <td align="center">
+                                    <div class="btn-group pull-right">
+                                        <button type="button"
+                                                class="btn green btn-sm btn-outline dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
+                                            <i class="fa fa-angle-down"></i>
+                                        </button>
+
+                                        <ul class="dropdown-menu pull-left" role="menu">
+                                            <li>
+                                                <a href="{{ Route('magas.fournisseur',['p_id' => $item->id_fournisseur ]) }}"
+                                                        {!! setPopOver("","Afficher plus de detail") !!} ><i
+                                                            class="glyphicon glyphicon-eye-open"></i>
+                                                    Plus de detail
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer le fournisseur: {{ $item->code }} - {{ $item->libelle }} ?')"
+                                                   href="{{ Route('magas.delete',['p_table' => 'agents' , 'p_id' => $item->id_agent ]) }}"
+                                                   title="effacer"><i class="glyphicon glyphicon-trash"></i>
+                                                    Effacer</a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- row -->
+    <div class="row" align="center">
+        <a href="{{ Route('magas.addFournisseur') }}" type="button"
+           class="btn btn-outline btn-default" {!! setPopOver("","Ajouter un nouveau fournisseur") !!}>
+            <i class="glyphicon glyphicon-plus "></i> Ajouter un fournisseur</a>
+    </div>
+
+
 @endsection
 
 @section('scripts')
-    <script src="{{  asset('table2/datatables.min.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
+    <script>
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
             $('#example tfoot th').each(function () {
                 var title = $(this).text();
-
-                if (title == "Fournisseur") {
-                    $(this).html('<input type="text" size="20" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                else if (title == "Code") {
-                    $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                if (title == "Code") {
+                    $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                 }
                 else if (title != "") {
-                    $(this).html('<input type="text" size="17" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    $(this).html('<input type="text" size="20" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                 }
             });
             // DataTable
@@ -36,13 +120,11 @@
                 "info": true,
                 stateSave: false,
                 "columnDefs": [
-                    {"width": "03%", "targets": 0, "type": "num", "visible": true, "searchable": false},
-                    {"width": "05%", "targets": 1, "type": "string", "visible": true},
-                    //{"width": "10%", "targets": 2, "type": "string", "visible": true},
-                    {"width": "10%", "targets": 3, "type": "string", "visible": true}
+                    {"width": "10%", "targets": 0},
+                    {"width": "10%", "targets": 1},
+                    {"width": "10%", "targets": 3},
                 ]
             });
-
             // Apply the search
             table.columns().every(function () {
                 var that = this;
@@ -56,159 +138,5 @@
     </script>
 @endsection
 
-@section('main_content')
-    <div class="container-fluid">
-        <div class="col-lg-12">
-            <div class="row">
-                <h1 class="page-header">Liste des Fournisseurs</h1>
-
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item ">Gestion des Articles</li>
-                    <li class="breadcrumb-item active">Liste des fournisseurs</li>
-                </ol>
-
-
-            @include('layouts.alerts')
-
-
-            <!-- Table responsive -->
-                <div class="table-responsive">
-                    <div class="col-lg-12">
-                        <table id="example" class="table table-striped table-hover">
-                            <thead bgcolor="#DBDAD8">
-                            <tr>
-                                <th>#</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Code</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Fournisseur</th>
-                                <th>Autres</th>
-                            </tr>
-                            </thead>
-                            <tfoot bgcolor="#DBDAD8">
-                            <tr>
-                                <th></th>
-                                <th>Code</th>
-                                <th>Fournisseur</th>
-                                <th></th>
-                            </tr>
-                            </tfoot>
-
-                            <tbody>
-                            @if ( isset( $data ) )
-                                @if( $data->isEmpty() )
-                                    <tr>
-                                        <td></td>
-                                        <td align="center">Aucun fournisseur</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                @else
-                                    @foreach( $data as $item )
-                                        <tr>
-                                            <td>{{ $loop->index+1 }}</td>
-                                            <td>{{ $item->code }}</td>
-                                            <td>{{ $item->libelle }}</td>
-                                            <td>
-                                                <div class="btn-group pull-right">
-                                                    <button type="button"
-                                                            class="btn green btn-sm btn-outline dropdown-toggle"
-                                                            data-toggle="dropdown">
-                                                        <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                                        <i class="fa fa-angle-down"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu pull-left" role="menu">
-                                                        <li>
-                                                            <a href="{{ Route('magas.info',['p_table'=> 'fournisseurs', 'p_id' => $item->id_fournisseur ]) }}"
-                                                               title="detail">
-                                                                <i class="glyphicon glyphicon-eye-open"></i> Plus de detail
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ Route('magas.update',['p_table'=> 'fournisseurs', 'p_id' => $item->id_fournisseur ]) }}"
-                                                               title="modifier"><i class="glyphicon glyphicon-pencil"></i> Modifier</a>
-                                                        </li>
-                                                        <li>
-                                                            <a onclick="return confirm('Êtes-vous sure de vouloir effacer le Fournisseur: {{ $item->libelle }} ?')"
-                                                               href="{{ Route('magas.delete',['p_table' => 'fournisseurs' , 'p_id' => $item->id_fournisseur ]) }}"
-                                                               title="effacer"><i class="glyphicon glyphicon-trash"></i> Effacer</a>
-                                                        </li>
-                                                        <li class="divider"></li>
-                                                        <li>
-                                                            <a data-toggle="modal"
-                                                               data-target="#myModal{{ $loop->index+1 }}"><i
-                                                                        {!! setPopOver("","Afficher plus de detail") !!} class="glyphicon glyphicon-info-sign"></i> visualiser</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-
-                                            {{-- Modal (pour afficher les details de chaque article) --}}
-                                            <div class="modal fade" id="myModal{{ $loop->index+1 }}" role="dialog">
-                                                <div class="modal-dialog modal-sm">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">
-                                                                &times;
-                                                            </button>
-                                                            <h4 class="modal-title">{{ $item->libelle }}</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p><b>Code</b> {{ $item->code }}</p>
-                                                            <p>{{ $item->designation_l }}</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default"
-                                                                    data-dismiss="modal">Fermer
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {{-- fin Modal (pour afficher les details de chaque article) --}}
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            @endif
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- /.Table responsive -->
-
-
-                <!-- row Buttons -->
-                <div class="row" align="center">
-                    <a href="{{ Route('magas.add',[ 'p_table' => 'fournisseurs' ]) }}" type="button"
-                       class="btn btn-outline btn-default"> <i class="glyphicon glyphicon-plus "></i>Ajouter un
-                        Fournisseur </a>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">Exporter<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li><a target="_blank" href="{{ Route('export',[ 'p_table' => 'fournisseurs' ]) }}"
-                                   title="Exporter la liste des utilisateur">Excel</a></li>
-                            <li><a href="#">Not Set Yet</a></li>
-                            <li><a href="#">Not Set Yet</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Not Set Yet</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- /.row Buttons -->
-
-
-            </div>
-
-        </div>
-
-    </div>
-@endsection
-
-
-@section('menu_1')
-    @include('Espace_Magas._nav_menu_1')
-@endsection
-
-@section('menu_2')
-    @include('Espace_Magas._nav_menu_2')
-@endsection
+@section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection
+@section('menu_2') @include('Espace_Magas._nav_menu_2') @endsection

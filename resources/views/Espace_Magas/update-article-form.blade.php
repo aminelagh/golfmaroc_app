@@ -118,21 +118,6 @@
 
                     <!-- row 3 -->
                     <div class="row">
-                        <div class="col-lg-2">
-                            {{-- Taille --}}
-                            <div class="form-group">
-                                <label>Taille</label>
-                                <select class="form-control" name="taille">
-                                    <option value="" {{ $data->taille=="" ? 'selected' : '' }}></option>
-                                    <option value="XXL" {{ $data->taille=="XXL" ? 'selected' : '' }}>XXL</option>
-                                    <option value="XL" {{ $data->taille=="XL" ? 'selected' : '' }}>XL</option>
-                                    <option value="L" {{ $data->taille=="L" ? 'selected' : '' }}>L</option>
-                                    <option value="M" {{ $data->taille=="M" ? 'selected' : '' }}>M</option>
-                                    <option value="S" {{ $data->taille=="S" ? 'selected' : '' }}>S</option>
-                                    <option value="XS" {{ $data->taille=="XS" ? 'selected' : '' }}>XS</option>
-                                </select>
-                            </div>
-                        </div>
 
                         <div class="col-lg-2">
                             {{-- Sexe --}}

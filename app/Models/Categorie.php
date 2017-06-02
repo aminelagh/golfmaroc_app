@@ -27,4 +27,13 @@ class Categorie extends Model
         else return null;
     }
 
+    public static function ExistForUpdate($p_id, $libelle)
+    {
+        $x = Categorie::where('libelle', $libelle)->where('id_categorie', '!=', $p_id)->first();
+        if ($x == null)
+            return false;
+        else
+            return true;
+    }
+
 }

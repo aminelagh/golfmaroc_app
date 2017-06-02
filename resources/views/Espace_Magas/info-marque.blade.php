@@ -9,7 +9,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des Articles</li>
-        <li class="breadcrumb-item"><a href="{{ route('magas.lister',['p_table' => 'marques' ]) }}">Liste
+        <li class="breadcrumb-item"><a href="{{ route('magas.marques') }}">Liste
                 des marques</a></li>
         <li class="breadcrumb-item active">{{ $data->libelle  }}</li>
     </ol>
@@ -20,14 +20,14 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            <form method="POST" action="{{ route('magas.submitUpdateMarque') }}">
+            <form method="POST" action="{{ route('magas.submitUpdateMarque') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_marque" value="{{ $data->id_marque }}">
 
 
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        {{ $data->libelle }}
+                    <div class="panel-heading" align="center">
+                        <h4><b>{{ $data->libelle }}</b></h4>
                     </div>
                     <div class="panel-body">
 
@@ -38,12 +38,29 @@
                                 <th><input class="form-control" type="text" name="libelle" value="{{ $data->libelle }}">
                                 </th>
                             </tr>
+                            @if($data->image!=null)
+                                <tr>
+                                    <td>Image</td>
+                                    <td>
+                                        <img src="{{ asset($data->image) }}" height="70" width="80">
+                                        <input type='file' id="imageInput" name="image"
+                                               {!! setPopOver("Image","Cliquez ici pour choisir la nouvelle image") !!} }}/>
+                                    </td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>Image</td>
+                                    <td>
+                                        <input type='file' id="imageInput" name="image"
+                                               {!! setPopOver("Image","Cliquez ici pour choisir la nouvelle image") !!} }}/>
+                                    </td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td>Date de creation</td>
                                 <th>{{ getDateHelper($data->created_at) }}
                                     a {{ getTimeHelper($data->created_at) }}   </th>
                             </tr>
-
                             <tr>
                                 <td>Date de derniere modification</td>
                                 <th>{{ getDateHelper($data->updated_at) }}
@@ -64,7 +81,7 @@
         <div class="col-lg-1"></div>
     </div>
 
-    @if( $articles->isEmpty() )
+    @if( !$articles->isEmpty() )
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">

@@ -32,7 +32,6 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas', 'MagasController@home')->name('magas.home');
 
     //Gestion des Articles: Lister
-    Route::get('/magas/categories', 'MagasController@categories')->name('magas.categories');
     Route::get('/magas/fournisseurs', 'MagasController@fournisseurs')->name('magas.fournisseurs');
     Route::get('/magas/agents', 'MagasController@agents')->name('magas.agents');
     Route::get('/magas/articles', 'MagasController@articles')->name('magas.articles');
@@ -44,8 +43,29 @@ Route::group(['middleware' => 'magas'], function () {
     Route::post('/magas/submitAddMarque', 'AddController@submitAddMarque')->name('magas.submitAddMarque');
     Route::post('/magas/submitUpdateMarque', 'UpdateController@submitUpdateMarque')->name('magas.submitUpdateMarque');
     //------------------------------------------------------------------------------------------------------------------
-
+    //Categorie --------------------------------------------------------------------------------------------------------
+    Route::get('/magas/categories', 'MagasController@categories')->name('magas.categories');
+    Route::get('/magas/categorie/{p_id}', 'MagasController@categorie')->name('magas.categorie');
     Route::get('/magas/addCategorie', 'AddController@addCategorie')->name('magas.addCategorie');
+    Route::post('/magas/submitAddCategorie', 'AddController@submitAddCategorie')->name('magas.submitAddCategorie');
+    Route::post('/magas/submitUpdateCategorie', 'UpdateController@submitUpdateCategorie')->name('magas.submitUpdateCategorie');
+    //------------------------------------------------------------------------------------------------------------------
+    //Fournisseur ------------------------------------------------------------------------------------------------------
+    Route::get('/magas/fournisseurs', 'MagasController@fournisseurs')->name('magas.fournisseurs');
+    Route::get('/magas/fournisseur/{p_id}', 'MagasController@fournisseur')->name('magas.fournisseur');
+    Route::get('/magas/addFournisseur', 'AddController@addFournisseur')->name('magas.addFournisseur');
+    Route::post('/magas/submitAddFournisseur', 'AddController@submitAddFournisseur')->name('magas.submitAddFournisseur');
+    Route::post('/magas/submitUpdateFournisseur', 'UpdateController@submitUpdateFournisseur')->name('magas.submitUpdateFournisseur');
+    //------------------------------------------------------------------------------------------------------------------
+    //Agent ------------------------------------------------------------------------------------------------------------
+    Route::get('/magas/agents', 'MagasController@agents')->name('magas.agents');
+    Route::get('/magas/agent/{p_id}', 'MagasController@agent')->name('magas.agent');
+    Route::get('/magas/addAgent', 'AddController@addAgent')->name('magas.addFournisseur');
+    Route::post('/magas/submitAddAgent', 'AddController@submitAddAgent')->name('addAgent.submitAddAgent');
+    Route::post('/magas/submitUpdateAgent', 'UpdateController@submitUpdateAgent')->name('magas.submitUpdateAgent');
+    //------------------------------------------------------------------------------------------------------------------
+
+
     Route::get('/magas/addFournisseur', 'AddController@addFournisseur')->name('magas.addFournisseur');
     Route::get('/magas/addAgent', 'AddController@addAgent')->name('magas.addAgent');
     Route::get('/magas/addArticle', 'AddController@addArticle')->name('magas.addArticle');

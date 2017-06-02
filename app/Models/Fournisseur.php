@@ -10,29 +10,50 @@ class Fournisseur extends Model
     protected $primaryKey = 'id_fournisseur';
 
     protected $fillable = [
-        'id_fournisseur', 'libelle', 'description',
+        'id_fournisseur', 'libelle',
         'code', 'deleted',
     ];
 
 
-    public static function Exists($field, $value)
+    public static function CodeExists($value)
     {
-        $data = Fournisseur::where($field, $value)->get()->first();
-        if ($data == null) return false;
-        else {
-            foreach ($data as $item) {
-                if ($item == $value)
-                    return true;
-            }
+        $data = Fournisseur::where('code', $value)->get()->first();
+        if ($data == null)
             return false;
-        }
+        else return true;
     }
 
-    public static function getLibelle($p_id_fournisseur)
+    public static function LibelleExists($value)
     {
-        $data = Fournisseur::where('id_fournisseur', $p_id_fournisseur)->get();
-        if( $data != null)
-            return Fournisseur::where('id_fournisseur', $p_id_fournisseur)->get()->first()->libelle;
-        else return "<i>aucun fournisseur</i>";
+        $data = Fournisseur::where('libelle', $value)->get()->first();
+        if ($data == null)
+            return false;
+        else return true;
+    }
+
+    public static function getLibelle($p_id)
+    {
+        $data = Fournisseur::where('id_fournisseur', $p_id)->get()->first();
+        if ($data != null)
+            return $data->libelle;
+        else return null;
+    }
+
+    public static function LibelleExistForUpdate($p_id, $libelle)
+    {
+        $x = Fournisseur::where('libelle', $libelle)->where('id_fournisseur', '!=', $p_id)->first();
+        if ($x == null)
+            return false;
+        else
+            return true;
+    }
+
+    public static function CodeExistForUpdate($p_id, $code)
+    {
+        $x = Fournisseur::where('code', $code)->where('id_fournisseur', '!=', $p_id)->first();
+        if ($x == null)
+            return false;
+        else
+            return true;
     }
 }
