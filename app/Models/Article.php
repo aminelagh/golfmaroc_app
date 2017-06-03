@@ -11,11 +11,11 @@ class Article extends Model
     protected $primaryKey = 'id_article';
 
     protected $fillable = [
-        'id_article', 'id_fournisseur', 'id_categorie','id_marque',
-        'designation_c', 'designation_l',
-        'code_barre', 'num_article',
-        'couleur', 'taille', 'sexe', 'prix_achat', 'prix_vente',
-        'deleted', 'image','valide'
+        'id_article', 'id_fournisseur', 'id_categorie', 'id_marque',
+        'designation',
+        'code', 'ref', 'alias',
+        'couleur', 'sexe', 'prix_a', 'prix_v',
+        'deleted', 'image', 'valide'
     ];
 
     public static function getPrixPromo($p_id_article, $p_id_magasin)
@@ -44,16 +44,11 @@ class Article extends Model
         return $result;
     }
 
-    static function Exists($field, $value)
+    public static function CodeExists($code)
     {
-        $data = Article::where($field, $value)->get()->first();
-        if ($data == null) return false;
-        else {
-            foreach ($data as $item) {
-                if ($item == $value)
-                    return true;
-            }
+        $data = Article::where('code', $code)->get()->first();
+        if ($data == null)
             return false;
-        }
+        else return true;
     }
 }

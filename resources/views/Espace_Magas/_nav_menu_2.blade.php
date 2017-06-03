@@ -7,10 +7,6 @@
             </li>
 
             <li>
-                <a href="{{ route('admin.users' ) }}"><i class="fa fa-dashboard fa-fw"></i> Utilisateurs</a>
-            </li>
-
-            <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des Articles <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
@@ -21,9 +17,6 @@
                     </li>
                     <li>
                         <a href="{{ Route('magas.categories') }}">Categories</a>
-                    </li>
-                    <li>
-                        <a href="{{ Route('magas.agents') }}">Agents</a>
                     </li>
                     <li>
                         <a href="{{ Route('magas.marques') }}">Marques</a>

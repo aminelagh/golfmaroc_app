@@ -20,6 +20,8 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
+            {!! setNavigation("marque",$data->id_marque) !!}
+
             <form method="POST" action="{{ route('magas.submitUpdateMarque') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_marque" value="{{ $data->id_marque }}">

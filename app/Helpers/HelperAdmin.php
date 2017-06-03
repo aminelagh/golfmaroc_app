@@ -72,3 +72,5 @@ if( !function_exists('getFournisseurName') )
 		return $result == null ? '<i>not set</i>' : $result;
 	}
 }
+
+

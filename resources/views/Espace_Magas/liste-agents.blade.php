@@ -146,17 +146,7 @@
     </div>
 @endsection
 
-@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
-
-@section('styles')
-    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
-@endsection
-
 @section('scripts')
-    <script src="{{  asset('table2/datatables.min.js') }}"></script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
@@ -209,3 +199,6 @@
         });
     </script>
 @endsection
+
+@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection

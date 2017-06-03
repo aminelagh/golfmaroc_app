@@ -9,9 +9,11 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des Articles</li>
-        <li class="breadcrumb-item active"><a
-                    href="{{ Route('magas.agents') }}"> Liste des
-                agents</a></li>
+        <li class="breadcrumb-item"><a
+                    href="{{ Route('magas.fournisseurs') }}"> Liste des
+                fournisseurs</a></li>
+        <li class="breadcrumb-item"><a
+                    href="{{ Route('magas.fournisseur',['p_id'=>$fournisseur->id_fournisseur]) }}">{{ $fournisseur->libelle }}</a></li>
         <li class="breadcrumb-item active">Création d'un agent</li>
     </ol>
 
@@ -19,6 +21,8 @@
 
     <form role="form" method="post" action="{{ Route('magas.submitAddAgent') }}">
         {{ csrf_field() }}
+
+        <input type="hidden" name="id_fournisseur" value="{{ $fournisseur->id_fournisseur }}">
 
         <div class="panel panel-default">
 
@@ -31,10 +35,8 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label>Fournisseur</label>
-                            <select class="form-control" name="id_fournisseur">
-                                @foreach($fournisseurs as $item)
-                                    <option value="{{ $item->id_fournisseur }}">{{ $item->libelle }}</option>
-                                @endforeach
+                            <select class="form-control" name="id_fournisseur" disabled>
+                                <option value="{{ $fournisseur->id_fournisseur }}">{{ $fournisseur->libelle }}</option>
                             </select>
 
                         </div>
@@ -44,7 +46,8 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label>Role *</label>
-                            <input type="text" class="form-control" name="role" placeholder="Role" value="{{ old('role') }}" required>
+                            <input type="text" class="form-control" name="role" placeholder="Role"
+                                   value="{{ old('role') }}" required>
                         </div>
                     </div>
                 </div>
@@ -53,8 +56,9 @@
                     {{-- Nom --}}
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label>Nom</label>
-                            <input type="text" class="form-control" name="nom" placeholder="Nom" value="{{ old('nom') }}" required>
+                            <label>Nom *</label>
+                            <input type="text" class="form-control" name="nom" placeholder="Nom"
+                                   value="{{ old('nom') }}" required>
                         </div>
                     </div>
 
@@ -62,7 +66,8 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label>Prenom</label>
-                            <input type="text" class="form-control" name="prenom" placeholder="Prenom" value="{{ old('prenom') }}">
+                            <input type="text" class="form-control" name="prenom" placeholder="Prenom"
+                                   value="{{ old('prenom') }}">
                         </div>
                     </div>
                 </div>
@@ -72,7 +77,8 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="text" class="form-control" name="email" placeholder="Email" value="{{ old('email') }}">
+                            <input type="text" class="form-control" name="email" placeholder="Email"
+                                   value="{{ old('email') }}">
                         </div>
                     </div>
 
@@ -80,7 +86,8 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>Telephone</label>
-                            <input type="text" class="form-control" name="telephone" placeholder="Telephone" value="{{ old('telephone') }}">
+                            <input type="text" class="form-control" name="telephone" placeholder="Telephone"
+                                   value="{{ old('telephone') }}">
                         </div>
                     </div>
 
@@ -88,7 +95,8 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>Ville</label>
-                            <input type="text" class="form-control" name="ville" placeholder="Ville" value="{{ old('ville') }}">
+                            <input type="text" class="form-control" name="ville" placeholder="Ville"
+                                   value="{{ old('ville') }}">
                         </div>
                     </div>
                 </div>

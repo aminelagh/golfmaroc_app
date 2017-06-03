@@ -43,6 +43,20 @@ class AddController extends Controller
         return view('Espace_Magas.add-fournisseur-form');
     }
 
+    public function addAgent()
+    {
+        $fournisseurs = Fournisseur::all();
+        return view('Espace_Magas.add-agent-form')->withFournisseurs($fournisseurs);
+    }
+
+    public function addAgentFournisseur($p_id)
+    {
+        $fournisseur = Fournisseur::where('id_fournisseur', $p_id)->get()->first();
+        if($fournisseur==null)
+            return redirect()->back()->withInput()->with('alert_warning',"Le fournisseur choisi n'existe pas.");
+        return view('Espace_Magas.add-agentFournisseur-form')->withFournisseur($fournisseur);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
 
     public function submitAddMarque()
@@ -116,6 +130,26 @@ class AddController extends Controller
         return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été créer");
     }
 
+    public function submitAddAgent()
+    {
+        $item = new Agent;
+        $item->id_fournisseur = request()->get('id_fournisseur');
+        $item->email = request()->get('email');
+        $item->nom = request()->get('nom');
+        $item->prenom = request()->get('prenom');
+        $item->role = request()->get('role');
+        $item->ville = request()->get('ville');
+        $item->telephone = request()->get('telephone');
+        $item->deleted = false;
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "L'ajout de l'agent <b>" . request()->get('libelle') . "</b> a échoué. <br> message d'erreur: " . $e->getMessage() . ".");
+        }
+        return redirect()->back()->with('alert_success', "L'agent <b>" . request()->get('nom') . " " . request()->get('prenom') . "</b> a bien été ajouté");
+
+    }
+
 
     //Valider l'ajout de : Magasin
     public function submitAddMagasin()
@@ -137,26 +171,6 @@ class AddController extends Controller
             return redirect()->back()->withInput()->with('alert_danger', "Erreur d'ajout du magasin <b>" . request()->get('libelle') . "</b>.<br> Message d'erreur: <b>" . $e->getMessage() . "</b>.");
         }
         return redirect()->back()->with('alert_success', "Le Magasin <b>" . request()->get('libelle') . "</b> a bien été ajouté");
-
-    }
-
-    //Valider l'ajout d'un agent
-    public function submitAddAgent()
-    {
-        $item = new Agent;
-        $item->id_fournisseur = request()->get('id_fournisseur');
-        $item->email = request()->get('email');
-        $item->nom = request()->get('nom');
-        $item->prenom = request()->get('prenom');
-        $item->role = request()->get('role');
-        $item->telephone = request()->get('telephone');
-        $item->deleted = false;
-        try {
-            $item->save();
-        } catch (Exception $e) {
-            return redirect()->back()->withInput()->with('alert_danger', "L'ajout de l'agent <b>" . request()->get('libelle') . "</b> a échoué. <br> message d'erreur: " . $e->getMessage() . ".");
-        }
-        return redirect()->back()->with('alert_success', "L'agent <b>" . request()->get('nom') . " " . request()->get('prenom') . "</b> a bien été ajouté");
 
     }
 
@@ -192,59 +206,6 @@ class AddController extends Controller
         $item->deleted = false;
         $item->valide = false;
 
-
-        /*if (request()->has('force') && request()->get('force') == "true") {
-            if (Exists('articles', 'designation_c', request()->get('designation_c'))) {
-                $alerts1 = $alerts1 . "<li>L\'article <i>" . request()->get('designation_c') . "</i> existe déjà.";
-                $error1 = true;
-            }
-            if (Exists('articles', 'num_article', request()->get('num_article'))) {
-                $alerts1 = $alerts1 . "<li>Le numero: <i>" . request()->get('num_article') . "</i> est deja utilise pour un autre article.";
-                $error1 = true;
-            }
-            try {
-                $item->save();
-            } catch (Exception $ex) {
-                return redirect()->back()->withInput()->with('alert_danger', '<li>Une erreur s\'est produite lors de l\'ajout de l\'article.<br>Message d\'erreur: ' . $ex->getMessage());
-            }
-
-            if ($error1)
-                redirect()->back()->with('alert-info', $alerts1);
-
-            return redirect()->back()->with('alert_success', 'L\'article <strong>' . request()->get('designation_c') . '</strong> a bien été ajouté.');
-        }
-        else
-        if (Exists('articles', 'designation_c', request()->get('designation_c'))) {
-            $alerts1 = $alerts1 . "<li>L'article <i>" . request()->get('designation_c') . "</i> existe déjà.";
-            $error1 = true;
-        }
-
-        if (Exists('articles', 'num_article', request()->get('num_article'))) {
-            $alerts1 = $alerts1 . "<li>Le numero: <i>" . request()->get('num_article') . "</i> est deja utilisé pour un autre article.";
-            $error1 = true;
-        }
-        if (Exists('articles', 'code_barre', request()->get('code_barre'))) {
-            $alerts1 = $alerts1 . "<li>Le code: <i>" . request()->get('code') . "</i> est deja utilisé pour un autre article.";
-            $error1 = true;
-        }
-        if (request()->get('prix_vente') == null) {
-            $alerts2 = $alerts2 . "<li>Veuillez remplir le champ: <i>Prix de vente</i>";
-            $error2 = true;
-        }
-        if (request()->get('prix_achat') == null) {
-            $alerts2 = $alerts2 . "<li>Veuillez remplir le champ: <i>Prix d'achat</i>";
-            $error2 = true;
-        }
-
-        if (request()->get('couleur') == null) {
-            $alerts2 = $alerts2 . "<li>Veuillez remplir le champ: <i>Couleur</i>";
-            $error2 = true;
-        }
-
-        redirect()->back()->withInput()->with('alert_info', $alerts1);
-        redirect()->back()->withInput()->with('alert_warning', $alerts2);
-    */
-        //if ($error1 || $error2) return redirect()->back()->withInput()->with('alert_success', "vous pouvez forcer l'ajout en cochant la case en dessous du formulaire.");
 
         try {
             $item->save();

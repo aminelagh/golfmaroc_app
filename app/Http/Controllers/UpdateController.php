@@ -67,8 +67,9 @@ class UpdateController extends Controller
     }
 
     //Fournisseur
-    public function submitUpdateFournisseur()
+    public function submitUpdateFournisseurAgents()
     {
+        //Update Fournisseur:
         $id_fournisseur = request()->get('id_fournisseur');
         $libelle = request()->get('libelle');
         $code = request()->get('code');
@@ -81,44 +82,43 @@ class UpdateController extends Controller
 
         $item = Fournisseur::find($id_fournisseur);
         try {
-            $item->update([
-                'libelle' => $libelle,
-                'code' => $code,
-            ]);
-        } catch (Exception $e) {
+            $item->update(['libelle' => $libelle,
+                'code' => $code,]);
+        } catch
+        (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "Modification reussie.");
-    }
+        //----------------------------------------------------
 
-    public function submitUpdateAgent()
-    {
+        //Update Agents:
+
+        //array des element du formulaire
         $id_agent = request()->get('id_agent');
-        $id_fournisseur = request()->get('id_fournisseur');
         $nom = request()->get('nom');
         $prenom = request()->get('prenom');
-        $role = request()->get('role');
-        $ville = request()->get('ville');
         $telephone = request()->get('telephone');
         $email = request()->get('email');
+        $ville = request()->get('ville');
+        $role = request()->get('role');
 
-        $item = Agent::find($id_agent);
-        try {
-            $item->update([
-                'id_fournisseur' => $id_fournisseur,
-                'nom' => $nom,
-                'prenom' => $prenom,
-                'role' => $role,
-                'ville' => $ville,
-                'telephone' => $telephone,
-                'email' => $email,
-            ]);
-        } catch (Exception $e) {
-            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        //Update each agent
+        for ($i = 1; $i <= count($id_agent); $i++) {
+            $item = Agent::find($id_agent[$i]);
+            try {
+                $item->update([
+                    'role' => $role[$i],
+                    'nom' => $nom[$i],
+                    'prenom' => $prenom[$i],
+                    'email' => $email[$i],
+                    'telephone' => $telephone[$i],
+                    'ville' => $ville[$i],
+                ]);
+            } catch (Exception $e) {
+                return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+            }
         }
         return redirect()->back()->with('alert_success', "Modification reussie.");
     }
-
 
 
 

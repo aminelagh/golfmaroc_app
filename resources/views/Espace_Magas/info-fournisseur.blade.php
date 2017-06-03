@@ -4,7 +4,7 @@
 
 @section('main_content')
 
-    <h3 class="page-header">Fournisseur</h3>
+    <h1 class="page-header">Fournisseur</h1>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
@@ -20,7 +20,9 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            <form method="POST" action="{{ route('magas.submitUpdateFournisseur') }}">
+            {!! setNavigation("fournisseur",$data->id_fournisseur) !!}
+
+            <form method="POST" action="{{ route('magas.submitUpdateFournisseurAgents') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_fournisseur" value="{{ $data->id_fournisseur }}">
 
@@ -30,8 +32,7 @@
                         <h4><b>{{ $data->libelle }}</b></h4>
                     </div>
                     <div class="panel-body">
-
-                        <table class="table table-hover" border="0" cellspacing="0" cellpadding="5">
+                        <table class="table table-hover" border="0" cellspacing="0" cellpadding="0">
 
                             <tr>
                                 <td>Code</td>
@@ -45,6 +46,49 @@
                                 </th>
                             </tr>
 
+                            @foreach($agents as $item)
+                                <input type="hidden" name="id_agent[{{ $loop->index+1 }}]"
+                                       value="{{ $item->id_agent }}">
+                                <tr>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" align="center">Agent {{ $loop->index+1 }}: <b>{{ $item->role }}</b>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Role</td>
+                                    <td><input class="form-control" type="text" name="role[{{ $loop->index+1 }}]"
+                                               value="{{ $item->role }}"></td>
+                                    <td>Email</td>
+                                    <td><input class="form-control" type="text" name="email[{{ $loop->index+1 }}]"
+                                               value="{{ $item->email }}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nom</td>
+                                    <td><input class="form-control" type="text" name="nom[{{ $loop->index+1 }}]"
+                                               value="{{ $item->nom }}"></td>
+                                    <td>Prenom</td>
+                                    <td><input class="form-control" type="text" name="prenom[{{ $loop->index+1 }}]"
+                                               value="{{ $item->prenom }}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Telephone</td>
+                                    <td><input class="form-control" type="text" name="telephone[{{ $loop->index+1 }}]"
+                                               value="{{ $item->telephone }}"></td>
+                                    <td>Ville</td>
+                                    <td><input class="form-control" type="text" name="ville[{{ $loop->index+1 }}]"
+                                               value="{{ $item->ville }}"></td>
+                                </tr>
+
+                            @endforeach
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                             <tr>
                                 <td>Date de creation</td>
                                 <th>{{ getDateHelper($data->created_at) }}
@@ -62,11 +106,14 @@
                                class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
                         <input type="reset" value="Réinitialiser"
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
+                        <a href="{{ Route('magas.addAgentFournisseur',['p_id' => $data->id_fournisseur]) }}"
+                           class="btn btn-success">ajouter un agent</a>
                     </div>
                 </div>
 
             </form>
         </div>
+
         <div class="col-lg-1"></div>
     </div>
 
