@@ -15,9 +15,9 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
-    if(Marque::ExistForUpdate(2,'marque1'))
-        echo 'true';
-    else echo 'false';
+
+
+
 
 
     //dump(session()->all());
@@ -61,10 +61,10 @@ Route::group(['middleware' => 'magas'], function () {
     Route::post('/magas/submitUpdateFournisseurAgents', 'UpdateController@submitUpdateFournisseurAgents')->name('magas.submitUpdateFournisseurAgents');
     //------------------------------------------------------------------------------------------------------------------
     //Agent ------------------------------------------------------------------------------------------------------------
-    Route::get('/magas/agents', 'MagasController@agents')->name('magas.agents');
+    //Route::get('/magas/agents', 'MagasController@agents')->name('magas.agents');
     Route::get('/magas/agent/{p_id}', 'MagasController@agent')->name('magas.agent');
-    Route::get('/magas/addAgent', 'AddController@addAgent')->name('magas.addFournisseur');
-    Route::post('/magas/submitUpdateAgent', 'UpdateController@submitUpdateAgent')->name('magas.submitUpdateAgent');
+    //Route::get('/magas/addAgent', 'AddController@addAgent')->name('magas.addAgent');
+    //Route::post('/magas/submitUpdateAgent', 'UpdateController@submitUpdateAgent')->name('magas.submitUpdateAgent');
     //------------------------------------------------------------------------------------------------------------------
     //Article ----------------------------------------------------------------------------------------------------------
     Route::get('/magas/articles', 'MagasController@articles')->name('magas.articles');

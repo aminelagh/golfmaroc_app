@@ -41,7 +41,7 @@
                         <div class="form-group">
                             <label>Image </label>
                             <input type="file" class="form-control-static" id="imageInput" name="image"/>
-                            <img id="showImage" src="#" alt="" width="100px"
+                            <img id="showImage" src="#" alt="" width="100px">
                         </div>
                     </div>
                 </div>

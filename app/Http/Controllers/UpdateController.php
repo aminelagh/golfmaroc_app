@@ -121,8 +121,48 @@ class UpdateController extends Controller
     }
 
 
-
     public function submitUpdateArticle()
+    {
+        $id_article = request()->get('id_article');
+
+        $id_categorie = request()->get('id_categorie');
+        $id_fournisseur = request()->get('id_fournisseur');
+        $id_marque = request()->get('id_marque');
+
+        $code = request()->get('code');
+        $ref = request()->get('ref');
+        $alias = request()->get('alias');
+
+        $sexe = request()->get('sexe');
+        $couleur = request()->get('couleur');
+        $prix_a = request()->get('prix_a');
+        $prix_v = request()->get('prix_v');
+
+
+
+        if (Article::CodeExistForUpdate($id_article, $code))
+            return redirect()->back()->withInput()->with('alert_danger', "L'article: <b>" . $designation . "</b> existe deja.");
+
+        $item = Article::find($id_article);
+        try {
+            $item->update([
+                'designation' => $designation,
+            ]);
+
+            if (request()->hasFile('image')) {
+                $file_extension = request()->file('image')->extension();
+                $file_name = "marque_" . $id_marque . "." . $file_extension;
+                request()->file('image')->move("uploads/images/marques", $file_name);
+                $image = "/uploads/images/marques/" . $file_name;
+                $item->update(['image' => $image]);
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "Modification reussie.");
+    }
+
+    /*public function submitUpdateArticle()
     {
         $id_article = request()->get('id_article');
         $item = Article::find($id_article);
@@ -151,7 +191,7 @@ class UpdateController extends Controller
         }
 
         return redirect()->route('magas.info', ['p_table' => 'articles', 'id' => $id_article])->with('alert_success', "Modification de l'article reussi.");
-    }
+    }*/
 
     public function submitUpdateMagasin()
     {

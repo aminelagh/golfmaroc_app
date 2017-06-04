@@ -46,9 +46,34 @@ class Article extends Model
 
     public static function CodeExists($code)
     {
-        $data = Article::where('code', $code)->get()->first();
+        $data = self::where('code', $code)->get()->first();
         if ($data == null)
             return false;
         else return true;
     }
+
+    public static function hasNonValideArticles()
+    {
+        $data = self::where('valide',false)->where('deleted',false)->get();
+        if($data->isEmpty() )
+            return false;
+        else return true;
+    }
+
+    public static function nombreNonValideArticles()
+    {
+        $data = self::where('valide',false)->where('deleted',false)->get();
+        return count($data);
+
+    }
+
+    public static function CodeExistForUpdate($p_id, $code)
+    {
+        $x = self::where('code', $code)->where('id_article', '!=', $p_id)->first();
+        if ($x == null)
+            return false;
+        else
+            return true;
+    }
+
 }

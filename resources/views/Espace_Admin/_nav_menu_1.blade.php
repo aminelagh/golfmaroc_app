@@ -69,14 +69,17 @@
 			<i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
 		</a>
 		<ul class="dropdown-menu dropdown-alerts">
-			<li>
-				<a href="#">
-					<div>
-						<i class="fa fa-comment fa-fw"></i> New Comment
-						<span class="pull-right text-muted small">4 minutes ago</span>
-					</div>
-				</a>
-			</li>
+			@if(\App\Models\Article::hasNonValideArticles())
+				<li>
+					<a href="{{ Route('admin.home') }}">
+						<div>
+							<i class="fa fa-comment fa-fw"></i> vous avez des articles a valider
+							<span class="pull-right text-muted small">{{ \App\Models\Article::nombreNonValideArticles() }} article(s)</span>
+						</div>
+					</a>
+				</li>
+			@endif
+
 			<li class="divider"></li>
 			<li>
 				<a href="#">

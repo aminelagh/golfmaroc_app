@@ -52,9 +52,17 @@ class AddController extends Controller
     public function addAgentFournisseur($p_id)
     {
         $fournisseur = Fournisseur::where('id_fournisseur', $p_id)->get()->first();
-        if($fournisseur==null)
-            return redirect()->back()->withInput()->with('alert_warning',"Le fournisseur choisi n'existe pas.");
+        if ($fournisseur == null)
+            return redirect()->back()->withInput()->with('alert_warning', "Le fournisseur choisi n'existe pas.");
         return view('Espace_Magas.add-agentFournisseur-form')->withFournisseur($fournisseur);
+    }
+
+    public function addArticle()
+    {
+        $fournisseurs = Fournisseur::all();
+        $marques = Marque::all();
+        $categories = Categorie::all();
+        return view('Espace_Magas.add-article-form')->withFournisseurs($fournisseurs)->withMarques($marques)->withCategories($categories);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -150,6 +158,64 @@ class AddController extends Controller
 
     }
 
+    public function submitAddArticle()
+    {
+        $id_categorie = request()->get('id_categorie');
+        $id_marque = request()->get('id_marque');
+        $id_fournisseur = request()->get('id_fournisseur');
+        $ref = request()->get('ref');
+        $alias = request()->get('alias');
+        $code = request()->get('code');
+        $designation = request()->get('designation');
+        $sexe = request()->get('sexe');
+        $couleur = request()->get('couleur');
+        $prix_a = request()->get('prix_a');
+        $prix_v = request()->get('prix_v');
+
+
+        if (Article::CodeExists($code) ) {
+            return redirect()->back()->withInput()->with('alert_warning', "le code " . $code . " est deja utilisé pour un autre article");
+        }
+
+        $id_article = Article::getNextID();
+
+        $item = new Article;
+        $item->id_article = $id_article;
+        $item->id_categorie = $id_categorie;
+        $item->id_fournisseur = $id_fournisseur;
+        $item->id_marque = $id_marque;
+        $item->code = $code;
+        $item->ref = $ref;
+        $item->alias = $alias;
+        $item->designation = $designation;
+        $item->sexe = $sexe;
+        $item->couleur = $couleur;
+        $item->prix_a = $prix_a;
+        $item->prix_v = $prix_v;
+        $item->deleted = false;
+        $item->valide = false;
+
+        //upload Image
+        if (request()->hasFile('image')) {
+            $file_extension = request()->file('image')->extension();
+            //$file_size = request()->file('image')->getSize();
+            $file_name = "article_" . $id_article . "." . $file_extension;
+            request()->file('image')->move("uploads/images/articles", $file_name);
+            $item->image = "/uploads/images/articles/" . $file_name;
+        } else {
+            $item->image = false;
+        }
+
+        try {
+            $item->save();
+        } catch (Exception $ex) {
+            return redirect()->back()->withInput()->with('alert_danger', "Une erreur s'est produite lors de l'ajout de l'article.<br>Message d'erreur: " . $ex->getMessage());
+        }
+
+        return redirect()->back()->with('alert_success', "L'article <b>" . request()->get('designation_c') . "</b> a bien été ajouté.");
+
+    }
+
 
     //Valider l'ajout de : Magasin
     public function submitAddMagasin()
@@ -175,47 +241,6 @@ class AddController extends Controller
     }
 
 
-    //Valider l'ajout de : Magasin
-    public function submitAddArticle()
-    {
-        $alerts1 = "";
-        $alerts2 = "";
-        $error1 = false;
-        $error2 = false;
-
-        if (Article::Exists('num_article', request()->get('num_article'))) {
-            return redirect()->back()->withInput()->with('alert_warning', "le numero " . request()->get('num_article') . " est deja utilisé pour un autre article");
-        }
-
-        $id_article = Article::getNextID();
-
-        $item = new Article;
-        $item->id_article = $id_article;
-        $item->id_categorie = request()->get('id_categorie');
-        $item->id_fournisseur = request()->get('id_fournisseur');
-        $item->id_marque = request()->get('id_marque');
-        $item->num_article = request()->get('num_article');
-        $item->code_barre = request()->get('code_barre');
-        $item->designation_c = request()->get('designation_c');
-        $item->designation_l = request()->get('designation_l');
-        $item->taille = request()->get('taille');
-        $item->sexe = request()->get('sexe');
-        $item->couleur = request()->get('couleur');
-        $item->prix_achat = request()->get('prix_achat');
-        $item->prix_vente = request()->get('prix_vente');
-        $item->deleted = false;
-        $item->valide = false;
-
-
-        try {
-            $item->save();
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->with('alert_danger', "Une erreur s'est produite lors de l'ajout de l'article.<br>Message d'erreur: " . $ex->getMessage());
-        }
-
-        return redirect()->back()->with('alert_success', "L'article <b>" . request()->get('designation_c') . "</b> a bien été ajouté.");
-
-    }
 
     //Valider la creation des promotions
     public function submitAddPromotions()
