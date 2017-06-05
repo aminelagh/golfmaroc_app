@@ -88,46 +88,7 @@
                     <li class="breadcrumb-item active">Vente</li>
                 </ol>
 
-                <!-- alerts -->
-                <div class="row">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-8">
-                        {{-- Debut Alerts --}}
-                        @if (session('alert_success'))
-                            <div class="alert alert-success alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                    &times;
-                                </button> {!! session('alert_success') !!}
-                            </div>
-                        @endif
-
-                        @if (session('alert_info'))
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                    &times;
-                                </button> {!! session('alert_info') !!}
-                            </div>
-                        @endif
-                        @if (session('alert_warning'))
-                            <div class="alert alert-warning alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                    &times;
-                                </button> {!! session('alert_warning') !!}
-                            </div>
-                        @endif
-                        @if (session('alert_danger'))
-                            <div class="alert alert-danger alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                    &times;
-                                </button> {!! session('alert_danger') !!}
-                            </div>
-                        @endif
-                        {{-- Fin Alerts --}}
-                    </div>
-                    <div class="col-lg-2"></div>
-                </div>
-                <!-- /.alerts -->
-
+                @include('layouts.alerts')
 
                 <div class="row">
                     <div class="table-responsive">
@@ -194,90 +155,90 @@
                                             <tr class="success">
                                         @else
                                             <tr>
-                                        @endif
+                                                @endif
 
-                                            <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
-                                                   value="{{ $item->id_stock }}">
-                                            <input type="hidden" name="id_article[{{ $loop->index+1 }}]"
-                                                   value="{{ $item->id_article }}">
+                                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
+                                                       value="{{ $item->id_stock }}">
+                                                <input type="hidden" name="id_article[{{ $loop->index+1 }}]"
+                                                       value="{{ $item->id_article }}">
 
-                                            <td align="right">{{ $loop->index+1 }}</td>
-                                            <td>{{ $item->num_article }}</td>
-                                            <td>{{ $item->code_barre }}</td>
-                                            <td>{{ $item->designation_c }}</td>
-                                            <td>{{ getChamp('categories', 'id_categorie', $item->id_categorie , 'libelle') }}</td>
-                                            <td>{{ getChamp('fournisseurs', 'id_fournisseur', $item->id_fournisseur , 'libelle') }}</td>
-                                            <td>{{ $item->taille }}</td>
-                                            <td>{{ $item->couleur }}</td>
-                                            <td>{{ $item->sexe }}</td>
+                                                <td align="right">{{ $loop->index+1 }}</td>
+                                                <td>{{ $item->num_article }}</td>
+                                                <td>{{ $item->code_barre }}</td>
+                                                <td>{{ $item->designation_c }}</td>
+                                                <td>{{ getChamp('categories', 'id_categorie', $item->id_categorie , 'libelle') }}</td>
+                                                <td>{{ getChamp('fournisseurs', 'id_fournisseur', $item->id_fournisseur , 'libelle') }}</td>
+                                                <td>{{ $item->taille }}</td>
+                                                <td>{{ $item->couleur }}</td>
+                                                <td>{{ $item->sexe }}</td>
 
-                                            @if(hasPromotion($item->id_article))
-                                                <td align="right">{{ getPrixTaux($item->prix_vente, getTauxPromo($item->id_article) ) }}
-                                                    DH
+                                                @if(hasPromotion($item->id_article))
+                                                    <td align="right">{{ getPrixTaux($item->prix_vente, getTauxPromo($item->id_article) ) }}
+                                                        DH
+                                                    </td>
+                                                @else
+                                                    <td align="right">{{ getTTC($item->prix_vente) }} DH</td>
+                                                @endif
+
+                                                <td align="right">{{ $item->quantite }}</td>
+                                                <td align="right">
+                                                    <input type="number" min="0"
+                                                           max="{{ $item->quantite }}"
+                                                           placeholder="Qts"
+                                                           value="{{ old('quantite.'.($loop->index+1).'') }}"
+                                                           name="quantite[{{ $loop->index+1 }}]" {{-- $item->quantite==0 ? "disabled" : '' --}} />
                                                 </td>
-                                            @else
-                                                <td align="right">{{ getTTC($item->prix_vente) }} DH</td>
-                                            @endif
 
-                                            <td align="right">{{ $item->quantite }}</td>
-                                            <td align="right">
-                                                <input type="number" min="0"
-                                                       max="{{ $item->quantite }}"
-                                                       placeholder="Qts"
-                                                       value="{{ old('quantite.'.($loop->index+1).'') }}"
-                                                       name="quantite[{{ $loop->index+1 }}]" {{-- $item->quantite==0 ? "disabled" : '' --}} />
-                                            </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-info btn-xs"
+                                                            data-toggle="modal"
+                                                            data-target="#myModal{{ $loop->index+1 }}">
+                                                        Detail Article
+                                                    </button>
+                                                </td>
 
-                                            <td>
-                                                <button type="button" class="btn btn-info btn-xs"
-                                                        data-toggle="modal"
-                                                        data-target="#myModal{{ $loop->index+1 }}">
-                                                    Detail Article
-                                                </button>
-                                            </td>
+                                                {{-- Modal (pour afficher les details de chaque article) --}}
+                                                <div class="modal fade" id="myModal{{ $loop->index+1 }}"
+                                                     role="dialog">
+                                                    <div class="modal-dialog modal-sm">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close"
+                                                                        data-dismiss="modal">&times;
+                                                                </button>
+                                                                <h4 class="modal-title">{{ $item->designation_c }} @if(hasPromotion($item->id_article))
+                                                                        (en promotion) @endif </h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p><b>numero:</b> {{ $item->num_article }}</p>
+                                                                <p><b>code a barres:</b> {{ $item->code_barre }}</p>
+                                                                <p><b>Taille:</b> {{ $item->taille }}</p>
+                                                                <p><b>Couleur:</b> {{ $item->couleur }}</p>
+                                                                <p><b>sexe:</b> {{ $item->sexe }}</p>
 
-                                            {{-- Modal (pour afficher les details de chaque article) --}}
-                                            <div class="modal fade" id="myModal{{ $loop->index+1 }}"
-                                                 role="dialog">
-                                                <div class="modal-dialog modal-sm">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close"
-                                                                    data-dismiss="modal">&times;
-                                                            </button>
-                                                            <h4 class="modal-title">{{ $item->designation_c }} @if(hasPromotion($item->id_article))
-                                                                    (en promotion) @endif </h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p><b>numero:</b> {{ $item->num_article }}</p>
-                                                            <p><b>code a barres:</b> {{ $item->code_barre }}</p>
-                                                            <p><b>Taille:</b> {{ $item->taille }}</p>
-                                                            <p><b>Couleur:</b> {{ $item->couleur }}</p>
-                                                            <p><b>sexe:</b> {{ $item->sexe }}</p>
+                                                                @if(hasPromotion($item->id_article))
+                                                                    <font color="#006400"><p><b>Prix:</b> <span
+                                                                                    class="tab">{{ getPrixTaux($item->prix_vente, getTauxPromo($item->id_article) ) }}</span>
+                                                                        </p></font>
 
-                                                            @if(hasPromotion($item->id_article))
-                                                                <font color="#006400"><p><b>Prix:</b> <span
-                                                                                class="tab">{{ getPrixTaux($item->prix_vente, getTauxPromo($item->id_article) ) }}</span>
-                                                                    </p></font>
-
-                                                            @else
-                                                                <p><b>Prix:</b> {{ getTTC($item->prix_vente) }}
-                                                                    Dhs
-                                                                    TTC</p>
-                                                            @endif
-                                                            <p>{{ $item->designation_l }}</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default"
-                                                                    data-dismiss="modal">Fermer
-                                                            </button>
+                                                                @else
+                                                                    <p><b>Prix:</b> {{ getTTC($item->prix_vente) }}
+                                                                        Dhs
+                                                                        TTC</p>
+                                                                @endif
+                                                                <p>{{ $item->designation_l }}</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default"
+                                                                        data-dismiss="modal">Fermer
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {{-- fin Modal (pour afficher les details de chaque article) --}}
-                                        </tr>
-                                    @endforeach
+                                                {{-- fin Modal (pour afficher les details de chaque article) --}}
+                                            </tr>
+                                            @endforeach
 
                                     </tbody>
 
@@ -301,7 +262,8 @@
 
                                     <div class="col-lg-3">
                                         <label>Reference chequier</label>
-                                        <input class="form-control" type="text" placeholder="ref" name="ref" value="{{ old('ref') }}">
+                                        <input class="form-control" type="text" placeholder="ref" name="ref"
+                                               value="{{ old('ref') }}">
                                     </div>
 
                                     <div class="col-lg-2"></div>
@@ -314,11 +276,10 @@
                                     </div>
 
 
-
                                     <div class="col-lg-3">
                                         <label>Raison de la remise</label>
                                         <input class="form-control" type="text"
-                                               placeholder="Raison" name="raison"  value="{{ old('raison') }}">
+                                               placeholder="Raison" name="raison" value="{{ old('raison') }}">
                                     </div>
                                 </div>
                                 <div class="row" align="center">

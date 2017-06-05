@@ -15,16 +15,11 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
-
-
-
-
-
     //dump(session()->all());
 });
 
 /***************************************
- * Magas routes protected by adminMiddlewxare
+ * Magas routes protected by adminMiddleware
  ****************************************/
 Route::group(['middleware' => 'magas'], function () {
 
@@ -85,7 +80,7 @@ Route::group(['middleware' => 'magas'], function () {
 });
 
 /***************************************
- * Admin routes protected by adminMiddlewxare
+ * Admin routes protected by adminMiddleware
  ****************************************/
 Route::group(['middleware' => 'admin'], function () {
 
@@ -96,42 +91,49 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin/delete/users/{p_id}', 'AdminController@deleteUsers')->name('admin.delete.users');
     Route::get('/admin/delete/promotions/{p_id}', 'DeleteController@deletePromotions')->name('admin.delete.promotions');
 
-    //profile modifier
+
+    //Profile ----------------------------------------------------------------------------------------------------------
     Route::get('/admin/profile', 'AdminController@profile')->name('admin.profile');
-    Route::post('/admin/updateProfile', 'AdminController@updateProfile')->name('admin.updateProfile');
-
-    //modifier mot de passe
     Route::get('/admin/updatePassword', 'AdminController@updatePassword')->name('admin.updatePassword');
+    Route::post('/admin/submitUpdateProfile', 'AdminController@submitUpdateProfile')->name('admin.submitUpdateProfile');
     Route::post('/admin/submitUpdatePassword', 'AdminController@submitUpdatePassword')->name('admin.submitUpdatePassword');
-
-    //liste des utilisateurs
+    //------------------------------------------------------------------------------------------------------------------
+    //Users-------------------------------------------------------------------------------------------------------------
     Route::get('/admin/users', 'AdminController@listeUsers')->name('admin.users');
-
-    //info utilisateur
     Route::get('/admin/user/{p_id}', 'AdminController@infoUser')->name('admin.user');
-
-    //modifier un utilisateur
-    Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
-
-    //Modifier le mot de passe d un utilisateur
-    Route::get('/admin/updateUserPassword/{p_id}', 'AdminController@updateUserPassword')->name('admin.updateUserPassword');
-    Route::post('/admin/submitUpdateUserPassword', 'AdminController@submitUpdateUserPassword')->name('admin.submitUpdateUserPassword');
-
-    //add User
     Route::get('/admin/addUser', 'AdminController@addUser')->name('admin.addUser');
     Route::post('/admin/submitAddUser', 'AdminController@submitAddUser')->name('admin.submitAddUser');
+    Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
+    Route::get('/admin/updateUserPassword/{p_id}', 'AdminController@updateUserPassword')->name('admin.updateUserPassword');
+    Route::post('/admin/submitUpdateUserPassword', 'AdminController@submitUpdateUserPassword')->name('admin.submitUpdateUserPassword');
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    //Article ----------------------------------------------------------------------------------------------------------
+    Route::get('/admin/articles', 'AdminController@articles')->name('admin.articles');
+    Route::get('/admin/articles_v', 'AdminController@articles_v')->name('admin.articles_v');
+    Route::get('/admin/articles_nv', 'AdminController@articles_nv')->name('admin.articles_nv');
+
+    Route::post('/admin/submitArticlesValide', 'AdminController@submitArticlesValide')->name('admin.submitArticlesValide');
+
+
+    Route::get('/admin/article/{p_id}', 'AdminController@article')->name('admin.article');
+    Route::get('/admin/addArticle', 'AddController@addArticle')->name('admin.addArticle');
+    Route::post('/admin/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('admin.submitUpdateArticle');
+    //------------------------------------------------------------------------------------------------------------------
+
 });
 
 
 /***************************************
- * Vend routes protected by adminMiddlewxare
+ * Vend routes protected by adminMiddleware
  ****************************************/
 Route::group(['middleware' => 'vend'], function () {
     Route::get('/vend', 'VendeurController@home')->name('vend.home');
 });
 
 /***************************************
- * Direct routes protected by adminMiddlewxare
+ * Direct routes protected by adminMiddleware
  ****************************************/
 Route::group(['middleware' => 'direct'], function () {
     Route::get('/direct', 'DirectController@home')->name('direct.home');

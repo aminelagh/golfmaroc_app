@@ -74,7 +74,7 @@
 					<a href="{{ Route('admin.home') }}">
 						<div>
 							<i class="fa fa-comment fa-fw"></i> vous avez des articles a valider
-							<span class="pull-right text-muted small">{{ \App\Models\Article::nombreNonValideArticles() }} article(s)</span>
+							<span class="pull-right text-muted small">{{ count(\App\Models\Article::nonValideArticles()) }} article(s)</span>
 						</div>
 					</a>
 				</li>

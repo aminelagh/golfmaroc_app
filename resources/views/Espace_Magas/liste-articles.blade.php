@@ -124,7 +124,6 @@
                                         </li>
                                     </ul>
                                 </div>
-
                             </td>
 
                             {{-- Modal (pour afficher les details de chaque article) --}}
@@ -135,26 +134,23 @@
                                             <button type="button" class="close" data-dismiss="modal">
                                                 &times;
                                             </button>
-                                            <h4 class="modal-title">{{ $item->designation_c }}</h4>
+                                            <h4 class="modal-title">{{ $item->designation }}</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <p><b>numero</b> {{ $item->num_article }}</p>
-                                            <p><b>code a barres</b> {{ $item->code_barre }}</p>
-                                            <p><b>Taille</b> {{ $item->taille }}</p>
+                                            <p><b>reference</b> {{ $item->ref }} - {{ $item->alias }}</p>
+                                            <p><b>code</b> {{ $item->code }}</p>
                                             <p><b>Couleur</b> {{ $item->couleur }}</p>
                                             <p><b>sexe</b> {{ $item->sexe }}</p>
                                             <p><b>Prix d'achat</b></p>
-                                            <p>{{ number_format($item->prix_achat, 2) }} DH
-                                                HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
+                                            <p>{{ number_format($item->prix_a, 2) }} DH
+                                                HT, {{ number_format($item->prix_a*1.2, 2) }}
                                                 Dhs TTC </p>
                                             <p><b>Prix de vente</b></p>
                                             <p>{{ number_format($item->prix_vente, 2) }} DH
                                                 HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
                                                 DH TTC </p>
-                                            <p>{{ $item->designation_l }}</p>
-
                                             @if( $item->image != null) <img
-                                                    src="{{ $item->image }}"
+                                                    src="{{ asset($item->image) }}"
                                                     width="150px">@endif
                                         </div>
                                         <div class="modal-footer">

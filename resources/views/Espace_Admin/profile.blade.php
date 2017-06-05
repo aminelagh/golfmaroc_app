@@ -8,7 +8,7 @@
     @include('layouts.alerts')
 
     <div class="col-lg-2"></div>
-    <form method="POST" action="{{ route('admin.updateProfile') }}">
+    <form method="POST" action="{{ route('admin.submitUpdateProfile') }}">
         {{ csrf_field() }}
         <input type="hidden" name="id_user" value="{{ $data->id }}">
 

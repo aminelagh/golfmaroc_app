@@ -60,10 +60,10 @@ class Article extends Model
         else return true;
     }
 
-    public static function nombreNonValideArticles()
+    public static function nonValideArticles()
     {
         $data = self::where('valide',false)->where('deleted',false)->get();
-        return count($data);
+        return $data;
 
     }
 
