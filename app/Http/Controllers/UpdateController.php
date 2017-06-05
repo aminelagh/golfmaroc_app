@@ -133,6 +133,8 @@ class UpdateController extends Controller
         $ref = request()->get('ref');
         $alias = request()->get('alias');
 
+        $designation = request()->get('designation');
+
         $sexe = request()->get('sexe');
         $couleur = request()->get('couleur');
         $prix_a = request()->get('prix_a');

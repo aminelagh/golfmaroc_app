@@ -116,10 +116,10 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::post('/admin/submitArticlesValide', 'AdminController@submitArticlesValide')->name('admin.submitArticlesValide');
 
+    Route::get('/admin/article/{p_id}', 'AdminController@article_nv')->name('admin.article');
 
-    Route::get('/admin/article/{p_id}', 'AdminController@article')->name('admin.article');
     Route::get('/admin/addArticle', 'AddController@addArticle')->name('admin.addArticle');
-    Route::post('/admin/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('admin.submitUpdateArticle');
+    Route::post('/admin/submitUpdateArticle', 'AdminController@submitUpdateArticle')->name('admin.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
 
 });

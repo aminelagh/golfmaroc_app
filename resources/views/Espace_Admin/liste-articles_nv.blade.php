@@ -1,6 +1,6 @@
 @extends('layouts.main_master')
 
-@section('title')Nouveaux articles@endsection
+@section('title') Nouveaux articles @endsection
 
 @section('main_content')
 

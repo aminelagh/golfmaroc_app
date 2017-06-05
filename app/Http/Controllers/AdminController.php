@@ -11,15 +11,16 @@ use Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Magasin;
+use App\Models\Marque;
+use App\Models\Categorie;
+use App\Models\Fournisseur;
 use Illuminate\Support\Facades\Input;
 use Session;
 use Sentinel;
 
 class AdminController extends Controller
 {
-    public static $epsace = 'Espace_Admin';
 
-    //afficher la page d'accueil
     public function home()
     {
         return view('Espace_Admin.dashboard');
@@ -212,15 +213,103 @@ class AdminController extends Controller
     public function articles_nv()
     {
         $data = Article::nonValideArticles();
-        return view('Espace_Admin.liste-articles')->withData($data)->withType('nv');
+        return view('Espace_Admin.liste-articles_nv')->withData($data);
     }
 
     public function submitArticlesValide()
     {
-        dump(\request()->all());
+        //return 'a';
+        //array des element du formulaire ******************
+        $valide = request()->get('valide');
+        $id_article = request()->get('id_article');
+        //**************************************************
+
+        if ($valide == null)
+            return redirect()->back()->withInput()->with('alert_info', "Veuillez cocher les articles valides.");
+
+        $nbreArticles = 0;
+
+        //Boucle pour traiter chaque article ***************
+        for ($i = 1; $i <= count($id_article); $i++) {
+            if (isset($valide[$i])) {
+                if ($valide[$i] == $i) {
+                    $item = Article::find($id_article[$i]);
+                    try {
+                        $nbreArticles++;
+                        $item->update([
+                            'valide' => true,
+                        ]);
+
+                    } catch (Exception $e) {
+                        return redirect()->back()->withInput()->with('alert_danger', "Erreur de validation des articles.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+                    }
+                }
+            }
+        }
+
+        if ($nbreArticles == 1)
+            return redirect()->back()->with('alert_success', "Modification reussie de $nbreArticles artticle.");
+        else if ($nbreArticles > 1)
+            return redirect()->back()->with('alert_success', "Modification reussie de $nbreArticles articles.");
+        else return redirect()->back()->withInput();
+
+
+        //****************************************************
+    }
+
+    public function article_nv($p_id)
+    {
+        $data = Article::where('id_article', $p_id)->where('valide', false)->get()->first();
+
+        if ($data == null)
+            return redirect()->back()->with('alert_warning', "L'article choisi n'existe pas ou il a déjà été validé.");
+
+        $marques = Marque::all();
+        $fournisseurs = Fournisseur::all();
+        $categories = Categorie::all();
+
+
+        return view('Espace_Admin.info-article')->withData($data)->withMarques($marques)->withFournisseurs($fournisseurs)->withCategories($categories);
+    }
+
+    public function submitUpdateArticle()
+    {
+        $id_article = request()->get('id_article');
+        $code = request()->get('code');
+
+        if (Article::CodeExistForUpdate($id_article, $code))
+            return redirect()->back()->withInput()->with('alert_warning', "Le code: <b>" . $code . "</b> est deja utilisé pour un autre article.");
+
+        else {
+            $item = Article::find($id_article);
+            try {
+                $item->update([
+                    'id_categorie' => request()->get('id_categorie'),
+                    'id_marque' => request()->get('id_marque'),
+                    'id_fournisseur' => request()->get('id_fournisseur'),
+
+                    'code' => request()->get('code'),
+                    'ref' => request()->get('ref'),
+                    'alias' => request()->get('alias'),
+
+                    'designation' => request()->get('designation'),
+
+                    'couleur' => request()->get('couleur'),
+                    'sexe' => request()->get('sexe'),
+
+                    'prix_a' => request()->get('prix_a'),
+                    'prix_v' => request()->get('prix_v'),
+
+                    'valide' => true,
+                ]);
+
+            } catch (Exception $e) {
+                return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification de l'article. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+            }
+            return redirect()->route('admin.articles_nv')->with('alert_success', "Modification de l'utilisateur reussi.");
+        }
     }
     //---------------------------------------------------------------
-
 
 
 }

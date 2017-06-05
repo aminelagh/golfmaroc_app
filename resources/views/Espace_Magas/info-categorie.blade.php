@@ -20,7 +20,7 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("categorie",$data->id_categorie) !!}
+            {!! setNavigation("magas","categorie",$data->id_categorie) !!}
 
             <form method="POST" action="{{ route('magas.submitUpdateCategorie') }}">
                 {{ csrf_field() }}

@@ -65,15 +65,15 @@ if (!function_exists('setPopOver')) {
 
 //navigation
 if (!function_exists('setNavigation')) {
-    function setNavigation($table,$id)
+    function setNavigation($espace,$table,$id)
     {
         return '<nav aria-label="">
                 <ul class="pager">
                     <li class="previous"><a
-                                href="/magas/'.$table.'/'.($id-1).'"><span
+                                href="/'.$espace.'/'.$table.'/'.($id-1).'"><span
                                     aria-hidden="true">&larr;</span> précédent</a></li>
                     <li class="next"><a
-                                href="/magas/'.$table.'/'.($id+1).'"><span
+                                href="/'.$espace.'/'.$table.'/'.($id+1).'"><span
                                     aria-hidden="true">&rarr;</span> suivant</a></li>
 
                 </ul>

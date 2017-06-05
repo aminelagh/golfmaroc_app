@@ -20,7 +20,7 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("article",$data->id_article) !!}
+            {!! setNavigation("magas","article",$data->id_article) !!}
 
             <form method="POST" action="{{ route('magas.submitUpdateArticle') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
@@ -44,7 +44,7 @@
                             <tr>
                                 <td>Marque</td>
                                 <th>
-                                    <select class="form-control" name="id_categorie">
+                                    <select class="form-control" name="id_marque">
                                         @if( !$marques->isEmpty() )
                                             @foreach( $marques as $item )
                                                 <option value="{{ $item->id_marque }}"
@@ -72,7 +72,7 @@
                             <tr>
                                 <td>Fournisseur</td>
                                 <th>
-                                    <select class="form-control" name="id_categorie">
+                                    <select class="form-control" name="id_fournisseur">
                                         @if( !$fournisseurs->isEmpty() )
                                             @foreach( $fournisseurs as $item )
                                                 <option value="{{ $item->id_fournisseur }}"
