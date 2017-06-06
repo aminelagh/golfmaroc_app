@@ -6,6 +6,7 @@ use App\Models\Agent;
 use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\Fournisseur;
+use App\Models\Magasin;
 use App\Models\Marque;
 use Illuminate\Http\Request;
 use Mockery\Exception;
@@ -16,10 +17,6 @@ class MagasController extends Controller
     {
         return view('Espace_Magas.dashboard');
     }
-
-    /***************************************************
-     *************** Gestion des Articles **************
-     ***************************************************/
 
     /********************************************************
      * Afficher les listes
@@ -57,6 +54,12 @@ class MagasController extends Controller
 
         return view('Espace_Magas.liste-articles')->withData($data);
     }
+
+    public function magasins()
+    {
+        $data = Magasin::where('deleted', false)->get();
+        return view('Espace_Magas.liste-magasins')->withData($data);
+    }
     /******************************************************************************************************************/
 
     /********************************************************
@@ -64,7 +67,7 @@ class MagasController extends Controller
      *********************************************************/
     public function marque($p_id)
     {
-        $data = Marque::where('id_marque', $p_id)->get()->first();
+        $data = Marque::find($p_id);
         if ($data == null)
             return redirect()->back()->with('alert_warning', "La marque choisie n'existe pas.");
 
@@ -74,7 +77,7 @@ class MagasController extends Controller
 
     public function categorie($p_id)
     {
-        $data = Categorie::where('id_categorie', $p_id)->get()->first();
+        $data = Categorie::find($p_id);
         if ($data == null)
             return redirect()->back()->with('alert_warning', "La categorie choisie n'existe pas.");
 
@@ -84,7 +87,7 @@ class MagasController extends Controller
 
     public function fournisseur($p_id)
     {
-        $data = Fournisseur::where('id_fournisseur', $p_id)->get()->first();
+        $data = Fournisseur::find($p_id);
         if ($data == null)
             return redirect()->back()->with('alert_warning', "La categorie choisie n'existe pas.");
 
@@ -95,7 +98,7 @@ class MagasController extends Controller
 
     public function agent($p_id)
     {
-        $data = Agent::where('id_agent', $p_id)->get()->first();
+        $data = Agent::find($p_id);
         if ($data == null)
             return redirect()->back()->with('alert_warning', "L'agent choisi n'existe pas.");
 
@@ -104,7 +107,7 @@ class MagasController extends Controller
 
     public function article($p_id)
     {
-        $data = Article::where('id_article', $p_id)->get()->first();
+        $data = Article::find($p_id);
         $marques = Marque::all();
         $fournisseurs = Fournisseur::all();
         $categories = Categorie::all();
@@ -113,6 +116,15 @@ class MagasController extends Controller
             return redirect()->back()->with('alert_warning', "L'article choisi n'existe pas.");
 
         return view('Espace_Magas.info-article')->withData($data)->withMarques($marques)->withFournisseurs($fournisseurs)->withCategories($categories);
+    }
+
+    public function magasin($p_id)
+    {
+        $data = Magasin::find($p_id);
+        if ($data == null)
+            return redirect()->back()->with('alert_warning', "Le magasin choisi n'existe pas.");
+
+        return view('Espace_Magas.info-magasin')->withData($data);
     }
 
 

@@ -18,7 +18,6 @@ use Mockery\Exception;
 
 class UpdateController extends Controller
 {
-    //Marque
     public function submitUpdateMarque()
     {
         $id_marque = request()->get('id_marque');
@@ -46,7 +45,6 @@ class UpdateController extends Controller
         return redirect()->back()->with('alert_success', "Modification reussie.");
     }
 
-    //Categorie
     public function submitUpdateCategorie()
     {
         $id_categorie = request()->get('id_categorie');
@@ -66,7 +64,6 @@ class UpdateController extends Controller
         return redirect()->back()->with('alert_success', "Modification reussie.");
     }
 
-    //Fournisseur
     public function submitUpdateFournisseurAgents()
     {
         //Update Fournisseur:
@@ -120,7 +117,6 @@ class UpdateController extends Controller
         return redirect()->back()->with('alert_success', "Modification reussie.");
     }
 
-
     public function submitUpdateArticle()
     {
         $id_article = request()->get('id_article');
@@ -143,12 +139,27 @@ class UpdateController extends Controller
 
 
         if (Article::CodeExistForUpdate($id_article, $code))
-            return redirect()->back()->withInput()->with('alert_danger', "L'article: <b>" . $designation . "</b> existe deja.");
+            return redirect()->back()->withInput()->with('alert_warning', "Le code: <b>" . $code . "</b> existe deja.");
 
         $item = Article::find($id_article);
         try {
             $item->update([
+                'id_categorie' => $id_categorie,
+                'id_fournisseur' => $id_fournisseur,
+                'id_marque' => $id_marque,
+
+                'code' => $code,
+                'ref' => $ref,
+                'alias' => $alias,
+
                 'designation' => $designation,
+
+                'sexe' => $sexe,
+                'couleur' => $couleur,
+
+                'prix_a' => $prix_a,
+                'prix_v' => $prix_v,
+                'valide' => false,
             ]);
 
             if (request()->hasFile('image')) {
@@ -163,37 +174,6 @@ class UpdateController extends Controller
         }
         return redirect()->back()->with('alert_success', "Modification reussie.");
     }
-
-    /*public function submitUpdateArticle()
-    {
-        $id_article = request()->get('id_article');
-        $item = Article::find($id_article);
-
-        $item->update([
-            'id_categorie' => request()->get('id_categorie'),
-            'id_fournisseur' => request()->get('id_fournisseur'),
-            'id_marque' => request()->get('id_marque'),
-            'num_article' => request()->get('num_article'),
-            'code_barre' => request()->get('code_barre'),
-            'designation_c' => request()->get('designation_c'),
-            'designation_l' => request()->get('designation_l'),
-            'taille' => request()->get('taille'),
-            'couleur' => request()->get('couleur'),
-            'sexe' => request()->get('sexe'),
-            'prix_achat' => request()->get('prix_achat'),
-            'prix_vente' => request()->get('prix_vente')
-        ]);
-
-        if (request()->hasFile('image')) {
-            $file_extension = request()->file('image')->extension();
-            $file_name = "img" . $id_article . "." . $file_extension;
-            request()->file('image')->move("uploads/articles", $file_name);
-            $image = "/uploads/articles/" . $file_name;
-            $item->update(['image' => $image]);
-        }
-
-        return redirect()->route('magas.info', ['p_table' => 'articles', 'id' => $id_article])->with('alert_success', "Modification de l'article reussi.");
-    }*/
 
     public function submitUpdateMagasin()
     {

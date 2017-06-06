@@ -120,15 +120,13 @@
                                 @foreach( $articles as $item )
                                     <tr>
                                         <td>{{ $loop->index+1 }}</td>
-                                        <td align="right">{{ $item->num_article }}</td>
-                                        <td align="right">{{ $item->code_barre }}</td>
-                                        <td>@if( $item->image != null) <img src="{{ $item->image }}"
-                                                                            width="50px">@endif {{ $item->designation_c }}
-                                        </td>
+                                        <td align="right">{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</td>
+                                        <td align="right">{{ $item->code }}</td>
+                                        <td>{{ $item->designation }}</td>
                                         <td>{{ $item->couleur }}</td>
                                         <td>{{ $item->sexe }}</td>
-                                        <td align="right">{{ $item->prix_achat }} DH</td>
-                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_vente) !!}
+                                        <td align="right">{{ $item->prix_a }} DH</td>
+                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!}
                                             DH
                                         </td>
                                         <td>
@@ -141,16 +139,10 @@
                                                 </button>
                                                 <ul class="dropdown-menu pull-left" role="menu">
                                                     <li>
-                                                        <a href="{{ Route('magas.info',['p_table' => 'articles', 'p_id'=> $item->id_article ]) }}"
+                                                        <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}" target="_blank"
                                                                 {!! setPopOver("","Afficher plus de detail") !!}><i
                                                                     class="glyphicon glyphicon-eye-open"></i>
                                                             Plus de detail</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ Route('magas.update',['p_table' => 'articles', 'p_id' => $item->id_article ]) }}"
-                                                                {!! setPopOver("","Modifier") !!}><i
-                                                                    class="glyphicon glyphicon-pencil"></i>
-                                                            Modifier</a>
                                                     </li>
                                                     <li>
                                                         <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation_c }} ?')"
@@ -171,7 +163,7 @@
 
                                         </td>
 
-                                        {{-- Modal (pour afficher les details de chaque article) }}
+                                        {{-- Modal (pour afficher les details de chaque article) --}}
                                         <div class="modal fade" id="modal{{ $loop->index+1 }}"
                                              role="dialog">
                                             <div class="modal-dialog modal-sm">
@@ -184,14 +176,13 @@
                                                         <h4 class="modal-title">{{ $item->designation_c }}</h4>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <p><b>numero</b> {{ $item->num_article }}</p>
-                                                        <p><b>code a barres</b> {{ $item->code_barre }}
+                                                        <p><b>reference</b> {{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</p>
+                                                        <p><b>code a barres</b> {{ $item->code }}
                                                         </p>
-                                                        <p><b>Taille</b> {{ $item->taille }}</p>
                                                         <p><b>Couleur</b> {{ $item->couleur }}</p>
                                                         <p><b>sexe</b> {{ $item->sexe }}</p>
                                                         <p><b>Prix d'achat</b></p>
-                                                        <p>{{ number_format($item->prix_achat, 2) }} DH
+                                                        <p>{{ number_format($item->prix_a, 2) }} DH
                                                             HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
                                                             Dhs TTC </p>
                                                         <p><b>Prix de vente</b></p>
@@ -228,6 +219,7 @@
 @endsection
 
 @section('scripts')
+    @if( !$articles->isEmpty() )
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
@@ -283,6 +275,7 @@
             });
         });
     </script>
+    @endif
 @endsection
 
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection

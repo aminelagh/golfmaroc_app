@@ -76,9 +76,9 @@
                 @else
                     @foreach( $data as $item )
                         @if($item->valide == true)
-                            <tr calss="success">
+                            <tr calss="success" ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');">
                         @else
-                            <tr class="warning" {!! setPopOver("","Article non validé par l'administrateur") !!}>
+                            <tr class="warning" ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');" {!! setPopOver("","Article non validé par l'administrateur") !!}>
                         @endif
 
                             <td>{{ $loop->index+1 }}</td>

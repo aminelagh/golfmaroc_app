@@ -23,22 +23,29 @@ class Magasin extends Model
         return $result;
     }
 
-    public static function getLibelle($id_magasin)
+    public static function getLibelle($p_id)
     {
-        return Magasin::where('id_magasin', $id_magasin)->first()->libelle;
+        $data = self::find($p_id);
+        if ($data != null)
+            return $data->libelle;
+        else return null;
     }
 
-
-    public static function Exists($field, $value)
+    public static function Exists($libelle)
     {
-        $data = Magasin::where($field, $value)->get()->first();
-        if ($data == null) return false;
-        else {
-            foreach ($data as $item) {
-                if ($item == $value)
-                    return true;
-            }
+        $data = self::where('libelle', $libelle)->get()->first();
+        if ($data == null)
             return false;
-        }
+        else return true;
     }
+
+    public static function ExistForUpdate($p_id, $libelle)
+    {
+        $x = self::where('libelle', $libelle)->where('id_magasin', '!=', $p_id)->first();
+        if ($x == null)
+            return false;
+        else
+            return true;
+    }
+
 }

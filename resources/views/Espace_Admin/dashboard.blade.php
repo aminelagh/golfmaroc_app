@@ -6,8 +6,11 @@
 
     <h1 class="page-header">Espace administrateur</h1>
 
+    @include('layouts.alerts')
 
     <div class="row">
+
+        {{-- Affiche  --}}
         @if(\App\Models\Article::hasNonValideArticles())
             <div class="col-lg-4">
                 <div class="panel panel-red">

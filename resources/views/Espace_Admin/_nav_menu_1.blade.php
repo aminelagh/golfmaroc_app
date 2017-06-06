@@ -71,7 +71,7 @@
 		<ul class="dropdown-menu dropdown-alerts">
 			@if(\App\Models\Article::hasNonValideArticles())
 				<li>
-					<a href="{{ Route('admin.home') }}">
+					<a href="{{ Route('admin.articles_nv') }}">
 						<div>
 							<i class="fa fa-comment fa-fw"></i> vous avez des articles a valider
 							<span class="pull-right text-muted small">{{ count(\App\Models\Article::nonValideArticles()) }} article(s)</span>

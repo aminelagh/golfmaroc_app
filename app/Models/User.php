@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     public static function EmailExist($email)
     {
-        $x = User::where('email', $email)->first();
+        $x = self::where('email', $email)->first();
         if ($x != null)
             return true;
         else return false;
@@ -44,7 +44,7 @@ class User extends Authenticatable
 
     public static function EmailExistForUpdate($email)
     {
-        $x = User::where('email', $email)->first();
+        $x = self::where('email', $email)->first();
         if ($x == null || $x->id == Session::get('id_user'))
             return false;
         else
@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public static function updateSession($p_id)
     {
-        $user = User::where('id', $p_id)->first();
+        $user = self::where('id', $p_id)->first();
 
         Session::put('nom', $user->nom);
         Session::put('role', $user->nom);

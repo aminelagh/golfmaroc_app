@@ -54,7 +54,7 @@
                             <th> Prix d'achat (HT)</th>
                             <th> Prix de vente (TTC)</th>
 
-                            <th> Valide</th>
+                            <th> Valide <input type="checkbox" onclick="toggle(this);"/></th>
                             <th> Autres</th>
                         </tr>
                         </thead>
@@ -77,7 +77,7 @@
 
                         <tbody>
                         @foreach( $data as $item )
-                            <tr>
+                            <tr ondblclick="window.open('{{ Route('admin.article',['p_id'=>$item->id_article]) }}');">
                                 <input type="hidden" name="id_article[{{ $loop->index+1 }}]"
                                        value="{{ $item->id_article }}">
 
@@ -92,7 +92,7 @@
                                 <td>{{ $item->sexe }}</td>
                                 <td align="right">{{ $item->prix_a }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrix_TTC($item->prix_v) }}</td>
-                                <td align="right"><input type="checkbox" id="valide[{{ $loop->index+1 }}]"
+                                <td align="right"><input type="checkbox" id="valide"
                                                          name="valide[{{ $loop->index+1 }}]"
                                                          value="{{ $loop->index+1 }}"/></td>
                                 <td>
@@ -170,8 +170,7 @@
                     </table>
 
                     <div class="row" align="center">
-
-                        <input type="submit" formtarget="_blanc" name="submit" value="valider"
+                        <input type="submit" name="submit" value="valider"
                                class="btn btn-primary" {!! setPopOver("","Cliquez ici pour marquer les articles cochés comme étant valide") !!}>
 
                     </div>
@@ -181,6 +180,7 @@
             </div>
         </div>
     </div>
+    <br/>
 
 
 @endsection
@@ -188,6 +188,16 @@
 @section('scripts')
     @if(!$data->isEmpty())
         <script type="text/javascript" charset="utf-8">
+
+            function toggle(source) {
+                var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i] != source)
+                        checkboxes[i].checked = source.checked;
+                }
+            }
+
+
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell
                 $('#example tfoot th').each(function () {
@@ -206,6 +216,9 @@
                     }
                     else if (title == "Prix d'achat" || title == "Prix de vente") {
                         $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
+                    }
+                    else if (title == "valide") {
+                        //$(this).html('');
                     }
                     else if (title != "") {
                         $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
@@ -237,7 +250,7 @@
                         {"width": "06%", "targets": 9, "type": "string", "visible": true},
                         {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
 
-                        {"width": "07%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
+                        {"width": "10%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
                         {"width": "05%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
                     ]
                 });
@@ -262,5 +275,5 @@
     @endif
 @endsection
 
-@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
+@section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection

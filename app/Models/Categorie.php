@@ -13,7 +13,7 @@ class Categorie extends Model
 
     public static function Exists($libelle)
     {
-        $data = Categorie::where('libelle', $libelle)->get()->first();
+        $data = self::where('libelle', $libelle)->get()->first();
         if ($data == null)
             return false;
         else return true;
@@ -21,7 +21,7 @@ class Categorie extends Model
 
     public static function getLibelle($p_id)
     {
-        $data = Categorie::where('id_categorie', $p_id)->get()->first();
+        $data = self::where('id_categorie', $p_id)->get()->first();
         if ($data != null)
             return $data->libelle;
         else return null;
@@ -29,7 +29,7 @@ class Categorie extends Model
 
     public static function ExistForUpdate($p_id, $libelle)
     {
-        $x = Categorie::where('libelle', $libelle)->where('id_categorie', '!=', $p_id)->first();
+        $x = self::where('libelle', $libelle)->where('id_categorie', '!=', $p_id)->first();
         if ($x == null)
             return false;
         else

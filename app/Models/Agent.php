@@ -19,6 +19,6 @@ class Agent extends Model
 
     public static function getAgents($p_id_fournisseur)
     {
-        return Agent::where('id_fournisseur',$p_id_fournisseur)->where('deleted',false)->get();
+        return self::where('id_fournisseur',$p_id_fournisseur)->where('deleted',false)->get();
     }
 }

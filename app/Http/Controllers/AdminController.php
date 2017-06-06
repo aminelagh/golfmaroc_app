@@ -213,7 +213,15 @@ class AdminController extends Controller
     public function articles_nv()
     {
         $data = Article::nonValideArticles();
+        if($data->isEmpty())
+            return redirect()->back()->withInput()->with('alert_warning',"Aucun nouvel article a valider");
         return view('Espace_Admin.liste-articles_nv')->withData($data);
+    }
+
+    public function articles()
+    {
+        $data = Article::all();
+        return view('Espace_Admin.liste-articles')->withData($data);
     }
 
     public function submitArticlesValide()

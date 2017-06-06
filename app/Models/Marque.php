@@ -24,7 +24,7 @@ class Marque extends Model
 
     public static function Exists($libelle)
     {
-        $data = Marque::where('libelle', $libelle)->get()->first();
+        $data = self::where('libelle', $libelle)->get()->first();
         if ($data == null)
             return false;
         else return true;
@@ -32,15 +32,16 @@ class Marque extends Model
 
     public static function getLibelle($p_id)
     {
-        if ($p_id == null)
-            return "<i>null</i>";
-        else return Marque::where('id_marque', $p_id)->get()->first()->libelle;
+        $data = self::where('id_marque', $p_id)->get()->first();
+        if ($data != null)
+            return $data->libelle;
+        else return null;
 
     }
 
     public static function ExistForUpdate($p_id, $libelle)
     {
-        $x = Marque::where('libelle', $libelle)->where('id_marque', '!=', $p_id)->first();
+        $x = self::where('libelle', $libelle)->where('id_marque', '!=', $p_id)->first();
         if ($x == null)
             return false;
         else

@@ -15,7 +15,7 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
-    //dump(session()->all());
+
 });
 
 /***************************************
@@ -23,13 +23,7 @@ Route::get('/s', function () {
  ****************************************/
 Route::group(['middleware' => 'magas'], function () {
 
-    //Afficher la page d'accueil ==> Magas
     Route::get('/magas', 'MagasController@home')->name('magas.home');
-
-    //Gestion des Articles: Lister
-    Route::get('/magas/fournisseurs', 'MagasController@fournisseurs')->name('magas.fournisseurs');
-    Route::get('/magas/agents', 'MagasController@agents')->name('magas.agents');
-    Route::get('/magas/articles', 'MagasController@articles')->name('magas.articles');
 
     //Marque -----------------------------------------------------------------------------------------------------------
     Route::get('/magas/marques', 'MagasController@marques')->name('magas.marques');
@@ -69,14 +63,14 @@ Route::group(['middleware' => 'magas'], function () {
     Route::post('/magas/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('magas.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
 
-
-    Route::get('/magas/addFournisseur', 'AddController@addFournisseur')->name('magas.addFournisseur');
-    Route::get('/magas/addAgent', 'AddController@addAgent')->name('magas.addAgent');
-    Route::get('/magas/addArticle', 'AddController@addArticle')->name('magas.addArticle');
-
-
-    //Gestion des Magasins
+    //Magasin ----------------------------------------------------------------------------------------------------------
     Route::get('/magas/magasins', 'MagasController@magasins')->name('magas.magasins');
+    Route::get('/magas/magasin/{p_id}', 'MagasController@magasin')->name('magas.magasin');
+    Route::get('/magas/addMagasin', 'AddController@addMagasin')->name('magas.addMagasin');
+    Route::post('/magas/submitAddMagasin', 'AddController@submitAddMagasin')->name('magas.submitAddMagasin');
+    Route::post('/magas/submitUpdateMagasin', 'UpdateController@submitUpdateMagasin')->name('magas.submitUpdateMagasin');
+    //------------------------------------------------------------------------------------------------------------------
+
 });
 
 /***************************************

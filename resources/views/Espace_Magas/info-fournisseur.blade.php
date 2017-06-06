@@ -171,15 +171,13 @@
                                 @foreach( $articles as $item )
                                     <tr>
                                         <td>{{ $loop->index+1 }}</td>
-                                        <td align="right">{{ $item->num_article }}</td>
-                                        <td align="right">{{ $item->code_barre }}</td>
-                                        <td>@if( $item->image != null) <img src="{{ $item->image }}"
-                                                                            width="50px">@endif {{ $item->designation_c }}
-                                        </td>
+                                        <td align="right">{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</td>
+                                        <td align="right">{{ $item->code }}</td>
+                                        <td>{{ $item->designation }}</td>
                                         <td>{{ $item->couleur }}</td>
                                         <td>{{ $item->sexe }}</td>
-                                        <td align="right">{{ $item->prix_achat }} DH</td>
-                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_vente) !!}
+                                        <td align="right">{{ $item->prix_a }} DH</td>
+                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!}
                                             DH
                                         </td>
                                         <td>
@@ -192,16 +190,10 @@
                                                 </button>
                                                 <ul class="dropdown-menu pull-left" role="menu">
                                                     <li>
-                                                        <a href="{{ Route('magas.info',['p_table' => 'articles', 'p_id'=> $item->id_article ]) }}"
+                                                        <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}" target="_blank"
                                                                 {!! setPopOver("","Afficher plus de detail") !!}><i
                                                                     class="glyphicon glyphicon-eye-open"></i>
                                                             Plus de detail</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ Route('magas.update',['p_table' => 'articles', 'p_id' => $item->id_article ]) }}"
-                                                                {!! setPopOver("","Modifier") !!}><i
-                                                                    class="glyphicon glyphicon-pencil"></i>
-                                                            Modifier</a>
                                                     </li>
                                                     <li>
                                                         <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation_c }} ?')"
@@ -222,6 +214,47 @@
 
                                         </td>
 
+                                        {{-- Modal (pour afficher les details de chaque article) --}}
+                                        <div class="modal fade" id="modal{{ $loop->index+1 }}"
+                                             role="dialog">
+                                            <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close"
+                                                                data-dismiss="modal">
+                                                            &times;
+                                                        </button>
+                                                        <h4 class="modal-title">{{ $item->designation_c }}</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><b>reference</b> {{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</p>
+                                                        <p><b>code a barres</b> {{ $item->code }}
+                                                        </p>
+                                                        <p><b>Couleur</b> {{ $item->couleur }}</p>
+                                                        <p><b>sexe</b> {{ $item->sexe }}</p>
+                                                        <p><b>Prix d'achat</b></p>
+                                                        <p>{{ number_format($item->prix_a, 2) }} DH
+                                                            HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
+                                                            Dhs TTC </p>
+                                                        <p><b>Prix de vente</b></p>
+                                                        <p>{{ number_format($item->prix_vente, 2) }} DH
+                                                            HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
+                                                            DH TTC </p>
+                                                        <p>{{ $item->designation_l }}</p>
+
+                                                        @if( $item->image != null) <img
+                                                                src="{{ $item->image }}"
+                                                                width="150px">@endif
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal">Fermer
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- fin Modal (pour afficher les details de chaque article) --}}
 
                                     </tr>
                                 @endforeach
@@ -237,61 +270,63 @@
 @endsection
 
 @section('scripts')
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#tableArticles tfoot th').each(function () {
-                var title = $(this).text();
-                if (title == "numero" || title == "code") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                else if (title == "Designation") {
-                    $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                else if (title == "Couleur" || title == "Sexe") {
-                    $(this).html('<input type="text" size="5" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
-                }
-                else if (title != "") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-            });
-
-            var table = $('#tableArticles').DataTable({
-                //"scrollY": "50px",
-                //"scrollX": true,
-                "searching": true,
-                "paging": true,
-                //"autoWidth": true,
-                "info": true,
-                stateSave: false,
-                "columnDefs": [
-                    {"width": "02%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
-                    {"width": "05%", "targets": 1, "type": "string", "visible": false},
-                    {"width": "07%", "targets": 2, "type": "string", "visible": false},
-                    {"width": "03%", "targets": 4, "type": "string", "visible": false},
-                    {"width": "06%", "targets": 5, "type": "string", "visible": false},
-                    {"width": "05%", "targets": 6, "type": "num-fmt", "visible": true},
-                    {"width": "05%", "targets": 7, "type": "num-fmt", "visible": true},
-                    {"width": "10%", "targets": 8, "type": "string", "visible": true, "searchable": false}
-                ]
-            });
-
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-                var column = table.column($(this).attr('data-column'));
-                column.visible(!column.visible());
-            });
-
-            table.columns().every(function () {
-                var that = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (that.search() !== this.value) {
-                        that.search(this.value).draw();
+    @if( !$articles->isEmpty() )
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function () {
+                // Setup - add a text input to each footer cell
+                $('#tableArticles tfoot th').each(function () {
+                    var title = $(this).text();
+                    if (title == "numero" || title == "code") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Designation") {
+                        $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Couleur" || title == "Sexe") {
+                        $(this).html('<input type="text" size="5" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
+                    }
+                    else if (title != "") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                 });
+
+                var table = $('#tableArticles').DataTable({
+                    //"scrollY": "50px",
+                    //"scrollX": true,
+                    "searching": true,
+                    "paging": true,
+                    //"autoWidth": true,
+                    "info": true,
+                    stateSave: false,
+                    "columnDefs": [
+                        {"width": "02%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
+                        {"width": "05%", "targets": 1, "type": "string", "visible": false},
+                        {"width": "07%", "targets": 2, "type": "string", "visible": false},
+                        {"width": "03%", "targets": 4, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 5, "type": "string", "visible": false},
+                        {"width": "05%", "targets": 6, "type": "num-fmt", "visible": true},
+                        {"width": "05%", "targets": 7, "type": "num-fmt", "visible": true},
+                        {"width": "10%", "targets": 8, "type": "string", "visible": true, "searchable": false}
+                    ]
+                });
+
+                $('a.toggle-vis').on('click', function (e) {
+                    e.preventDefault();
+                    var column = table.column($(this).attr('data-column'));
+                    column.visible(!column.visible());
+                });
+
+                table.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
             });
-        });
-    </script>
+        </script>
+    @endif
 @endsection
 
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
