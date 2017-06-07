@@ -42,7 +42,7 @@
                         </tr>
                     @else
                         @foreach( $data as $item )
-                            <tr class="odd gradeA">
+                            <tr ondblclick="window.open('{{ Route('magas.magasin',['p_id'=>$item->id_magasin]) }}');">
                                 <td>{{ $loop->index+1 }}</td>
                                 <td>{{ $item->libelle }}</td>
                                 <td>{{ $item->ville }}</td>
@@ -65,7 +65,7 @@
                                             </li>
                                             <li>
                                                 <a onclick="return confirm('Êtes-vous sure de vouloir effacer la categorie: {{ $item->libelle }} ?')"
-                                                   href="{{ Route('magas.delete',['p_table' => 'agents' , 'p_id' => $item->id_agent ]) }}"
+                                                   href="#"
                                                    title="effacer"><i class="glyphicon glyphicon-trash"></i>
                                                     Effacer</a>
                                             </li>

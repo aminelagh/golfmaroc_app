@@ -14,8 +14,7 @@ Route::get('/home', function () {
 });
 
 Route::get('/s', function () {
-
-
+    dump(session()->all());
 });
 
 /***************************************
@@ -65,10 +64,18 @@ Route::group(['middleware' => 'magas'], function () {
 
     //Magasin ----------------------------------------------------------------------------------------------------------
     Route::get('/magas/magasins', 'MagasController@magasins')->name('magas.magasins');
-    Route::get('/magas/magasin/{p_id}', 'MagasController@magasin')->name('magas.magasin');
+    Route::get('/magas/magasin', 'MagasController@main_magasin')->name('magas.main_agasin');
+    Route::get('/magas/magasin/{p_id?}', 'MagasController@magasin')->name('magas.magasin');
     Route::get('/magas/addMagasin', 'AddController@addMagasin')->name('magas.addMagasin');
     Route::post('/magas/submitAddMagasin', 'AddController@submitAddMagasin')->name('magas.submitAddMagasin');
     Route::post('/magas/submitUpdateMagasin', 'UpdateController@submitUpdateMagasin')->name('magas.submitUpdateMagasin');
+    //------------------------------------------------------------------------------------------------------------------
+
+    //Magasin ----------------------------------------------------------------------------------------------------------
+    Route::get('/magas/stocks/{p_id}', 'StockController@stocks')->name('magas.stocks');
+    Route::get('/magas/stock/{p_id}', 'StockController@stock')->name('magas.stock');
+    Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
+    Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
     //------------------------------------------------------------------------------------------------------------------
 
 });
@@ -150,22 +157,8 @@ Route::get('/export/{p_table}', 'ExcelController@export')->name('export');
 
 
 /**************************************
- * Routes AddForm et SubmitAdd
- ***************************************/
-/*
-Route::get('/admin/add/{p_table}', 'AddController@addForm')->name('admin.add');
-Route::post('/admin/submitAdd/{p_table}', 'AddController@submitAdd')->name('admin.submitAdd');
-
-Route::get('/direct/add/{p_table}', 'AddController@addForm')->name('direct.add');
-Route::post('/direct/submitAdd/{p_table}', 'AddController@submitAdd')->name('direct.submitAdd');
-
-Route::get('/magas/add/{p_table}', 'AddController@addForm')->name('magas.add');
-Route::post('/magas/submitAdd/{p_table}', 'AddController@submitAdd')->name('magas.submitAdd');
-/******************************************************************************/
-
-/**************************************
  * Routes Update
- ***************************************/
+ ***************************************
 Route::get('/admin/update/{p_table}/{p_id}', 'UpdateController@updateForm')->name('admin.update');
 Route::post('/admin/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->name('admin.submitUpdate');
 
@@ -178,27 +171,16 @@ Route::post('/magas/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->n
 
 /**************************************
  * Routes Delete
- ***************************************/
+ ***************************************
 
 Route::get('/direct/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('direct.delete');
 Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('magas.delete');
 /******************************************************************************/
 
-/*****************************************
- * Routes Lister et infos
- *****************************************/
-Route::get('/direct/info/{p_table}/{p_id}', 'ShowController@info')->name('direct.info');
-Route::get('/admin/info/{p_table}/{p_id}', 'ShowController@info')->name('admin.info');
-Route::get('/magas/info/{p_table}/{p_id}', 'ShowController@info')->name('magas.info');
-
-Route::get('/admin/lister/{p_table}', 'ShowController@lister')->name('admin.lister');
-Route::get('/direct/lister/{p_table}', 'ShowController@lister')->name('direct.lister');
-Route::get('/magas/lister/{p_table}', 'ShowController@lister')->name('magas.lister');
-/*******************************************************************************/
 
 /****************************************
  * Routes gestion des Stocks
- *****************************************/
+ *****************************************
 Route::get('/direct/addStock/{p_id_magasin}', 'StockController@addStock')->name('direct.addStock');
 Route::post('/direct/submitAddStock', 'StockController@submitAddStock')->name('direct.submitAddStock');
 

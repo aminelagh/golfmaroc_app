@@ -68,7 +68,7 @@
                                             </li>
                                             <li>
                                                 <a onclick="return confirm('Êtes-vous sure de vouloir effacer le fournisseur: {{ $item->code }} - {{ $item->libelle }} ?')"
-                                                   href="{{ Route('magas.delete',['p_table' => 'agents' , 'p_id' => $item->id_agent ]) }}"
+                                                   href="#"
                                                    title="effacer"><i class="glyphicon glyphicon-trash"></i>
                                                     Effacer</a>
                                             </li>

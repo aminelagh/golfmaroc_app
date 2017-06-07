@@ -76,4 +76,71 @@ class Article extends Model
             return true;
     }
 
+    public static function getDesigntion($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->designation;
+        else return null;
+    }
+    public static function getMarque($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return Marque::getLibelle($data->id_marque);
+        else return null;
+    }
+    public static function getCategorie($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return Marque::getLibelle($data->id_categorie);
+        else return null;
+    }
+    public static function getFournisseur($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return Marque::getLibelle($data->id_fournisseur);
+        else return null;
+    }
+
+    public static function getPrix($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->prix_v;
+        else return null;
+    }
+    public static function getSexe($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->sexe;
+        else return null;
+    }
+    public static function getCode($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->code;
+        else return null;
+    }
+    public static function getRef($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->ref;
+        else return null;
+    }
+    public static function getAlias($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->alias;
+        else return null;
+    }
+
+
+
 }

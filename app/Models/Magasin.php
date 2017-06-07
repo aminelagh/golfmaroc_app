@@ -31,6 +31,14 @@ class Magasin extends Model
         else return null;
     }
 
+    public static function getVille($p_id)
+    {
+        $data = self::find($p_id);
+        if ($data != null)
+            return $data->ville;
+        else return null;
+    }
+
     public static function Exists($libelle)
     {
         $data = self::where('libelle', $libelle)->get()->first();

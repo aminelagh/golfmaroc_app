@@ -137,7 +137,6 @@ class UpdateController extends Controller
         $prix_v = request()->get('prix_v');
 
 
-
         if (Article::CodeExistForUpdate($id_article, $code))
             return redirect()->back()->withInput()->with('alert_warning', "Le code: <b>" . $code . "</b> existe deja.");
 
@@ -177,10 +176,13 @@ class UpdateController extends Controller
 
     public function submitUpdateMagasin()
     {
-        /*if (Magasin::Exists('libelle', request()->get('libelle')))
-            return redirect()->back()->withInput()->with("alert_warning", "Le magasin <b>" . request()->get('libelle') . "</b> existe déjà.");*/
+        $libelle = request()->get('libelle');
+        $id_magasin = request()->get('id_magasin');
 
-        $item = Magasin::find(request()->get('id_magasin'));
+        if (Magasin::ExistForUpdate($id_magasin, $libelle))
+            return redirect()->back()->withInput()->with("alert_warning", "Le magasin <b>" . $libelle . "</b> existe déjà.");
+
+        $item = Magasin::find($id_magasin);
         $item->update([
             'libelle' => request()->get('libelle'),
             'ville' => request()->get('ville'),
@@ -188,10 +190,8 @@ class UpdateController extends Controller
             'email' => request()->get('email'),
             'telephone' => request()->get('telephone'),
             'adresse' => request()->get('adresse'),
-            'description' => request()->get('description')
         ]);
-        return redirect()->route('magas.info', ['p_tables' => 'magasins', 'id' => request()->get('id_magasin')])->with('alert_success', 'Modification du magasin reussi.');
+        return redirect()->back()->withInput()->with('alert_success', 'Modification du magasin reussi.');
     }
-
 
 }

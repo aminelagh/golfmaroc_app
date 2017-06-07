@@ -25,12 +25,15 @@ use \Exception;
 
 class AddController extends Controller
 {
-    /********************************************************
-     * Afficher les formulaires et valider l'ajout
-     *********************************************************/
+
     public function addMarque()
     {
         return view('Espace_Magas.add-marque-form');
+    }
+
+    public function addMagasin()
+    {
+        return view('Espace_Magas.add-magasin-form');
     }
 
     public function addCategorie()
@@ -173,7 +176,7 @@ class AddController extends Controller
         $prix_v = request()->get('prix_v');
 
 
-        if (Article::CodeExists($code) ) {
+        if (Article::CodeExists($code)) {
             return redirect()->back()->withInput()->with('alert_warning', "le code " . $code . " est deja utilisé pour un autre article");
         }
 
@@ -216,11 +219,10 @@ class AddController extends Controller
 
     }
 
-
-    //Valider l'ajout de : Magasin
     public function submitAddMagasin()
     {
-        if (Magasin::Exists('libelle', request()->get('libelle')))
+        $libelle = request()->get('libelle');
+        if (Magasin::Exists($libelle))
             return redirect()->back()->withInput()->with("alert_warning", "Le magasin <b>" . request()->get('libelle') . "</b> existe déjà.");
 
         $item = new Magasin;
@@ -239,7 +241,6 @@ class AddController extends Controller
         return redirect()->back()->with('alert_success', "Le Magasin <b>" . request()->get('libelle') . "</b> a bien été ajouté");
 
     }
-
 
 
     //Valider la creation des promotions

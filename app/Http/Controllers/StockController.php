@@ -21,6 +21,30 @@ use \Exception;
 
 class StockController extends Controller
 {
+    public function stocks($p_id)
+    {
+        $data = Stock::where('id_magasin', $p_id)->get();
+        if ($data->isEmpty())
+            return redirect()->route('magas.addStock', ['p_id' => $p_id])->with('alert_info',"Le stock de ce magasin est vide, vous pouvez commencer par le créer.")->with('route',"magas.home");
+        //view('Espace_Magas.add-stock-form')->with('alert_info',"Le stock de ce magasin est vide mais vous pouvez le créer immédiatement");//->back()->withInput()->with('alert_warning', 'Le stock de ce magasin est vide.');
+        else
+            return view('Espace_Magas.liste-stocks')->withData($data);
+    }
+
+    public function addStock($p_id)
+    {
+        $magasin = Magasin::find($p_id);
+        $articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
+
+        if ($magasin == null)
+            return redirect()->back()->withInput()->with('alert_warning', "Le magasin choisi n'existe pas.");
+
+        if ($articles == null)
+            return redirect()->back()->withInput()->with('alert_warning', "La base de données des articles est vide, veuillez ajouter les articles avant de procéder à la création des stocks.");
+
+        return view('Espace_Magas.add-stock-form')->withMagasin($magasin)->withArticles($articles);
+    }
+
 
     /*****************************************************************************
      * Lister Stocks
@@ -29,7 +53,7 @@ class StockController extends Controller
     {
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data->isEmpty())
-            return redirect()->back()->withInput()->with('alert_warning', 'Le stock de ce magasin est vide.');
+            return redirect()->back()->withInput()->with('alert_warning', "Le stock de ce magasin est vide.");
         else
             return view('Espace_Magas.liste-stocks')->with('data', $data);
     }
@@ -37,7 +61,7 @@ class StockController extends Controller
     /*****************************************************************************
      * Afficher le fomulaire d'ajout pour le stock
      *****************************************************************************/
-    public function addStock($p_id_magasin)
+    public function addStockaa($p_id_magasin)
     {
         $magasin = Magasin::where('id_magasin', $p_id_magasin)->first();        //$articles = Article::all();
 

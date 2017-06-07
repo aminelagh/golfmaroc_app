@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
+use App\Models\Stock;
 use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\Fournisseur;
@@ -16,6 +17,7 @@ class MagasController extends Controller
     public function home()
     {
         return view('Espace_Magas.dashboard');
+        //->with('alert_info',"Le stock de ce magasin est vide, vous pouvez commencer par le créer.")->with('route',"magas.home")->withFrom('bottom');
     }
 
     /********************************************************
@@ -57,7 +59,7 @@ class MagasController extends Controller
 
     public function magasins()
     {
-        $data = Magasin::where('deleted', false)->get();
+        $data = Magasin::where('deleted', false)->where('id_magasin','!=',1)->get();
         return view('Espace_Magas.liste-magasins')->withData($data);
     }
     /******************************************************************************************************************/
@@ -121,10 +123,20 @@ class MagasController extends Controller
     public function magasin($p_id)
     {
         $data = Magasin::find($p_id);
+        $stock = Stock::where('id_magasin',$p_id)->get();
+
         if ($data == null)
             return redirect()->back()->with('alert_warning', "Le magasin choisi n'existe pas.");
 
-        return view('Espace_Magas.info-magasin')->withData($data);
+        return view('Espace_Magas.info-magasin')->withData($data)->withStock($stock);
+    }
+
+    public function main_magasin()
+    {
+        $data = Magasin::find(1);
+        $stock = Stock::where('id_magasin',1)->get();
+
+        return view('Espace_Magas.info-main_magasin')->withData($data)->withStock($stock);
     }
 
 

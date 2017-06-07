@@ -7,7 +7,15 @@
             </li>
 
             <li>
-                <a href="{{ Route('magas.magasins') }}"><i class="fa fa-dashboard fa-fw"></i> Magasins</a>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des magasins <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="{{ Route('magas.magasin') }}">Magasin principal</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.magasins') }}">Autres magasins</a>
+                    </li>
+                </ul>
             </li>
 
             <li>

@@ -1,16 +1,14 @@
 @extends('layouts.main_master')
 
-@section('title') Magasin: {{ $data->libelle }} @endsection
+@section('title'){{ $data->libelle }} @endsection
 
 @section('main_content')
 
-    <h3 class="page-header">Magasin</h3>
+    <h3 class="page-header">Magasin principal</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item"><a href="{{ route('magas.magasins') }}">Liste
-                des magasins</a></li>
         <li class="breadcrumb-item active">{{ $data->libelle  }}</li>
     </ol>
 
@@ -19,8 +17,6 @@
     <div class="row">
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
-
-            {!! setNavigation("magas","magasin",$data->id_magasin) !!}
 
             <form method="POST" action="{{ route('magas.submitUpdateMagasin') }}">
                 {{ csrf_field() }}

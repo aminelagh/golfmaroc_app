@@ -38,6 +38,7 @@ class AuthController extends Controller
 
         if (Sentinel::check()) {
             Session::put('id_user', $user->id);
+            Session::put('role', $this->getRole());
             Session::put('id_magasin', $user->id_magasin);
             Session::put('email', $user->email);
             Session::put('nom', $user->nom);
@@ -51,6 +52,7 @@ class AuthController extends Controller
     public function logout()
     {
         Sentinel::logout(null, true);
+        Session::flush();
         return redirect()->route('login');
     }
 
@@ -65,5 +67,17 @@ class AuthController extends Controller
             return redirect()->route('magas.home');
         else if (Sentinel::inRole('vend'))
             return redirect()->route('vend.home');
+    }
+
+    public function getRole()
+    {
+        if (Sentinel::inRole('admin'))
+            return "admin";
+        else if (Sentinel::inRole('direct'))
+            return "direct";
+        else if (Sentinel::inRole('magas'))
+            return "magas";
+        else if (Sentinel::inRole('vend'))
+            return "vend";
     }
 }

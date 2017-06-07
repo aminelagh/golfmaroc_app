@@ -1,17 +1,21 @@
 @extends('layouts.main_master')
 
-@section('title') Magasin: {{ $data->libelle }} @endsection
+@section('title') Stock: {{ $data->libelle }} @endsection
 
 @section('main_content')
 
-    <h3 class="page-header">Magasin</h3>
+    <h3 class="page-header">Stock du magasin {{ \App\Models\Magasin::getLibelle($data->id_magasin) }} de la
+        ville {{ \App\Models\Magasin::getVille($data->id_magasin) }}</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
         <li class="breadcrumb-item"><a href="{{ route('magas.magasins') }}">Liste
-                des magasins</a></li>
-        <li class="breadcrumb-item active">{{ $data->libelle  }}</li>
+                des marques</a></li>
+        <li class="breadcrumb-item"><a
+                    href="{{ route('magas.magasin',['p_id'=>$data->id_magasin]) }}">{{ \App\Models\Magasin::getLibelle($data->id_magasin) }}</a>
+        </li>
+        <li class="breadcrumb-item active">Stock</li>
     </ol>
 
     @include('layouts.alerts')
@@ -20,12 +24,12 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("magas","magasin",$data->id_magasin) !!}
+            {!! setNavigation("magas","marque",$data->id_marque) !!}
 
-            <form method="POST" action="{{ route('magas.submitUpdateMagasin') }}">
+            <form method="POST" action="{{ route('magas.submitUpdateMarque') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
+                <input type="hidden" name="id_marque" value="{{ $data->id_marque }}">
 
-                <input type="hidden" name="id_magasin" value="{{ $data->id_magasin }}">
 
                 <div class="panel panel-default">
                     <div class="panel-heading" align="center">
@@ -36,44 +40,28 @@
                         <table class="table table-hover" border="0" cellspacing="0" cellpadding="5">
 
                             <tr>
-                                <td>Magasin</td>
-                                <th><input class="form-control" type="text" name="libelle" value="{{ $data->libelle }}"
-                                           placeholder="Magasin">
+                                <td>Marque</td>
+                                <th><input class="form-control" type="text" name="libelle" value="{{ $data->libelle }}">
                                 </th>
                             </tr>
-                            <tr>
-                                <td>Ville</td>
-                                <th><input class="form-control" type="text" name="ville" value="{{ $data->ville }}"
-                                           placeholder="Ville">
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>Adresse</td>
-                                <th><input class="form-control" type="text" name="adresse" value="{{ $data->adresse }}"
-                                           placeholder="Adresse">
-                                </th>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr>
-                                <td>Agent</td>
-                                <th><input class="form-control" type="text" name="agent" value="{{ $data->agent }}"
-                                           placeholder="Agent">
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>Telephone</td>
-                                <th><input class="form-control" type="text" name="telephone"
-                                           value="{{ $data->telephone }}" placeholder="Telephone">
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>Email</td>
-                                <th><input class="form-control" type="email" name="email" value="{{ $data->email }}"
-                                           placeholder="Email">
-                                </th>
-                            </tr>
+                            @if($data->image!=null)
+                                <tr>
+                                    <td>Image</td>
+                                    <td>
+                                        <img src="{{ asset($data->image) }}" height="70" width="80">
+                                        <input type='file' id="imageInput" name="image"
+                                               {!! setPopOver("Image","Cliquez ici pour choisir la nouvelle image") !!} }}/>
+                                    </td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>Image</td>
+                                    <td>
+                                        <input type='file' id="imageInput" name="image"
+                                               {!! setPopOver("Image","Cliquez ici pour choisir la nouvelle image") !!} }}/>
+                                    </td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td>Date de creation</td>
                                 <th>{{ getDateHelper($data->created_at) }}
@@ -91,10 +79,6 @@
                                class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
                         <input type="reset" value="Réinitialiser"
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
-
-                        <a href="{{ Route('magas.stocks',['p_id'=>$data->id_magasin]) }}"
-                           class="btn btn-outline btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
-                            le stock</a>
                     </div>
                 </div>
 
@@ -103,7 +87,7 @@
         <div class="col-lg-1"></div>
     </div>
 
-    @if( !$stock->isEmpty() )
+    @if( !$articles->isEmpty() )
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -134,7 +118,8 @@
                                     <th> Designation</th>
                                     <th> Couleur</th>
                                     <th> Sexe</th>
-                                    <th> Prix</th>
+                                    <th> Prix d'achat (HT)</th>
+                                    <th> Prix de vente (TTC)</th>
                                     <th> Actions</th>
                                 </tr>
                                 </thead>
@@ -146,7 +131,8 @@
                                     <th>Designation</th>
                                     <th>Couleur</th>
                                     <th>Sexe</th>
-                                    <th>Prix</th>
+                                    <th title="prix HT">Prix d'achat</th>
+                                    <th>Prix de vente</th>
                                     <th></th>
                                 </tr>
                                 </tfoot>
@@ -257,7 +243,7 @@
 @endsection
 
 @section('scripts')
-    @if( !$stock->isEmpty() )
+    @if( !$articles->isEmpty() )
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell
@@ -292,7 +278,8 @@
                         {"width": "03%", "targets": 4, "type": "string", "visible": false},
                         {"width": "06%", "targets": 5, "type": "string", "visible": false},
                         {"width": "05%", "targets": 6, "type": "num-fmt", "visible": true},
-                        {"width": "10%", "targets": 7, "type": "string", "visible": true, "searchable": false}
+                        {"width": "05%", "targets": 7, "type": "num-fmt", "visible": true},
+                        {"width": "10%", "targets": 8, "type": "string", "visible": true, "searchable": false}
                     ]
                 });
 
