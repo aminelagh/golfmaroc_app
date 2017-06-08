@@ -15,7 +15,6 @@
                 </ol>
 
 
-            @include('layouts.alerts')
 
             <!-- Table responsive -->
                 <div class="table-responsive">

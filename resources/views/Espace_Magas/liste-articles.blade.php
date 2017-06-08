@@ -12,7 +12,7 @@
         <li class="breadcrumb-item active">Liste des articles</li>
     </ol>
 
-    @include('layouts.alerts')
+
 
     <!-- Table -->
     <div class="table-responsive">

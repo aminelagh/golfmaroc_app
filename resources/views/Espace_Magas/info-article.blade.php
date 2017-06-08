@@ -14,7 +14,6 @@
         <li class="breadcrumb-item active">{{ $data->designation  }}</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <div class="row">
         <div class="col-lg-1"></div>

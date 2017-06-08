@@ -10,12 +10,12 @@
                     <strong>{{ getChamp('magasins','id_magasin',$data->first()->id_magasin, 'libelle')  }}</strong></h1>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="{{ Route('magas.lister',['p_table' => 'magasins' ]) }}">Liste des magasins</a> </li>
+                    <li class="breadcrumb-item active"><a href="{{ Route('magas.lister',['p_table' => 'magasins' ]) }}">Liste
+                            des magasins</a></li>
                     <li class="breadcrumb-item">{{ getChamp('magasins','id_magasin',$data->first()->id_magasin, 'libelle')  }}</li>
                     <li class="breadcrumb-item active">Stock du magasin</li>
                 </ol>
 
-                @include('layouts.alerts')
 
                 <div class="row">
                     <div class="table-responsive">
@@ -79,7 +79,8 @@
                                                 <!--a href=" Route('magas.info',['p_table'=> 'magasins' , 'p_id' => $item->id_magasin  ]) }}"
                                                    title="detail"><i class="glyphicon glyphicon-eye-open"></i></a-->
                                                 <a data-toggle="modal" data-target="#myModal{{ $loop->index+1 }}"><i
-                                                            class="glyphicon glyphicon-info-sign" aria-hidden="false"></i></a>
+                                                            class="glyphicon glyphicon-info-sign"
+                                                            aria-hidden="false"></i></a>
                                             </td>
 
                                             {{-- Modal (pour afficher les details de chaque article) --}}
@@ -104,27 +105,38 @@
                                                             </p>
                                                             <hr>
                                                             <p>
-                                                                <b>numero :</b> {{ getChamp("articles", "id_article",  $item->id_article , "num_article")  }}
+                                                                <b>numero
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "num_article")  }}
                                                             </p>
                                                             <p><b>code a
-                                                                    barres :</b> {{ getChamp("articles", "id_article",  $item->id_article , "code_barre")  }}
+                                                                    barres
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "code_barre")  }}
                                                             </p>
                                                             <p>
-                                                                <b>Taille :</b> {{ getChamp("articles", "id_article",  $item->id_article , "taille")  }}
+                                                                <b>Taille
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "taille")  }}
                                                             </p>
                                                             <p>
-                                                                <b>Couleur :</b> {{ getChamp("articles", "id_article",  $item->id_article , "couleur")  }}
+                                                                <b>Couleur
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "couleur")  }}
                                                             </p>
                                                             <p>
-                                                                <b>sexe :</b> {{ getChamp("articles", "id_article",  $item->id_article , "sexe") }}
+                                                                <b>sexe
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "sexe") }}
                                                             </p>
                                                             <p><b>Prix
-                                                                    d'achat :</b> {{ getChamp("articles", "id_article",  $item->id_article , "prix_achat")  }} DH
+                                                                    d'achat
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "prix_achat")  }}
+                                                                DH
                                                             </p>
                                                             <p><b>Prix de
-                                                                    vente :</b> {{ getChamp("articles", "id_article",  $item->id_article , "prix_vente")  }} DH
+                                                                    vente
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "prix_vente")  }}
+                                                                DH
                                                             </p>
-                                                            <p><b>Description :</b> {{ getChamp("articles", "id_article",  $item->id_article , "designation_l")  }}</p>
+                                                            <p><b>Description
+                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "designation_l")  }}
+                                                            </p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button"
@@ -149,10 +161,10 @@
                     <a href="{{ Route('magas.addStock',['p_id_magasin' => $data->first()->id_magasin ]) }}"
                        type="button"
                        class="btn btn-outline btn-info" {!! setPopOver("","Ajouter des nouveaux articles au stock de ce magasin") !!}>
-                      <i class="glyphicon glyphicon-plus "></i>  Ajouter des articles</a>
+                        <i class="glyphicon glyphicon-plus "></i> Ajouter des articles</a>
                     <a href="{{ Route('magas.supplyStock',[ 'p_id_magasin' => $data->first()->id_magasin ]) }}"
                        type="button" class="btn btn-outline btn-default" {!! setPopOver("","Alimenter le stock ") !!}>
-                      <i class="glyphicon glyphicon-plus "></i>   Alimenter le Stock </a>
+                        <i class="glyphicon glyphicon-plus "></i> Alimenter le Stock </a>
                 </div>
 
             </div>

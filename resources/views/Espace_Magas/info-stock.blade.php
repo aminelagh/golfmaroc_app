@@ -18,7 +18,6 @@
         <li class="breadcrumb-item active">Stock</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <div class="row">
         <div class="col-lg-1"></div>

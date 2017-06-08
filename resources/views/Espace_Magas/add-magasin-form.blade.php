@@ -15,7 +15,6 @@
         <li class="breadcrumb-item active">Création d'un magasin</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <form role="form" method="post" action="{{ Route('magas.submitAddMagasin') }}">
         {{ csrf_field() }}

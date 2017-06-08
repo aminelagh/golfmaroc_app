@@ -15,7 +15,6 @@
         <li class="breadcrumb-item active">Création d'une categorie</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <form role="form" method="post" action="{{ Route('magas.submitAddCategorie') }}">
         {{ csrf_field() }}

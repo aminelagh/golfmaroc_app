@@ -11,7 +11,7 @@
         <li class="breadcrumb-item active">Liste des marques</li>
     </ol>
 
-    @include('layouts.alerts')
+
 
     <div class="row">
         <div class="table-responsive">

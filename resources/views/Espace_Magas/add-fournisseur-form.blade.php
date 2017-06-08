@@ -15,7 +15,6 @@
         <li class="breadcrumb-item active">Création d'un fournisseur</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <form role="form" method="post" action="{{ Route('magas.submitAddFournisseur') }}">
         {{ csrf_field() }}

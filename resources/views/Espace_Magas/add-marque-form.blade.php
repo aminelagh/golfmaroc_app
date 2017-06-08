@@ -13,7 +13,6 @@
         <li class="breadcrumb-item active">Création d'une marque</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <form role="form" method="post" enctype="multipart/form-data"
           action="{{ Route('magas.submitAddMarque') }}">

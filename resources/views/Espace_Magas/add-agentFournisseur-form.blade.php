@@ -17,8 +17,6 @@
         <li class="breadcrumb-item active">Création d'un agent</li>
     </ol>
 
-    @include('layouts.alerts')
-
     <form role="form" method="post" action="{{ Route('magas.submitAddAgent') }}">
         {{ csrf_field() }}
 

@@ -9,12 +9,10 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item active">Gestion des Articles</li>
-        <li class="breadcrumb-item"><a href="{{ Route('magas.lister',['p_table' => 'articles' ]) }}">Liste
+        <li class="breadcrumb-item"><a href="{{ Route('magas.articles') }}">Liste
                 des articles</a></li>
         <li class="breadcrumb-item active">Création d'un Article</li>
     </ol>
-
-    @include('layouts.alerts')
 
     <div class="panel panel-default">
         <div class="panel-heading">

@@ -14,7 +14,6 @@
         <li class="breadcrumb-item active">Creation du stock</li>
     </ol>
 
-    @include('layouts.alerts')
 
     <div class="row">
         @if( !$articles->isEmpty() )
