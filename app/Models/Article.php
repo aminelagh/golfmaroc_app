@@ -54,15 +54,15 @@ class Article extends Model
 
     public static function hasNonValideArticles()
     {
-        $data = self::where('valide',false)->where('deleted',false)->get();
-        if($data->isEmpty() )
+        $data = self::where('valide', false)->where('deleted', false)->get();
+        if ($data->isEmpty())
             return false;
         else return true;
     }
 
     public static function nonValideArticles()
     {
-        $data = self::where('valide',false)->where('deleted',false)->get();
+        $data = self::where('valide', false)->where('deleted', false)->get();
         return $data;
 
     }
@@ -76,13 +76,7 @@ class Article extends Model
             return true;
     }
 
-    public static function getDesigntion($p_id)
-    {
-        $data = self::where('id_article', $p_id)->get()->first();
-        if ($data != null)
-            return $data->designation;
-        else return null;
-    }
+
     public static function getMarque($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -90,6 +84,7 @@ class Article extends Model
             return Marque::getLibelle($data->id_marque);
         else return null;
     }
+
     public static function getCategorie($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -97,6 +92,7 @@ class Article extends Model
             return Marque::getLibelle($data->id_categorie);
         else return null;
     }
+
     public static function getFournisseur($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -105,20 +101,14 @@ class Article extends Model
         else return null;
     }
 
-    public static function getPrix($p_id)
+    public static function getDesigntion($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
-            return $data->prix_v;
+            return $data->designation;
         else return null;
     }
-    public static function getSexe($p_id)
-    {
-        $data = self::where('id_article', $p_id)->get()->first();
-        if ($data != null)
-            return $data->sexe;
-        else return null;
-    }
+
     public static function getCode($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -126,6 +116,7 @@ class Article extends Model
             return $data->code;
         else return null;
     }
+
     public static function getRef($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -133,6 +124,7 @@ class Article extends Model
             return $data->ref;
         else return null;
     }
+
     public static function getAlias($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -141,6 +133,37 @@ class Article extends Model
         else return null;
     }
 
+    public static function getSexe($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->sexe;
+        else return null;
+    }
+
+    public static function getCouleur($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->couleur;
+        else return null;
+    }
+
+    public static function getPrixTTC($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return number_format(($data->prix_v * 1.2), 2);
+        else return null;
+    }
+
+    public static function getPrixHT($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->prix_v;
+        else return null;
+    }
 
 
 }

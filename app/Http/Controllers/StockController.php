@@ -24,8 +24,10 @@ class StockController extends Controller
     public function stocks($p_id)
     {
         $data = Stock::where('id_magasin', $p_id)->get();
+        $articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
+
         if ($data->isEmpty())
-            return redirect()->route('magas.addStock', ['p_id' => $p_id])->with('alert_info',"Le stock de ce magasin est vide, vous pouvez commencer par le créer.")->with('route',"magas.home");
+            return redirect()->route('magas.addStock', ['p_id' => $p_id])->with('alert_info', "Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
         //view('Espace_Magas.add-stock-form')->with('alert_info',"Le stock de ce magasin est vide mais vous pouvez le créer immédiatement");//->back()->withInput()->with('alert_warning', 'Le stock de ce magasin est vide.');
         else
             return view('Espace_Magas.liste-stocks')->withData($data);
@@ -44,6 +46,63 @@ class StockController extends Controller
 
         return view('Espace_Magas.add-stock-form')->withMagasin($magasin)->withArticles($articles);
     }
+
+    public function submitAddStock(Request $request)
+    {
+        return Stock::addStock($request);
+
+/*
+        //array des element du formulaire
+        $id_article = request()->get('id_article');
+        $designation = request()->get('designation');
+        $quantite_min = request()->get('quantite_min');
+        $quantite_max = request()->get('quantite_max');
+
+        $error = "";
+        $alert2 = "";
+        $hasError = false;
+        $error2 = false;
+        $nbre_articles = 0;
+
+        for ($i = 1; $i <= count($id_article); $i++) {
+            //verifier si l utilisateur n a pas saisi les quantites min ou Max
+            if ($quantite_min[$i] == null || $quantite_max[$i] == null) continue;
+
+            if ($quantite_min[$i] >= $quantite_max[$i])
+            {
+                $hasError = true;
+                $error = $error."<li>Quantite min > Quantite max pour l'article numero $i: <b>" . $designation[$i] . "</b>";
+                //return redirect()->back()->withInput()->withAlertWarning("Quantite min > Quantite max pour l'article numero $i: <b>" . $designation[$i] . "</b>")->withalignWarning("right")->withTimerWarning(6000);
+            }
+
+
+            if ($quantite_min[$i] <= $quantite_max[$i]) {
+                $item = new Stock;
+                $item->id_magasin = $id_magasin;
+                $item->id_article = $id_article[$i];
+                $item->quantite_min = $quantite_min[$i];
+                $item->quantite_max = $quantite_max[$i];
+
+                try {
+                    //$item->save();
+                    $nbre_articles++;
+                } catch (Exception $e) {
+                    $alert2 = $alert2 . "<li>Erreur d'ajout de l'article: <b>" . $designation[$i] . "</b> <br>Message d'erreur: " . $e->getMessage() . ". ";
+                }
+            }
+        }
+
+
+        if ($hasError)
+            return redirect()->back()->withInput()->withAlertWarning($error)->withalignWarning("right")->withTimerWarning(10000);
+        else {
+            if ($nbre_articles > 1)
+                return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' article.');
+            else
+                return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' articles.');
+        }*/
+    }
+
 
 
     /*****************************************************************************
@@ -79,81 +138,14 @@ class StockController extends Controller
             return view('Espace_Magas.add-stock_Magasin-form')->with(['articles' => $articles, 'magasin' => $magasin]);
     }
 
-    /*****************************************************************************
-     * Valider l'ajout des articles au stock d'un magasin
-     *****************************************************************************/
-    public function submitAddStock()
-    {
-        //id du magasin
-        $id_magasin = request()->get('id_magasin');
-
-        //array des element du formulaire
-        $id_article = request()->get('id_article');
-        $designation_c = request()->get('designation_c');
-        //$quantite    = request()->get('quantite');
-        $quantite_min = request()->get('quantite_min');
-        $quantite_max = request()->get('quantite_max');
-
-        $alert1 = "";
-        $alert2 = "";
-        $error1 = false;
-        $error2 = false;
-        $nbre_articles = 0;
-
-        echo "quantite_min";
-        dump($quantite_min);
-
-        echo "id_article";
-        dump($id_article);
-        return 'a';
-
-        for ($i = 1; $i <= count($id_article); $i++) {
-            //verifier si l utilisateur n a pas saisi les quantites min ou Max
-            if ($quantite_min[$i] == null || $quantite_max[$i] == null) continue;
-
-            if ($quantite_min[$i] > $quantite_max[$i]) {
-                $alert1 = $alert1 . "<li><b>" . $designation_c[$i] . "</b>: Quantite min superieur a la quantité max.";
-                $error1 = true;
-            }
-
-            if ($quantite_min[$i] <= $quantite_max[$i] && $quantite_min[$i] != null && $quantite_max[$i] != null) {
-                $item = new Stock;
-                $item->id_magasin = $id_magasin;
-                $item->id_article = $id_article[$i];
-                $item->quantite = 0;
-                $item->quantite_min = $quantite_min[$i];
-                $item->quantite_max = $quantite_max[$i];
-
-                try {
-                    $item->save();
-                    $nbre_articles++;
-                } catch (Exception $e) {
-                    $error2 = true;
-                    $alert2 = $alert2 . "<li>Erreur d'ajout de l'article: <b>" . $designation_c[$i] . "</b> Message d'erreur: " . $e->getMessage() . ". ";
-                }
-            }
-        }
-
-        if ($error1)
-            back()->withInput()->with('alert_warning', $alert1);
-        if ($error2)
-            back()->withInput()->with('alert_danger', $alert2);
-
-        if ($error1 || $error2)
-            return redirect()->back()->withInput();
-        else {
-            if ($nbre_articles > 1)
-                return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' aticle.');
-            else
-                return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' articles.');
-        }
-    }
 
     /*****************************************************************************
      * Afficher le formulaire d'alimentation de stock (liste du stock )
      ******************************************************************************/
-    public function stockIN($p_id_magasin)
+    public function stockIN($p_id)
     {
+        return 'StockController@StockIN';
+
         //procedure pour recuperer le stock d'un magasin
         $data = collect(DB::select("call getStockForSupply(" . $p_id_magasin . ");"));
         $magasin = Magasin::where('id_magasin', $p_id_magasin)->first();
@@ -167,12 +159,17 @@ class StockController extends Controller
         else
             return view('Espace_Magas.supply-stock_Magasin-form')->with(['data' => $data, 'magasin' => $magasin]);
     }
+    public function StockOUT($p_id)
+    {
+        return 'StockController@StockOUT';
+    }
 
     /*****************************************************************************
      * Valider le formulaire d'alimentation de stock
      ******************************************************************************/
     public function submitStockIN()
     {
+
         $id_magasin = request()->get('id_magasin');
         //array des element du formulaire ******************
         $id_stock = request()->get('id_stock');

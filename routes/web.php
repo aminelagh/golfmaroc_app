@@ -14,7 +14,7 @@ Route::get('/home', function () {
 });
 
 Route::get('/s', function () {
-    dump(session()->all());
+    dump(session());
 });
 
 /***************************************
@@ -74,8 +74,12 @@ Route::group(['middleware' => 'magas'], function () {
     //Magasin ----------------------------------------------------------------------------------------------------------
     Route::get('/magas/stocks/{p_id}', 'StockController@stocks')->name('magas.stocks');
     Route::get('/magas/stock/{p_id}', 'StockController@stock')->name('magas.stock');
+    
     Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
     Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
+
+    Route::get('/magas/stockIN/{p_id}', 'StockController@stockIN')->name('magas.stockIN');
+    Route::get('/magas/stockOUT/{p_id}', 'StockController@stockOUT')->name('magas.stockOUT');
     //------------------------------------------------------------------------------------------------------------------
 
 });

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use \Exception;
+use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Session;
 use Sentinel;
 use Illuminate\Http\Request;
@@ -30,23 +32,30 @@ class AuthController extends Controller
 
     public function submitLogin(Request $request)
     {
+        try {
 
-        if (request()->has('remember'))
-            $user = Sentinel::authenticateAndRemember(request()->all());
-        else
-            $user = Sentinel::authenticate(request()->all());
+            if (request()->has('remember'))
+                $user = Sentinel::authenticateAndRemember(request()->all());
+            else
+                $user = Sentinel::authenticate(request()->all());
 
-        if (Sentinel::check()) {
-            Session::put('id_user', $user->id);
-            Session::put('role', $this->getRole());
-            Session::put('id_magasin', $user->id_magasin);
-            Session::put('email', $user->email);
-            Session::put('nom', $user->nom);
-            Session::put('prenom', $user->prenom);
+            if (Sentinel::check()) {
+                Session::put('id_user', $user->id);
+                Session::put('role', $this->getRole());
+                Session::put('id_magasin', $user->id_magasin);
+                Session::put('email', $user->email);
+                Session::put('nom', $user->nom);
+                Session::put('prenom', $user->prenom);
 
-            return $this->redirectToSpace();
+                return $this->redirectToSpace();
 
-        } else return redirect()->back()->with("alert_danger", "<span class=\"glyphicon glyphicon-exclamation-sign\"> login et/ou mot de passe incorrect")->withInput();
+            } else return redirect()->back()->withInput()->withAlertWarning("<b>login et/ou mot de passe incorrect</b>")->withTimerWarning(2000);
+
+        } catch (ThrottlingException $e) {
+
+            return redirect()->back()->withInput()->with('alert_success',"<b>Une activité suspecte s'est produite sur votre adresse IP, l'accès vous est refusé pour ".$e->getDelay()." seconde (s)</b>")->withTimerDanger($e->getDelay()*1000);
+
+        }
     }
 
     public function logout()

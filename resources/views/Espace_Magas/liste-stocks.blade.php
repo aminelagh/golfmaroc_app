@@ -7,13 +7,12 @@
         <div class="col-lg-12">
             <div class="row">
                 <h1 class="page-header">Stock du
-                    <strong>{{ getChamp('magasins','id_magasin',$data->first()->id_magasin, 'libelle')  }}</strong></h1>
+                    <strong>{{ \App\Models\Magasin::getLibelle($data->id_magasin)  }}</strong></h1>
+
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="{{ Route('magas.lister',['p_table' => 'magasins' ]) }}">Liste
-                            des magasins</a></li>
-                    <li class="breadcrumb-item">{{ getChamp('magasins','id_magasin',$data->first()->id_magasin, 'libelle')  }}</li>
-                    <li class="breadcrumb-item active">Stock du magasin</li>
+                    <li class="breadcrumb-item ">Gestion des magasins</li>
+                    <li class="breadcrumb-item active">{{ $data->libelle  }}</li>
                 </ol>
 
 

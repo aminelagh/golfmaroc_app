@@ -37,7 +37,7 @@
         <div class="table-responsive">
             <div class="col-lg-12">
                 {{-- *************** form ***************** --}}
-                <form role="form" method="post" action="{{ Route('magas.submitAddStock') }}">
+                <form role="form" name="myForm" id="myForm" method="post" action="{{ Route('magas.submitAddStock') }}">
                     {{ csrf_field() }}
                     <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
 
@@ -105,16 +105,16 @@
                                     <td>{{ $item->sexe }}</td>
 
                                     <td align="right">{{ $item->prix_v }} DH</td>
-                                    <td><input type="number" min="0" placeholder="Quantite Min"
+                                    <td><input type="number" min="0" placeholder="Quantite Min" width="5"
                                                name="quantite_min[{{ $loop->index+1 }}]"
                                                value="{{ old('quantite_min.'.($loop->index+1) ) }}"></td>
                                     <td><input type="number" min="0" placeholder="Quantite Max"
                                                name="quantite_max[{{ $loop->index+1 }}]"
-                                               value="{{ old('quantite_max[$loop->index+1]') }}"></td>
+                                               value="{{ old('quantite_max.'.($loop->index+1)) }}"></td>
                                     <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal"
-                                                data-target="#myModal{{ $loop->index+1 }}">Detail Article au
-                                            stock
+                                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal"
+                                                data-target="#myModal{{ $loop->index+1 }}" title="Visualiser l'article">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
                                         </button>
                                     </td>
 
@@ -126,14 +126,39 @@
                                                     <button type="button" class="close"
                                                             data-dismiss="modal">&times;
                                                     </button>
-                                                    <h4 class="modal-title">{{ $item->designation }}</h4>
+                                                    <h4 class="modal-title" align="center">
+                                                        <b>{{ $item->designation }}</b></h4>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p><b>Reference</b> {{ $item->ref }} {{ $item->alias!=null? ' - '.$item->alias : '' }}</p>
-                                                    <p><b>code</b> {{ $item->code }}</p>
-                                                    <p><b>Couleur</b> {{ $item->couleur }}</p>
-                                                    <p><b>sexe</b> {{ getSexeName($item->sexe) }}</p>
-                                                    <p><b>Prix de vente</b> {{ \App\Models\Article::getPrix_TTC($item->prix_v) }}</p>
+                                                    <p><b>code:</b> {{$item->code }}</p>
+                                                    <p>
+                                                        <b>Reference:</b> {{ $item->ref }} {{ $item->alias!=null? ' - '.$item->alias : '' }}
+                                                    </p>
+                                                    <p>
+                                                    <hr>
+                                                    </p>
+                                                    <p>
+                                                        <b>Categorie:</b> {{ \App\Models\Categorie::getLibelle($item->id_categorie) }}
+                                                    </p>
+                                                    <p>
+                                                        <b>Fournisseur:</b> {{ \App\Models\Fournisseur::getLibelle($item->id_fournisseur) }}
+                                                    </p>
+                                                    <p>
+                                                        <b>Marque:</b> {{ \App\Models\Marque::getLibelle($item->id_marque) }}
+                                                    </p>
+                                                    <p>
+                                                    <hr>
+                                                    </p>
+                                                    <p><b>Couleur:</b> {{ $item->couleur }}</p>
+                                                    <p><b>sexe:</b> {{$item->sexe }}</p>
+                                                    <p><b>Prix de
+                                                            vente</b> {{ \App\Models\Article::getPrix_TTC($item->prix_v) }}
+                                                    </p>
+
+                                                    @if($item->image!=null)
+                                                        <img src="{{ asset($item->image) }}" width="100" height="100"
+                                                             align="middle">
+                                                    @endif
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default"
@@ -164,6 +189,8 @@
             </div>
         </div>
     </div>
+    <br>
+    <hr>
 
 @endsection
 
@@ -195,30 +222,76 @@
                 });
 
                 var table = $('#example').DataTable({
+                    //"pageLength": 25,
                     "searching": true,
                     "paging": true,
-                    "info": true,
+                    //"info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
-                        {"width": "05%", "targets": 1, "type": "string", "visible": true},
+                        {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": true },//#
+                        {"width": "05%", "targets": 1, "type": "string", "visible": false},
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},
 
                         {"width": "08%", "targets": 3, "type": "string", "visible": false},
                         {"width": "08%", "targets": 4, "type": "string", "visible": false},
                         {"width": "08%", "targets": 5, "type": "string", "visible": false},
 
-                        {"width": "02%", "targets": 7, "type": "string", "visible": true},
+                        //{"width": "02%", "targets": 6, "type": "string", "visible": true},
 
-                        {"width": "06%", "targets": 8, "type": "num-fmt", "visible": false},
-                        {"width": "06%", "targets": 9, "type": "string", "visible": false},
+                        {"width": "02%", "targets": 7, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 8, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 9, "type": "num-fmt", "visible": true},
 
-                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false},
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
-                        {"width": "04%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
-                    ]
+                        {"width": "04%", "targets": 10, "visible": true, "searchable": false},
+                        {"width": "04%", "targets": 11, "visible": true, "searchable": false},
+                        {"width": "04%", "targets": 12, "visible": true, "searchable": false},
+                    ],
                 });
 
+
+
+                $('#myForm').on('submit', function(e){
+                    var form = this;
+
+                    // Encode a set of form elements from all pages as an array of names and values
+                    var params = table.$('input,select,textarea').serializeArray();
+
+                    // Iterate over all form elements
+                    $.each(params, function(){
+                        // If element doesn't exist in DOM
+                        if(!$.contains(document, form[this.name])){
+                            // Create a hidden element
+                            $(form).append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', this.name)
+                                    .val(this.value)
+                            );
+                        }
+                    });
+                });
+
+
+
+
+                /*$('#myForm').on('submit',function(e){
+                    var form = this;
+                    var rowsel = table.column(0).checkboxes.selected();
+                    $.each(rowsel, function(index, rowId){
+                        $(form).append(
+                            $('<input>').attr('type','hidden').attr('name','id[]').val(rowId)
+                        );
+                        $("#view-rows").text(rowsel.join(","))
+                        $("#view-form").text($(form).serialize())
+                        $('input[name="id\[\]"]', form).remove()
+                        e.preventDefault()
+
+                    });
+                });*/
+
+
+
+                //-------------------------------------------------
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
@@ -233,6 +306,8 @@
                         }
                     });
                 });
+
+
             });
         </script>
     @endif

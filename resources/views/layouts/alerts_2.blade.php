@@ -2,7 +2,7 @@
 
     @if (session('alert_success'))
 $.notify({
-        // options
+        // success 1
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_success')!=null ?  session('title_success') : ' ' !!}",
         message: "{!! session('alert_success') !!}",
@@ -23,19 +23,19 @@ $.notify({
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: {!! session('timer_success')!=null ?  session('timer_success') : 5000 !!},
-        timer: 1000,{{-- session('timer_success')!=null ?  session('timer_success') : 5000 --}}
+        delay: 1000,
+        timer: {!! session('timer_success')!=null ?  session('timer_success') : 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
         icon_type: 'class'
     });
 
     @elseif(isset($alert_success))
 $.notify({
-        // options
+        // success 2
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_success or '' !!}",
         message: "{!! $alert_success !!}",
@@ -56,12 +56,12 @@ $.notify({
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: {!! $timer_success or 5000 !!},
-        timer: 1000{{-- $timer_success or 5000 --}},
+        delay: 1000,
+        timer: {!! $timer_success or 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
         icon_type: 'class'
     });
@@ -69,10 +69,9 @@ $.notify({
 
 
 
-
     @if(session('alert_info'))
 $.notify({
-        // options
+        // info 1
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_info')!=null ?  session('title_info') : ' ' !!}",
         message: "{!! session('alert_info') !!}",
@@ -93,21 +92,21 @@ $.notify({
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: {!! session('timer_info')!=null ?  session('timer_info') : 5000 !!},
-        timer: 1000,{{-- session('timer_info')!=null ?  session('timer_info') : 5000 --}}
+        delay: 1000,
+        timer: {!! session('timer_info')!=null ?  session('timer_info') : 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
         icon_type: 'class'
     });
 
     @elseif (isset($alert_info))
 $.notify({
-        // options
+        // info 2
         icon: 'glyphicon glyphicon-warning-sign',
-        title: "{!! $title_info or '' !!}",
+        title: "{!! $title_success or '' !!}",
         message: "{!! $alert_info !!}",
         url: '{!! isset($route_info) ?  Route($route_info) : '' !!}',
         target: '_blank'
@@ -126,12 +125,12 @@ $.notify({
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: {!! $timer_info or 5000 !!},
-        timer: 1000,{{-- $timer_info or 5000  --}}
+        delay: 1000,
+        timer: {!! $timer_info or 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
         icon_type: 'class'
     });
@@ -159,19 +158,19 @@ $.notify({
         showProgressbar: false,
         placement: {
             from: "{!! session('from_warning')!=null ?  session('from_warning') : 'top' !!}",
-            align: "{!! session('align_warning')!=null ?  session('align_warning') : 'center' !!}" //align: "center"
+            align: "{!! session('align_warning')!=null ?  session('align_warning') : 'center' !!}"
         },
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: 0, {{-- session('timer_warning')!=null ?  session('timer_warning') : 2000 --}}
-        timer: 1000, {{--!! session('timer_warning')!=null ?  session('timer_warning') : 2000 !!--}}
+        delay: 1000,
+        timer: {!! session('timer_warning')!=null ?  session('timer_warning') : 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
-        icon_type: 'class',
+        icon_type: 'class'
     });
 
 
@@ -179,7 +178,7 @@ $.notify({
 $.notify({
         // warning 2
         icon: 'glyphicon glyphicon-warning-sign',
-        title: "{!! $title_warning or '' !!}",
+        title: "{!! $title_success or '' !!}",
         message: "{!! $alert_warning !!}",
         url: '{!! isset($routewarning) ?  Route($route_warning) : '' !!}',
         target: '_blank'
@@ -193,17 +192,17 @@ $.notify({
         showProgressbar: false,
         placement: {
             from: "{!!  $from_warning or 'top' !!}",
-            align: "{!! $align_warning or 'center' !!}" //align: "center"
+            align: "{!! $align_warning or 'center' !!}"
         },
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: 0, {{-- $timer_warning or 3000 --}}
-        timer: 1000, {{-- $timer_warning or 3000 --}}
+        delay: 1000,
+        timer: {!! $timer_warning or 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
         icon_type: 'class'
     });
@@ -213,9 +212,9 @@ $.notify({
 
     @if (session('alert_danger'))
 $.notify({
-        // options
+        // danger1
         icon: 'glyphicon glyphicon-warning-sign',
-        title: "{!! session('title_danger')!=null ?  session('title_danger') : ' ' !!}",
+        title: '{!! session('title_danger')!=null ?  session('title_danger') : ' ' !!}',
         message: "{!! session('alert_danger') !!}",
         url: '{!! session('route_danger')!=null ?  Route(session('route_danger')) : '' !!}',
         target: '_blank'
@@ -229,17 +228,17 @@ $.notify({
         showProgressbar: false,
         placement: {
             from: "{!! session('from_danger')!=null ?  session('from_danger') : 'top' !!}",
-            align: "{!! session('align_danger')!=null ?  session('align_danger') : 'center' !!}" //align: "center"
+            align: "{!! session('align_danger')!=null ?  session('align_danger') : 'center' !!}"
         },
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: 0, {{-- session('timer_danger')!=null ?  session('timer_danger') : 5000 --}}
-        timer: 1000, {{-- session('timer_danger')!=null ?  session('timer_danger') : 5000 --}}
+        delay: 1000,
+        timer: {!! session('timer_danger')!=null ?  session('timer_danger') : 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
 
         icon_type: 'class'
@@ -247,9 +246,9 @@ $.notify({
 
     @elseif(isset($alert_danger))
 $.notify({
-        // options
+        // danger2
         icon: 'glyphicon glyphicon-warning-sign',
-        title: "{!! $title_danger or '' !!}",
+        title: '{!! $title_success or '' !!}',
         message: "{!! $alert_danger !!}",
         url: '{!! isset($route_danger) ?  Route($route_danger) : '' !!}',
         target: '_blank'
@@ -263,107 +262,23 @@ $.notify({
         showProgressbar: false,
         placement: {
             from: "{!!  $from_danger or 'top' !!}",
-            align: "{!! $align_danger or 'center' !!}" //align: "center"
+            align: "{!! $align_danger or 'center' !!}"
         },
         offset: 50,
         spacing: 10,
         z_index: 1031,
-        delay: 0{{-- $timer_danger or 5000 --}},
-        timer: 1000{{-- $timer_danger or 5000 --}},
+        delay: 1000,
+        timer: {!! $timer_danger or 5000 !!},
         mouse_over: 'pause',
         animate: {
-            enter: 'animated zoomIn',
-            exit: 'animated zoomOut'
+            enter: 'animated wobble',
+            exit: 'animated bounceOut'
         },
 
-        icon_type: 'class',
+        icon_type: 'class'
     });
     @endif
 
 
 </script>
 
-
-{{-- **************Alerts**************  }}
-<div class="row">
-<div class="col-lg-2"></div>
-<div class="col-lg-8">
-
-    @if (session('alert_success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                &times;
-            </button> {!! session('alert_success') !!}
-        </div>
-    @endif
-    @if (session('alert_info'))
-    @section('scripts')
-        <script>
-            $.notify({
-                // options
-                icon: 'glyphicon glyphicon-warning-sign',
-                title: '{{ $title or '' }}',
-                message: '{!! session('alert_info') !!}',
-                url: '{{ session('route') ?  Route(session('route')) : ' ' }}',
-                target: '_blank'
-            },{
-                // settings
-                element: 'body',
-                position: null,
-                type: "info",
-                allow_dismiss: true,
-                newest_on_top: true,
-                showProgressbar: false,
-                placement: {
-                    from: "{{ $from or 'top' }}",//from: "top",
-                    align: "{{ $align or 'center' }}" //align: "center"
-                },
-                offset: 20,
-                spacing: 10,
-                z_index: 1031,
-                delay: 5000,
-                timer: 0,
-                mouse_over: null,
-                animate: {
-                    enter: 'animated zoomInDown',
-                    exit: 'animated zoomOutDown'
-                },
-                onShow: null,
-                onShown: null,
-                onClose: null,
-                onClosed: null,
-                icon_type: 'class',
-                template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
-                '<span data-notify="icon"></span> ' +
-                '<span data-notify="title">{1}</span> ' +
-                '<span data-notify="message">{2}</span>' +
-                '<div class="progress" data-notify="progressbar">' +
-                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-                '</div>' +
-                '<a href="{3}" target="{4}" data-notify="url"></a>' +
-                '</div>'
-            });
-        </script>
-    @endsection
-    @endif
-    @if (session('alert_warning'))
-        <div class="alert alert-warning alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                &times;
-            </button> {!! session('alert_warning') !!}
-        </div>
-    @endif
-
-    @if (session('alert_danger'))
-        <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                &times;
-            </button> {!! session('alert_danger') !!}
-        </div>
-    @endif
-
-</div>
-<div class="col-lg-2"></div>
-</div>
-{{-- **************endAlerts**************  --}}

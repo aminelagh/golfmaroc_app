@@ -9,6 +9,7 @@
     <link href="{{ asset('dist/css/sb-admin-2.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/morrisjs/morris.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('anime/anime.css') }}" rel="stylesheet">
 
 </head>
 
@@ -20,14 +21,6 @@
 
         <div class="col-md-4 col-md-offset-4">
             <div class="login-panel panel panel-default">
-
-                @if (session('alert_danger'))
-                    <div class="alert alert-danger alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                            &times;
-                        </button> {!! session('alert_danger') !!}
-                    </div>
-                @endif
 
                 <div class="panel-heading">
                     <h3 class="panel-title">Please Sign In</h3>
@@ -61,17 +54,13 @@
     </div>
 </div>
 
-<!-- jQuery -->
+
 <script src="js/jquery.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
 <script src="js/bootstrap.js"></script>
-
-<!-- Metis Menu Plugin JavaScript -->
 <script src="js/metisMenu.js"></script>
-
-<!-- Custom Theme JavaScript -->
 <script src="js/sb-admin-2.js"></script>
+<script src="{{ asset('anime/bootstrap-notify.js') }}"></script>
+@include('layouts.alerts_2')
 
 </body>
 

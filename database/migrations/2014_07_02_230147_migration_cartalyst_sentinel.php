@@ -133,6 +133,7 @@ class MigrationCartalystSentinel extends Migration
         Schema::create('marques', function (Blueprint $table) {
             $table->increments('id_marque');
             $table->string('libelle');
+            $table->string('image')->nullable();
             $table->boolean('deleted');
             $table->timestamps();
             $table->engine = 'InnoDB';
@@ -141,11 +142,11 @@ class MigrationCartalystSentinel extends Migration
             $table->increments('id_agent');
             $table->integer('id_fournisseur');
             $table->string('nom');
-            $table->string('prenom');
+            $table->string('prenom')->nullable();
             $table->string('role');
-            $table->string('ville');
-            $table->string('telephone');
-            $table->string('email');
+            $table->string('ville')->nullable();
+            $table->string('telephone')->nullable();
+            $table->string('email')->nullable();
             $table->boolean('deleted');
             $table->timestamps();
             $table->engine = 'InnoDB';
@@ -190,21 +191,26 @@ class MigrationCartalystSentinel extends Migration
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
-
         Schema::create('stocks', function (Blueprint $table) {
             $table->increments('id_stock');
             $table->integer('id_magasin');
             $table->integer('id_article');
-            $table->integer('id_taille_article');
 
-            $table->integer('quantite')->nullable();
             $table->integer('quantite_min')->nullable();
             $table->integer('quantite_max')->nullable();
 
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
+        Schema::create('stock_tailles', function (Blueprint $table) {
+            $table->increments('id_stock_taille');
+            $table->integer('id_stock');
+            $table->integer('id_taille_article')->nullable();
 
+            $table->integer('quantite')->nullable();
+            $table->timestamps();
+            $table->engine = 'InnoDB';
+        });
         Schema::create('taille_articles', function (Blueprint $table) {
             $table->increments('id_taille_article');
             $table->string('taille');
@@ -212,7 +218,6 @@ class MigrationCartalystSentinel extends Migration
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
-
 
         //Entree & sortie de stock
         Schema::create('type_transactions', function (Blueprint $table) {
