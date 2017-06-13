@@ -112,7 +112,7 @@
                                             </li>
                                             <li>
                                                 <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
-                                                   href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
+                                                   href="{{ Route('admin.home') }}"
                                                         {!! setPopOver("","Effacer l'article") !!}><i
                                                             class="glyphicon glyphicon-trash"></i> Effacer</a>
                                             </li>

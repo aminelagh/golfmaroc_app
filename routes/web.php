@@ -14,7 +14,15 @@ Route::get('/home', function () {
 });
 
 Route::get('/s', function () {
-    dump(session());
+    $x =  \App\Models\Stock_taille::getTailles(1);
+
+    foreach($x as $taille)
+    {
+        echo "$taille->quantite <br>";
+        echo $x->count()."<br>";
+    }
+
+
 });
 
 /***************************************
@@ -78,8 +86,10 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
     Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
 
-    Route::get('/magas/stockIN/{p_id}', 'StockController@stockIN')->name('magas.stockIN');
-    Route::get('/magas/stockOUT/{p_id}', 'StockController@stockOUT')->name('magas.stockOUT');
+    Route::get('/magas/addStockIN/{p_id_stock}', 'StockController@addStockIN')->name('magas.addStockIN');
+    Route::post('/magas/submitAddStockIN', 'StockController@submitAddStockIN')->name('magas.submitAddStockIN');
+
+    Route::get('/magas/addStockOUT/{p_id_stock}', 'StockController@addStockOUT')->name('magas.addStockOUT');
     //------------------------------------------------------------------------------------------------------------------
 
 });
@@ -175,7 +185,7 @@ Route::post('/magas/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->n
 
 /**************************************
  * Routes Delete
- ***************************************
+ ***************************************/
 
 Route::get('/direct/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('direct.delete');
 Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('magas.delete');

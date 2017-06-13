@@ -1,229 +1,157 @@
 @extends('layouts.main_master')
 
-@section('title') Stock du {{ getChamp('magasins','id_magasin',$data->first()->id_magasin, 'libelle')  }}  @endsection
+@section('title') Stock du main magasin: {{ $magasin->libelle }}  @endsection
 
 @section('main_content')
-    <div class="container-fluid">
-        <div class="col-lg-12">
-            <div class="row">
-                <h1 class="page-header">Stock du
-                    <strong>{{ \App\Models\Magasin::getLibelle($data->id_magasin)  }}</strong></h1>
 
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item ">Gestion des magasins</li>
-                    <li class="breadcrumb-item active">{{ $data->libelle  }}</li>
-                </ol>
+    <h3 class="page-header">Stock du main magasin:
+        <strong>{{ $magasin->libelle }}</strong></h3>
 
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item ">Gestion des magasins</li>
+        <li class="breadcrumb-item ">{{ $magasin->libelle  }}</li>
+        <li class="breadcrumb-item active">Stock du magasin: {{ $magasin->libelle  }}</li>
+    </ol>
 
-                <div class="row">
-                    <div class="table-responsive">
-                        <div class="col-lg-12">
-                            <table id="example" class="table table-striped table-bordered table-hover">
+    <div class="row">
+        <div class="table-responsive">
+            <div class="col-lg-12">
+                <script src="{{ asset('js/datatables.min.js') }}"></script>
 
-                                <thead bgcolor="#DBDAD8">
+                {{-- *************** form ***************** --}}
+                <form role="form" name="myForm" id="myForm" method="post"
+                      action="{{ Route('magas.submitAddStockIN') }}">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
+
+                    @foreach( $data as $item )
+                        <input type="hidden" name="id_stock[{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
+
+                        <table id="example_{{$loop->index+1}}" class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th> #</th>
+                                <th>Article</th>
+                                <th>quantite_min</th>
+                                <th>quantite_max</th>
+                                <th>
+                                    <button id="addRow_{{ $loop->index+1 }}" form="NotFormSubmiForm">Ajouter une taille
+                                    </button>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td>{{ $loop->index+1 }}/ id_st: {{ $item->id_stock }}</td>
+                                <td>{{ \App\Models\Article::getDesignation($item->id_article) }}</td>
+                                <td>{{ $item->quantite_min }}</td>
+                                <td>{{ $item->quantite_max }}</td>
+                                <td></td>
+                            </tr>
+                            @if( \App\Models\Stock_taille::hasTailles($item->id_stock))
                                 <tr>
-                                    <th>#</th>
-                                    <th>Article</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Taille</th>
                                     <th>Quantite</th>
-                                    <th>Etat</th>
-                                    <th>Autres</th>
+                                    <th>Quantite in</th>
                                 </tr>
-                                </thead>
-                                <tfoot bgcolor="#DBDAD8">
-                                <tr>
-                                    <th></th>
-                                    <th>Article</th>
-                                    <th>Quantite</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                                </tfoot>
 
-                                <tbody>
-                                @foreach( $data as $item )
+                                @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
 
-                                    {{-- Tests pour definir la couleur de la ligne --}}
-                                    @if( $item->quantite > $item->quantite_min )
-                                        <tr class="success">
-                                    @elseif( $item->quantite < $item->quantite_min )
-                                        <tr class="danger">
-                                    @elseif( $item->quantite == $item->quantite_min )
-                                        <tr class="warning">
-                                    @else
-                                        <tr>
-                                            @endif
-                                            {{-- fin Tests pour definir la couleur de la ligne --}}
 
-                                            <td>{{ $loop->index+1 }}</td>
-                                            <td>{{ getChamp('articles','id_article',$item->id_article, 'designation_c') }}</td>
-                                            <td>{{ $item->quantite }}
-                                                article(s), {{ ($item->quantite/$item->quantite_max)*100 }}%
-                                            </td>
-                                            <td>
-                                                <div class="progress">
-                                                    @if( $item->quantite<$item->quantite_min )
-                                                        <div class="progress-bar progress-bar-danger progress-bar-striped"
-                                                             style="width: {{ 100*($item->quantite/$item->quantite_max) }}%"></div>
-                                                    @elseif( $item->quantite==$item->quantite_min )
-                                                        <div class="progress-bar progress-bar-warning progress-bar-striped"
-                                                             style="width: {{ 100*($item->quantite/$item->quantite_max) }}%"></div>
-                                                    @else
-                                                        <div class="progress-bar progress-bar-success progress-bar-striped"
-                                                             style="width: {{ 100*($item->quantite/$item->quantite_max) }}%"></div>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td align="center">
-                                                <!--a href=" Route('magas.info',['p_table'=> 'magasins' , 'p_id' => $item->id_magasin  ]) }}"
-                                                   title="detail"><i class="glyphicon glyphicon-eye-open"></i></a-->
-                                                <a data-toggle="modal" data-target="#myModal{{ $loop->index+1 }}"><i
-                                                            class="glyphicon glyphicon-info-sign"
-                                                            aria-hidden="false"></i></a>
-                                            </td>
+                                    <tr>
+                                        <input type="hidden" name="id_taille_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
+                                        <input type="hidden" name="quantite[{{ $item->id_stock }}][{{ $loop->index+1 }}]" value="5{{ $item->id_stock }}"/>
 
-                                            {{-- Modal (pour afficher les details de chaque article) --}}
-                                            <div class="modal fade" id="myModal{{ $loop->index+1 }}"
-                                                 role="dialog">
-                                                <div class="modal-dialog modal-sm">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close"
-                                                                    data-dismiss="modal">&times;
-                                                            </button>
-                                                            <h4 class="modal-title">{{ getChamp("articles", "id_article",  $item->id_article , "designation_c")  }}</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p><b>Quantité : </b> {{ $item->quantite }}
-                                                            </p>
-                                                            <p><b>Quantité
-                                                                    Min :</b> {{ $item->quantite_min }}
-                                                            </p>
-                                                            <p><b>Quantité
-                                                                    Max :</b> {{ $item->quantite_max }}
-                                                            </p>
-                                                            <hr>
-                                                            <p>
-                                                                <b>numero
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "num_article")  }}
-                                                            </p>
-                                                            <p><b>code a
-                                                                    barres
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "code_barre")  }}
-                                                            </p>
-                                                            <p>
-                                                                <b>Taille
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "taille")  }}
-                                                            </p>
-                                                            <p>
-                                                                <b>Couleur
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "couleur")  }}
-                                                            </p>
-                                                            <p>
-                                                                <b>sexe
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "sexe") }}
-                                                            </p>
-                                                            <p><b>Prix
-                                                                    d'achat
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "prix_achat")  }}
-                                                                DH
-                                                            </p>
-                                                            <p><b>Prix de
-                                                                    vente
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "prix_vente")  }}
-                                                                DH
-                                                            </p>
-                                                            <p><b>Description
-                                                                    :</b> {{ getChamp("articles", "id_article",  $item->id_article , "designation_l")  }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button"
-                                                                    class="btn btn-default"
-                                                                    data-dismiss="modal">Fermer
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {{-- fin Modal (pour afficher les details de chaque article) --}}
-                                        </tr>
+                                        <td></td>
+                                        <td>{{ $loop->index+1 }}</td>
+                                        <td>{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</td>
+                                        <td>{{ $taille->quantite }}</td>
+                                        <td><input type="text" min="0" placeholder="Quantite IN" width="5"
+                                                   class="form-control"
+                                                   name="quantiteIN[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
+                                                   value=""></td>
+                                    </tr>
+                                @endforeach
+                            @endif
+
+                            </tbody>
+                        </table>
+
+
+                        <script type="text/javascript" charset="utf-8">
+                            $(document).ready(function () {
+                                //popover
+                                $('[data-toggle="popover"]').popover();
+
+                                var t_{{$loop->index+1}} = $('#example_{{$loop->index+1}}').DataTable({
+                                    "ordering": false,
+                                    "paging": false,
+                                    "searching": false,
+                                    "info": false,
+                                });
+                                var counter = 1;
+
+                                $('#addRow_{{ $loop->index+1 }}').on('click', function () {
+
+                                    @if( !\App\Models\Stock_taille::hasTailles($item->id_stock))
+
+                                    if(counter==1)
+                                    {
+                                        t_{{$loop->index+1}}.row.add([
+                                            '',
+                                            '',
+                                            '<b>Taille</b>',
+                                            '<b>Quantite</b>',
+                                            '<b>Quantite in</b>'
+                                        ]).draw(false);
+                                    }
+
+                                    @endif
+
+                                    t_{{$loop->index+1}}.row.add([
+                                        '', '',
+                                        '<select name="id_taille_articlePlus" class="form-control">' +
+                                        @foreach($tailles as $taille)
+                                            '<option value"{{ $taille->id_taille_article }}">{{ $taille->taille }}</option>' +
                                         @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                                            '</select>',
+                                        '0',
+                                        '<input type="text" min="0" placeholder="Quantite IN" width="5" ' +
+                                        'class="form-control" name="quantiteIN[{{ $item->id_stock }}][{{ $loop->index+1 }}]" ' +
+                                        'value="">',
+                                        '--'
+                                    ]).draw(false);
+                                    counter++;
+                                });
 
-                <br/>
-                <div class="row" align="center">
-                    <a href="{{ Route('magas.addStock',['p_id_magasin' => $data->first()->id_magasin ]) }}"
-                       type="button"
-                       class="btn btn-outline btn-info" {!! setPopOver("","Ajouter des nouveaux articles au stock de ce magasin") !!}>
-                        <i class="glyphicon glyphicon-plus "></i> Ajouter des articles</a>
-                    <a href="{{ Route('magas.supplyStock',[ 'p_id_magasin' => $data->first()->id_magasin ]) }}"
-                       type="button" class="btn btn-outline btn-default" {!! setPopOver("","Alimenter le stock ") !!}>
-                        <i class="glyphicon glyphicon-plus "></i> Alimenter le Stock </a>
-                </div>
+                                //$('#addRow_{{$loop->index+1}}').click();
+                            });
+                        </script>
+
+                        <hr/>
+                    @endforeach
+
+                    <input type="submit" value="Ajouter StockIN" class="btn btn-outline btn-success"
+                           formtarget="_blank">
+                </form>
 
             </div>
         </div>
     </div>
+
+    <br/>
+
+    <hr/>
+    <br/>
 @endsection
 
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
 
-@section('styles')
-    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
-@endsection
-
 @section('scripts')
-    <script src="{{  asset('table2/datatables.min.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
-            //popover
-            $('[data-toggle="popover"]').popover();
 
-            // Setup - add a text input to each footer cell
-            $('#example tfoot th').each(function () {
-                var title = $(this).text();
-                if (title == "Article" || title == "code") {
-                    $(this).html('<input type="text" size="14" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" />');
-                }
-                else if (title != "") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" />');
-                }
-
-            });
-            // DataTable
-            var table = $('#example').DataTable({
-                //"scrollY": "50px",
-                //"scrollX": true,
-                "searching": true,
-                "paging": true,
-                //"autoWidth": true,
-                "info": true,
-                stateSave: false,
-                "columnDefs": [
-                    {"width": "02%", "targets": 0, "type": "num", "visible": true, "searchable": false},
-                    {"width": "25%", "targets": 1, "type": "string", "visible": true},
-                    {"width": "15%", "targets": 2, "type": "string", "visible": true},
-                    {"width": "02%", "targets": 4, "type": "string", "visible": true}
-                ]
-            });
-            // Apply the search
-            table.columns().every(function () {
-                var that = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (that.search() !== this.value) {
-                        that.search(this.value).draw();
-                    }
-                });
-            });
-        });
-
-    </script>
 @endsection

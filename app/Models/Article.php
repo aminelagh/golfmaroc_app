@@ -101,7 +101,7 @@ class Article extends Model
         else return null;
     }
 
-    public static function getDesigntion($p_id)
+    public static function getDesignation($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
@@ -162,6 +162,14 @@ class Article extends Model
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
             return $data->prix_v;
+        else return null;
+    }
+
+    public static function getImage($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->image;
         else return null;
     }
 

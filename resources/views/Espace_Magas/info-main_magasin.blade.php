@@ -91,12 +91,12 @@
                            class="btn btn-outline btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
                             le stock</a>
 
-                        <a href="{{ Route('magas.stocks',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.addStock',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","addStock") !!}>addStock</a>
 
-                        <a href="{{ Route('magas.stockIN',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.addStockIN',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","stockIN") !!}>stockIN</a>
-                        <a href="{{ Route('magas.stockOUT',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.addStockOUT',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","stockOUT") !!}>stockOUT</a>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                                         <td>{{ $loop->index+1 }}</td>
                                         <td align="right">{{ \App\Models\Article::getRef($item->id_article) }} {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '. (\App\Models\Article::getAlias($item->id_article)) : '' }}</td>
                                         <td align="right">{{ \App\Models\Article::getCode($item->id_article) }}</td>
-                                        <td>{{ \App\Models\Article::getDesigntion($item->id_article) }}</td>
+                                        <td>{{ \App\Models\Article::getDesignation($item->id_article) }}</td>
                                         <td>{{ \App\Models\Article::getCouleur($item->id_article) }}</td>
                                         <td>{{ \App\Models\Article::getSexe($item->id_article) }}</td>
                                         <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}
@@ -221,7 +221,8 @@
                                                         <p><b>Couleur</b> {{ $item->couleur }}</p>
                                                         <p><b>sexe</b> {{ $item->sexe }}</p>
                                                         <p><b>Prix</b></p>
-                                                        <p>{{ \App\Models\Article::getPrix_TTC(($item->prix_v)) }} DH TTC</p>
+                                                        <p>{{ \App\Models\Article::getPrix_TTC(($item->prix_v)) }} DH
+                                                            TTC</p>
 
                                                         @if( $item->image != null) <img
                                                                 src="{{ $item->image }}"

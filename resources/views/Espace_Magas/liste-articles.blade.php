@@ -19,7 +19,8 @@
         <div class="col-lg-12">
             @if( !$data->isEmpty() )
                 <div class="breadcrumb">
-                    Afficher/Masquer: <a class="toggle-vis" data-column="1">Reference</a> -
+                    Afficher/Masquer:
+                    <a class="toggle-vis" data-column="1">Reference</a> -
                     <a class="toggle-vis" data-column="2">Code</a> -
                     <a class="toggle-vis" data-column="3">Categorie</a> -
                     <a class="toggle-vis" data-column="4">Fournisseur</a> -
@@ -71,101 +72,102 @@
                 @if( $data->isEmpty() )
                     <tr>
                         <td align="center" colspan="12">Aucun Article</td>
-
                     </tr>
                 @else
                     @foreach( $data as $item )
                         @if($item->valide == true)
-                            <tr calss="success" ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');">
+                            <tr calss="success"
+                                ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');">
                         @else
-                            <tr class="warning" ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');" {!! setPopOver("","Article non validé par l'administrateur") !!}>
-                        @endif
+                            <tr class="warning"
+                                ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');" {!! setPopOver("","Article non validé par l'administrateur") !!}>
+                                @endif
 
-                            <td>{{ $loop->index+1 }}</td>
-                            <td align="right">{{ $item->ref }} - {{ $item->alias }}</td>
-                            <td align="right">{{ $item->code }}</td>
-                            <td>{{ \App\Models\Categorie::getLibelle($item->id_categorie) }}</td>
-                            <td>{{ \App\Models\Fournisseur::getLibelle($item->id_fournisseur) }}</td>
-                            <td>{{ \App\Models\Marque::getLibelle($item->id_marque) }}</td>
-                            <td>@if( $item->image != null) <img src="{{ $item->image }}"
-                                                                width="50px">@endif {{ $item->designation }}
-                            </td>
-                            <td>{{ $item->couleur }}</td>
-                            <td>{{ $item->sexe }}</td>
-                            <td align="right">{{ $item->prix_a }} DH</td>
-                            <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!} DH
-                            </td>
-                            <td>
-                                <div class="btn-group pull-right">
-                                    <button type="button"
-                                            class="btn green btn-sm btn-outline dropdown-toggle"
-                                            data-toggle="dropdown">
-                                        <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                        <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-left" role="menu">
-                                        <li>
-                                            <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}"
-                                                    {!! setPopOver("","Afficher plus de detail") !!}><i
-                                                        class="glyphicon glyphicon-eye-open"></i> Plus de
-                                                detail</a>
-                                        </li>
-                                        <li>
-                                            <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
-                                               href="#"
-                                                    {!! setPopOver("","Effacer l'article") !!}><i
-                                                        class="glyphicon glyphicon-trash"></i> Effacer</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li>
-                                            <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
-                                                        class="glyphicon glyphicon-info-sign"
-                                                        aria-hidden="false"></i> Info-Bull</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
+                                <td>{{ $loop->index+1 }}</td>
+                                <td align="right">{{ $item->ref }} - {{ $item->alias }}</td>
+                                <td align="right">{{ $item->code }}</td>
+                                <td>{{ \App\Models\Categorie::getLibelle($item->id_categorie) }}</td>
+                                <td>{{ \App\Models\Fournisseur::getLibelle($item->id_fournisseur) }}</td>
+                                <td>{{ \App\Models\Marque::getLibelle($item->id_marque) }}</td>
+                                <td>@if( $item->image != null) <img src="{{ $item->image }}"
+                                                                    width="50px">@endif {{ $item->designation }}
+                                </td>
+                                <td>{{ $item->couleur }}</td>
+                                <td>{{ $item->sexe }}</td>
+                                <td align="right">{{ $item->prix_a }} DH</td>
+                                <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!} DH
+                                </td>
+                                <td>
+                                    <div class="btn-group pull-right">
+                                        <button type="button"
+                                                class="btn green btn-sm btn-outline dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
+                                            <i class="fa fa-angle-down"></i>
+                                        </button>
+                                        <ul class="dropdown-menu pull-left" role="menu">
+                                            <li>
+                                                <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}"
+                                                        {!! setPopOver("","Afficher plus de detail") !!}><i
+                                                            class="glyphicon glyphicon-eye-open"></i> Plus de
+                                                    detail</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
+                                                   href="#"
+                                                        {!! setPopOver("","Effacer l'article") !!}><i
+                                                            class="glyphicon glyphicon-trash"></i> Effacer</a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
+                                                            class="glyphicon glyphicon-info-sign"
+                                                            aria-hidden="false"></i> Info-Bull</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
 
-                            {{-- Modal (pour afficher les details de chaque article) --}}
-                            <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                &times;
-                                            </button>
-                                            <h4 class="modal-title">{{ $item->designation }}</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p><b>reference</b> {{ $item->ref }} - {{ $item->alias }}</p>
-                                            <p><b>code</b> {{ $item->code }}</p>
-                                            <p><b>Couleur</b> {{ $item->couleur }}</p>
-                                            <p><b>sexe</b> {{ $item->sexe }}</p>
-                                            <p><b>Prix d'achat</b></p>
-                                            <p>{{ number_format($item->prix_a, 2) }} DH
-                                                HT, {{ number_format($item->prix_a*1.2, 2) }}
-                                                Dhs TTC </p>
-                                            <p><b>Prix de vente</b></p>
-                                            <p>{{ number_format($item->prix_vente, 2) }} DH
-                                                HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
-                                                DH TTC </p>
-                                            @if( $item->image != null) <img
-                                                    src="{{ asset($item->image) }}"
-                                                    width="150px">@endif
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default"
-                                                    data-dismiss="modal">Fermer
-                                            </button>
+                                {{-- Modal (pour afficher les details de chaque article) --}}
+                                <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog">
+                                    <div class="modal-dialog modal-sm">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    &times;
+                                                </button>
+                                                <h4 class="modal-title">{{ $item->designation }}</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><b>reference</b> {{ $item->ref }} - {{ $item->alias }}</p>
+                                                <p><b>code</b> {{ $item->code }}</p>
+                                                <p><b>Couleur</b> {{ $item->couleur }}</p>
+                                                <p><b>sexe</b> {{ $item->sexe }}</p>
+                                                <p><b>Prix d'achat</b></p>
+                                                <p>{{ number_format($item->prix_a, 2) }} DH
+                                                    HT, {{ number_format($item->prix_a*1.2, 2) }}
+                                                    Dhs TTC </p>
+                                                <p><b>Prix de vente</b></p>
+                                                <p>{{ number_format($item->prix_vente, 2) }} DH
+                                                    HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
+                                                    DH TTC </p>
+                                                @if( $item->image != null) <img
+                                                        src="{{ asset($item->image) }}"
+                                                        width="150px">@endif
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Fermer
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            {{-- fin Modal (pour afficher les details de chaque article) --}}
+                                {{-- fin Modal (pour afficher les details de chaque article) --}}
 
-                        </tr>
-                    @endforeach
-                @endif
+                            </tr>
+                            @endforeach
+                        @endif
                 </tbody>
 
             </table>
@@ -179,9 +181,8 @@
                     class="glyphicon glyphicon-plus "></i> Ajouter un Article</a>
 
     </div>
-    </div>
-    </div>
-    </div>
+    <hr/>
+
 @endsection
 
 @section('scripts')
@@ -211,13 +212,13 @@
                     }
                 });
 
+
                 var table = $('#example').DataTable({
-                    //"scrollY": "50px",
-                    //"scrollX": true,
+                    "lengthMenu": [[5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
                     //"autoWidth": true,
-                    "info": true,
+                    "info": false,
                     stateSave: false,
                     "columnDefs": [
                         {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
@@ -234,6 +235,10 @@
                         {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
                         {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
                     ]
+                    ,
+                    "select": {
+                        items: 'column'
+                    }
                 });
 
                 $('a.toggle-vis').on('click', function (e) {
