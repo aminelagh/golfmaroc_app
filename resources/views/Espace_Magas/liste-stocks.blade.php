@@ -46,9 +46,32 @@
 
                                 <div class="tab-content">
                                     <div class="tab-pane fade in active" id="article_{{ $loop->index+1 }}">
-                                        Marque: <b>{{ \App\Models\Article::getMarque($item->id_article) }}</b>
-                                        Categorie: <b>{{ \App\Models\Article::getCategorie($item->id_article) }}</b>
-                                        Fournisseur: <b>{{ \App\Models\Article::getFournisseur($item->id_article) }}</b>
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <tr>
+                                                <td align="right">Marque</td>
+                                                <th>{{ \App\Models\Article::getMarque($item->id_article) }}</th>
+                                                <td align="right">Categorie</td>
+                                                <th>{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
+                                                <td align="right">Fournisseur</td>
+                                                <th>{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td align="right">Code</td>
+                                                <th>{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                <td align="right">Reference</td>
+                                                <th>{{ \App\Models\Article::getRef($item->id_article) }}
+                                                    {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article) : '' }}
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td align="right">Couleur</td>
+                                                <th>{{ \App\Models\Article::getCouleur($item->id_article) }}</th>
+                                                <td align="right">Sexe</td>
+                                                <th>{{ \App\Models\Article::getSexe($item->id_article) }}</th>
+                                                <td align="right">Prix</td>
+                                                <th align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }} Dhs</th>
+                                            </tr>
+                                        </table>
                                     </div>
                                     <div class="tab-pane fade" id="stock_{{ $loop->index+1 }}">
                                         <table id="example_{{$loop->index+1}}"

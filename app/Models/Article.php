@@ -97,7 +97,7 @@ class Article extends Model
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
-            return Marque::getLibelle($data->id_fournisseur);
+            return Fournisseur::getLibelle($data->id_fournisseur);
         else return null;
     }
 
