@@ -56,6 +56,8 @@ class StockController extends Controller
     {
         //dump(request()->all());
 
+        return Stock::addStockIN(request());
+
         $id_magasin = request()->get('id_magasin');
         $id_stocks = request()->get('id_stock');
         $quantiteINs = request()->get('quantiteIN');
@@ -65,11 +67,10 @@ class StockController extends Controller
         $id_stransaction = Transaction::getNextID();
 
 
-
         $transaction = new Transaction();
         $transaction->id_stransaction = $id_stransaction;
         $transaction->id_magasin = $id_magasin;
-        $transaction->id_type_transaction = Type_transaction::where('libelle',"in")->get()->first()->id_type_transaction;
+        $transaction->id_type_transaction = Type_transaction::where('libelle', "in")->get()->first()->id_type_transaction;
         $transaction->annulee = false;
 
 
@@ -77,21 +78,24 @@ class StockController extends Controller
             if (isset($quantiteINs[$id_stock])) {
 
                 $stock = Stock::find($id_stock);
-                echo "Stock: " . $stock->id_stock . "<br> article: " . Article::getDesignation($stock->id_article) . " | quantite_min: " . $stock->quantite_min . "| quantite_max: ".$stock->quantite_max." <br> ";
+                echo "Stock: " . $stock->id_stock . "<br> article: " . Article::getDesignation($stock->id_article) . " | quantite_min: " . $stock->quantite_min . "| quantite_max: " . $stock->quantite_max . " <br> ";
 
                 $i = 1;
                 foreach ($quantiteINs[$id_stock] as $quantite) {
-                    if($quantite == null || $quantite == 0) continue;
-                        //echo "Skip: ";
-                    echo "( " . $quantite . " - " . Taille_article::getTaille($id_taille_artiles[$id_stock][$i])." ) , ";
+                    if ($quantite == null || $quantite == 0) //continue;
+                        echo "Skip: ";
+                    else
+                        echo "handling... ";
+                    echo " ( " . $quantite . " - " . Taille_article::getTaille($id_taille_artiles[$id_stock][$i]) . " ) , ";
                     $i++;
                 }
             }
-            echo "<hr>";
         }
     }
 
-    public function addStock($p_id)
+
+    public
+    function addStock($p_id)
     {
         $magasin = Magasin::find($p_id);
         $articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
@@ -105,7 +109,8 @@ class StockController extends Controller
         return view('Espace_Magas.add-stock-form')->withMagasin($magasin)->withArticles($articles);
     }
 
-    public function submitAddStock(Request $request)
+    public
+    function submitAddStock(Request $request)
     {
         return Stock::addStock($request);
 
@@ -161,7 +166,8 @@ class StockController extends Controller
                 }*/
     }
 
-    public function addStockIN($p_id_stock)
+    public
+    function addStockIN($p_id_stock)
     {
         $data = Stock::find($p_id_stock);
         if ($data == null)
@@ -193,7 +199,8 @@ class StockController extends Controller
     /*****************************************************************************
      * Lister Stocks
      *****************************************************************************/
-    public function listerStocks($p_id_magasin)
+    public
+    function listerStocks($p_id_magasin)
     {
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data->isEmpty())
@@ -205,7 +212,8 @@ class StockController extends Controller
     /*****************************************************************************
      * Afficher le fomulaire d'ajout pour le stock
      *****************************************************************************/
-    public function addStockaa($p_id_magasin)
+    public
+    function addStockaa($p_id_magasin)
     {
         $magasin = Magasin::where('id_magasin', $p_id_magasin)->first();        //$articles = Article::all();
 
@@ -227,7 +235,8 @@ class StockController extends Controller
     /*****************************************************************************
      * Afficher le formulaire d'alimentation de stock (liste du stock )
      ******************************************************************************/
-    public function stockIN($p_id)
+    public
+    function stockIN($p_id)
     {
         return 'StockController@StockIN';
 
@@ -245,7 +254,8 @@ class StockController extends Controller
             return view('Espace_Magas.supply-stock_Magasin-form')->with(['data' => $data, 'magasin' => $magasin]);
     }
 
-    public function StockOUT($p_id)
+    public
+    function StockOUT($p_id)
     {
         return 'StockController@StockOUT';
     }
@@ -253,7 +263,8 @@ class StockController extends Controller
     /*****************************************************************************
      * Valider le formulaire d'alimentation de stock
      ******************************************************************************/
-    public function submitStockIN()
+    public
+    function submitStockIN()
     {
 
         $id_magasin = request()->get('id_magasin');
