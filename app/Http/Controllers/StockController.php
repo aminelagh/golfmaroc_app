@@ -54,47 +54,41 @@ class StockController extends Controller
 
     public function submitAddStockIN()
     {
-        dump(request()->all());
+        //dump(request()->all());
+
+        $id_magasin = request()->get('id_magasin');
         $id_stocks = request()->get('id_stock');
         $quantiteINs = request()->get('quantiteIN');
         $id_taille_artiles = request()->get('id_taille_article');
-        $quantite = request()->get('quantite');
+        //$quantite = request()->get('quantite');
 
-
-        //$id_stocks = request()->get('id_stock');
-
-        //dump($id_stocks);
-        dump($quantiteINs);
-        dump($id_taille_artiles);
-        dump($quantite);
+        $id_stransaction = Transaction::getNextID();
 
 
 
-        echo "<hr><hr>";
+        $transaction = new Transaction();
+        $transaction->id_stransaction = $id_stransaction;
+        $transaction->id_magasin = $id_magasin;
+        $transaction->id_type_transaction = Type_transaction::where('libelle',"in")->get()->first()->id_type_transaction;
+        $transaction->annulee = false;
+
+
         foreach ($id_stocks as $id_stock) {
             if (isset($quantiteINs[$id_stock])) {
-                //dump($quantiteINs[$id_stock]);
+
                 $stock = Stock::find($id_stock);
-                echo "Stock: " . $stock->id_stock . " - " . $stock->id_article . " - " . $stock->quantite_min . " ==> ";
+                echo "Stock: " . $stock->id_stock . "<br> article: " . Article::getDesignation($stock->id_article) . " | quantite_min: " . $stock->quantite_min . "| quantite_max: ".$stock->quantite_max." <br> ";
 
                 $i = 1;
                 foreach ($quantiteINs[$id_stock] as $quantite) {
-                    echo "( " . $quantite . " - " . Taille_article::getTaille($id_taille_artiles[$id_stock][$i++])." ) , ";
+                    if($quantite == null || $quantite == 0) continue;
+                        //echo "Skip: ";
+                    echo "( " . $quantite . " - " . Taille_article::getTaille($id_taille_artiles[$id_stock][$i])." ) , ";
+                    $i++;
                 }
-                echo " updating stock....";
             }
-
             echo "<hr>";
         }
-
-        /*
-         *
-        dump($id_stock);
-        dump($id_stock);
-        dump($id_stock);
-
-        dump($id_stock);*/
-
     }
 
     public function addStock($p_id)

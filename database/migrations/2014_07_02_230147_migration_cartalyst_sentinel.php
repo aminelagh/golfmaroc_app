@@ -170,7 +170,7 @@ class MigrationCartalystSentinel extends Migration
 
             $table->string('image',255)->nullable();
 
-            $table->boolean('deleted')->nullable();
+            $table->boolean('deleted');
             $table->boolean('valide')->nullable();
 
             $table->timestamps();
@@ -235,7 +235,6 @@ class MigrationCartalystSentinel extends Migration
             $table->dateTime('date');
             $table->boolean('annulee')->nullable();
 
-            $table->string('libelle')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
@@ -258,7 +257,6 @@ class MigrationCartalystSentinel extends Migration
             $table->integer('id_mode_paiement');
             $table->string('ref')->nullable();
 
-            $table->string('libelle')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
@@ -287,7 +285,6 @@ class MigrationCartalystSentinel extends Migration
             $table->dateTime('date');
             $table->boolean('annulee')->nullable();
 
-            $table->string('libelle')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

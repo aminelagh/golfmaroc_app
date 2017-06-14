@@ -11,6 +11,8 @@
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('anime/anime.css') }}" rel="stylesheet">
 
+    <script src="{{ asset('js/datatables.min.js') }}"></script>
+
     @yield('styles')
 </head>
 
@@ -27,7 +29,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">GolfMaroc</a>
+            <a class="navbar-brand" href="{{ Route('home') }}">GolfMaroc</a>
         </div>
 
         @yield('menu_1')
@@ -49,7 +51,6 @@
     </div>
 </div>
 
-<script src="{{ asset('js/datatables.min.js') }}"></script>
 <script src="{{ asset('js/metisMenu.min.js') }}"></script>
 <script src="{{ asset('js/sb-admin-2.js') }}"></script>
 <script src="{{ asset('anime/bootstrap-notify.js') }}"></script>
@@ -57,8 +58,6 @@
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover();
     });
-
-
 </script>
 
 @include('layouts.alerts')

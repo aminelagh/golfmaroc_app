@@ -57,7 +57,7 @@
             <h1>Bienvenue a GolMaroc-App</h1>
             <h3>Application de Gestion de ....</h3>
             <br>
-            <a href="/login" class="btn btn-dark btn-lg">Login</a>
+            <a href="{{ Route('login') }}" class="btn btn-dark btn-lg">Login</a>
         </div>
     </header>
 

@@ -8,21 +8,12 @@ use App\Models\SentinelRole;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 Route::get('/home', function () {
     return view('home');
-});
+})->name('home');
 
 Route::get('/s', function () {
-    $x =  \App\Models\Stock_taille::getTailles(1);
-
-    foreach($x as $taille)
-    {
-        echo "$taille->quantite <br>";
-        echo $x->count()."<br>";
-    }
-
-
 });
 
 /***************************************
@@ -82,7 +73,7 @@ Route::group(['middleware' => 'magas'], function () {
     //Magasin ----------------------------------------------------------------------------------------------------------
     Route::get('/magas/stocks/{p_id}', 'StockController@stocks')->name('magas.stocks');
     Route::get('/magas/stock/{p_id}', 'StockController@stock')->name('magas.stock');
-    
+
     Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
     Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
 
@@ -163,6 +154,13 @@ Route::get('/logout', 'AuthController@logout')->name('logout');
 /*********************************************************************************/
 
 
+/**************************************
+ * Routes Delete
+ ***************************************/
+Route::get('/direct/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('direct.delete');
+Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('magas.delete');
+/******************************************************************************/
+
 /***************************************
  * Routes Excel:
  ****************************************/
@@ -170,9 +168,7 @@ Route::get('/export/{p_table}', 'ExcelController@export')->name('export');
 /*********************************************************************************/
 
 
-/**************************************
- * Routes Update
- ***************************************
+/*
 Route::get('/admin/update/{p_table}/{p_id}', 'UpdateController@updateForm')->name('admin.update');
 Route::post('/admin/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->name('admin.submitUpdate');
 
@@ -183,18 +179,8 @@ Route::get('/magas/update/{p_table}/{p_id}', 'UpdateController@updateForm')->nam
 Route::post('/magas/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->name('magas.submitUpdate');
 /******************************************************************************/
 
-/**************************************
- * Routes Delete
- ***************************************/
 
-Route::get('/direct/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('direct.delete');
-Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('magas.delete');
-/******************************************************************************/
-
-
-/****************************************
- * Routes gestion des Stocks
- *****************************************
+/*
 Route::get('/direct/addStock/{p_id_magasin}', 'StockController@addStock')->name('direct.addStock');
 Route::post('/direct/submitAddStock', 'StockController@submitAddStock')->name('direct.submitAddStock');
 
