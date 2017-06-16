@@ -87,16 +87,16 @@
                         <input type="reset" value="Réinitialiser"
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
 
-                        <a href="{{ Route('magas.stocks',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.stocks') }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
                             le stock</a>
 
-                        <a href="{{ Route('magas.addStock',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.home',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","addStock") !!}>addStock</a>
 
-                        <a href="{{ Route('magas.addStockIN',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.home',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","stockIN") !!}>stockIN</a>
-                        <a href="{{ Route('magas.addStockOUT',['p_id'=>$data->id_magasin]) }}"
+                        <a href="{{ Route('magas.home',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","stockOUT") !!}>stockOUT</a>
                     </div>
                 </div>

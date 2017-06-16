@@ -113,8 +113,8 @@
                                                value="{{ old('quantite_max.'.($loop->index+1)) }}"></td>
                                     <td>
                                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal"
-                                                data-target="#myModal{{ $loop->index+1 }}" title="Visualiser l'article">
-                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                                data-target="#myModal{{ $loop->index+1 }}" title="Detail article">
+                                            <i class="glyphicon glyphicon-eye-open" ></i>
                                         </button>
                                     </td>
 

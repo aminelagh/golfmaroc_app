@@ -35,6 +35,23 @@ class StockController extends Controller
             return view('Espace_Magas.info-stock')->withData($data)->withMagasin($magasin);
     }
 
+    //afficher le stock du main magasin
+    public function main_stocks()
+    {
+        $data = Stock::where('id_magasin', 1)->get();
+        $magasin = Magasin::find(1);
+        $tailles = Taille_article::all();
+        //$tailles = Stock_taille::where()
+        //$articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
+
+        if ($data->isEmpty())
+            return redirect()->back()->withAlertWarning("Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
+        //return redirect()->route('magas.addStock', ['p_id' => $p_id])->withAlertInfo("Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
+        //view('Espace_Magas.add-stock-form')->with('alert_info',"Le stock de ce magasin est vide mais vous pouvez le créer immédiatement");//->back()->withInput()->with('alert_warning', 'Le stock de ce magasin est vide.');
+        else
+            return view('Espace_Magas.main_stock')->withData($data)->withMagasin($magasin)->withTailles($tailles);
+    }
+
     //afficher le stock du magasin
     public function stocks($p_id)
     {
