@@ -6,7 +6,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_success')!=null ?  session('title_success') : ' ' !!}",
         message: "{!! session('alert_success') !!}",
-        url: '{!! session('route_success')!=null ?  Route(session('route_success')) : '' !!}',
+        url: '{!! session('route_success')!=null ?  session('route_success') : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -39,7 +39,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_success or '' !!}",
         message: "{!! $alert_success !!}",
-        url: '{!! isset($route_success) ?  Route($route_success) : '' !!}',
+        url: '{!! isset($route_success) ?  $route_success : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -73,10 +73,10 @@ $.notify({
     @if(session('alert_info'))
 $.notify({
         // options
-        icon: 'glyphicon glyphicon-warning-sign',
+        //icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_info')!=null ?  session('title_info') : ' ' !!}",
         message: "{!! session('alert_info') !!}",
-        url: '{!! session('route_info')!=null ?  Route(session('route_info')) : '' !!}',
+        url: '{!! session('route_info')!=null ?  session('route_info') : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -109,7 +109,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_info or '' !!}",
         message: "{!! $alert_info !!}",
-        url: '{!! isset($route_info) ?  Route($route_info) : '' !!}',
+        url: '{!! isset($route_info) ?  $route_info : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -147,7 +147,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_warning')!=null ?  session('title_warning') : ' ' !!}",
         message: "{!! session('alert_warning') !!}",
-        url: '{!! session('route_warning')!=null ?  Route(session('route_warning')) : '' !!}',
+        url: '{!! session('route_warning')!=null ?  session('route_warning') : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -181,7 +181,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_warning or '' !!}",
         message: "{!! $alert_warning !!}",
-        url: '{!! isset($routewarning) ?  Route($route_warning) : '' !!}',
+        url: '{!! isset($routewarning) ?  $route_warning : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -217,7 +217,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_danger')!=null ?  session('title_danger') : ' ' !!}",
         message: "{!! session('alert_danger') !!}",
-        url: '{!! session('route_danger')!=null ?  Route(session('route_danger')) : '' !!}',
+        url: '{!! session('route_danger')!=null ?  session('route_danger') : '' !!}',
         target: '_blank'
     }, {
         // settings
@@ -251,7 +251,7 @@ $.notify({
         icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_danger or '' !!}",
         message: "{!! $alert_danger !!}",
-        url: '{!! isset($route_danger) ?  Route($route_danger) : '' !!}',
+        url: '{!! isset($route_danger) ?  $route_danger : '' !!}',
         target: '_blank'
     }, {
         // settings

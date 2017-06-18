@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\Marque;
 use App\Models\SentinelUser;
 use App\Models\SentinelRole;
+use \App\Models\Stock_taille;
 
 
 Route::get('/', function () {
@@ -12,8 +13,9 @@ Route::get('/', function () {
 Route::get('/home', function () {
     return view('home');
 })->name('home');
-
 Route::get('/s', function () {
+
+    dump( Session::all());
 });
 
 /***************************************
@@ -22,6 +24,42 @@ Route::get('/s', function () {
 Route::group(['middleware' => 'magas'], function () {
 
     Route::get('/magas', 'MagasController@home')->name('magas.home');
+
+    //Magasin ----------------------------------------------------------------------------------------------------------
+    Route::get('/magas/magasins', 'MagasController@magasins')->name('magas.magasins');
+    Route::get('/magas/magasin', 'MagasController@main_magasin')->name('magas.main_magasin');
+    Route::get('/magas/magasin/{p_id?}', 'MagasController@magasin')->name('magas.magasin');
+    Route::get('/magas/addMagasin', 'AddController@addMagasin')->name('magas.addMagasin');
+    Route::post('/magas/submitAddMagasin', 'AddController@submitAddMagasin')->name('magas.submitAddMagasin');
+    Route::post('/magas/submitUpdateMagasin', 'UpdateController@submitUpdateMagasin')->name('magas.submitUpdateMagasin');
+    //------------------------------------------------------------------------------------------------------------------
+    //Main-Magasin -----------------------------------------------------------------------------------------------------
+    //afficher le stock du magasin principal
+    Route::get('/magas/stocks', 'StockController@main_stocks')->name('magas.main_stocks');
+    Route::get('/magas/stocks/{p_id?}', 'StockController@stocks')->name('magas.stocks');
+
+    //afficher un article du stock en detail
+    Route::get('/magas/stock/{p_id}', 'StockController@stocks')->name('magas.stock');
+
+    //creer le stock
+    Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
+    Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
+
+    //main magasin stock IN et OUT .....................................................................................
+    Route::get('/magas/addStockIN', 'StockController@addStockIN')->name('magas.addStockIN');
+    Route::get('/magas/addStockOUT', 'StockController@addStockOUT')->name('magas.addStockOUT');
+    Route::post('/magas/submitAddStockIN', 'StockController@submitAddStockIN')->name('magas.submitAddStockIN');
+    Route::post('/magas/submitAddStockOUT', 'StockController@submitAddStockOUT')->name('magas.submitAddStockOUT');
+    //..................................................................................................................
+
+    //Transferer stock .................................................................................................
+    Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');
+    Route::get('/magas/addStockTransfertOUT/{p_id_magasin_destination}', 'StockController@addStockTransfertOUT')->name('magas.addStockTransfertOUT');
+    Route::post('/magas/submitAddStockTransfertIN', 'StockController@submitAddStockTransfertIN')->name('magas.submitAddStockTransfertIN');
+    Route::post('/magas/submitAddStockTransfertOUT', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');
+    //..................................................................................................................
+    //------------------------------------------------------------------------------------------------------------------
+
 
     //Marque -----------------------------------------------------------------------------------------------------------
     Route::get('/magas/marques', 'MagasController@marques')->name('magas.marques');
@@ -60,34 +98,6 @@ Route::group(['middleware' => 'magas'], function () {
     Route::post('/magas/submitAddArticle', 'AddController@submitAddArticle')->name('magas.submitAddArticle');
     Route::post('/magas/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('magas.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
-
-    //Magasin ----------------------------------------------------------------------------------------------------------
-    Route::get('/magas/magasins', 'MagasController@magasins')->name('magas.magasins');
-    Route::get('/magas/magasin', 'MagasController@main_magasin')->name('magas.main_magasin');
-    Route::get('/magas/magasin/{p_id?}', 'MagasController@magasin')->name('magas.magasin');
-    Route::get('/magas/addMagasin', 'AddController@addMagasin')->name('magas.addMagasin');
-    Route::post('/magas/submitAddMagasin', 'AddController@submitAddMagasin')->name('magas.submitAddMagasin');
-    Route::post('/magas/submitUpdateMagasin', 'UpdateController@submitUpdateMagasin')->name('magas.submitUpdateMagasin');
-    //------------------------------------------------------------------------------------------------------------------
-
-    //Main-Magasin -----------------------------------------------------------------------------------------------------
-    //afficher le stock du magasin principal
-    Route::get('/magas/stocks', 'StockController@main_stocks')->name('magas.main_stocks');
-    Route::get('/magas/stocks/{p_id?}', 'StockController@stocks')->name('magas.stocks');
-
-    //afficher un article du stock en detail
-    Route::get('/magas/stock/{p_id}', 'StockController@stocks')->name('magas.stock');
-
-    //creer le stock
-    Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
-    Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
-
-    //main magasin stock IN
-    Route::get('/magas/addStockIN}', 'StockController@addStockIN')->name('magas.addStockIN');
-    Route::post('/magas/submitAddStockIN', 'StockController@submitAddStockIN')->name('magas.submitAddStockIN');
-
-    //------------------------------------------------------------------------------------------------------------------
-
 
 });
 

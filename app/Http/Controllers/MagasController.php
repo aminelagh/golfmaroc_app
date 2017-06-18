@@ -103,7 +103,7 @@ class MagasController extends Controller
         if ($data == null)
             return redirect()->back()->with('alert_warning', "L'agent choisi n'existe pas.");
 
-        return view('Espace_Magas.info-agent')->withData($data)->withArticles($articles);
+        return view('Espace_Magas.info-agent')->withData($data);//->withArticles($articles);
     }
 
     public function article($p_id)

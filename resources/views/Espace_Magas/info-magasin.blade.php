@@ -91,9 +91,40 @@
                         <input type="reset" value="Réinitialiser"
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
 
+                        <div class="btn-group">
+                            <button type="button"
+                                    class="btn btn-danger" {!! setPopOver("","Afficher le stock du magasin: ".$data->libelle) !!}>
+                                Afficher le stock
+                            </button>
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{{ Route('magas.addStockTransfertOUT',['p_id_magasin_destination' => $data->id_magasin ]) }}"
+                                            {!! setPopOver("","Transferer des articles depuis le stock du magasin principal vers le stock de ce magasin") !!}>
+                                        Transferer vers ce magasin</a>
+                                </li>
+                                <li>
+                                    <a href="{{ Route('magas.addStockTransfertIN',['p_id_magasin_source'=>$data->id_magasin ]) }}" {!! setPopOver("","Transferer des articles depuis le stock de ce magasin vers le stock du magasin principal") !!}>
+                                        transferer depuis ce magasin</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#" {!! setPopOver("","Creer le stock de ce magasin") !!}>Creer le stock</a>
+                                </li>
+                            </ul>
+                        </div>
+
                         <a href="{{ Route('magas.stocks',['p_id'=>$data->id_magasin]) }}"
                            class="btn btn-outline btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
                             le stock</a>
+
+                        <a href="{{ Route('magas.addStockTransfertIN',[ 'p_id_magasin_source' => $data->id_magasin]) }}"
+                           class="btn btn-outline btn-success" {!! setPopOver("","Transferer des articles depuis le stock du magasin principal vers le stock de ce magasin") !!}>Transferer
+                            vers magasin</a>
+
                     </div>
                 </div>
 

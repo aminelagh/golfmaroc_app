@@ -3,7 +3,7 @@
 @section('title') Ajouter le  Stock du magasin {{ $magasin->libelle }} @endsection
 
 @section('main_content')
-    <h1 class="page-header">creation du stock du magasin: <strong>{{ $magasin->libelle }}</strong></h1>
+    <h3 class="page-header">creation du stock du magasin: <strong>{{ $magasin->libelle }}</strong></h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>

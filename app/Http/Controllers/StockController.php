@@ -20,11 +20,13 @@ use App\Models\Trans_article;
 use App\Models\Paiement;
 use App\Models\Mode_paiement;
 use \Exception;
+use Illuminate\Support\Facades\Session;
 
 class StockController extends Controller
 {
     public function stock($p_id)
     {
+        return "StcckController@stock(id)";
         $data = Stock_taille::where('id_stock', $p_id)->get();
         $magasin = Magasin::find($p_id);
 
@@ -35,84 +37,38 @@ class StockController extends Controller
             return view('Espace_Magas.info-stock')->withData($data)->withMagasin($magasin);
     }
 
-    //afficher le stock du main magasin
+    //afficher le stock du main magasin --------------------------------------------------------------------------------
     public function main_stocks()
     {
         $data = Stock::where('id_magasin', 1)->get();
         $magasin = Magasin::find(1);
         $tailles = Taille_article::all();
-        //$tailles = Stock_taille::where()
-        //$articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
 
         if ($data->isEmpty())
-            return redirect()->back()->withAlertWarning("Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
-        //return redirect()->route('magas.addStock', ['p_id' => $p_id])->withAlertInfo("Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
-        //view('Espace_Magas.add-stock-form')->with('alert_info',"Le stock de ce magasin est vide mais vous pouvez le créer immédiatement");//->back()->withInput()->with('alert_warning', 'Le stock de ce magasin est vide.');
+            return redirect()->back()->withAlertWarning("Le stock du magasin principal est vide, vous devez le créer.")->withRouteWarning('/magas/addStock/' . 1);
         else
-            return view('Espace_Magas.main_stock')->withData($data)->withMagasin($magasin)->withTailles($tailles);
+            return view('Espace_Magas.liste-main_stocks')->withData($data)->withMagasin($magasin)->withTailles($tailles);
     }
 
     //afficher le stock du magasin
     public function stocks($p_id)
     {
+        if ($p_id == 1)
+            return redirect()->back()->withInput()->withAlertInfo("Vous ne pouvez pas accéder à ce magasin de cette manière.");
+
         $data = Stock::where('id_magasin', $p_id)->get();
         $magasin = Magasin::find($p_id);
         $tailles = Taille_article::all();
-        //$tailles = Stock_taille::where()
-        //$articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
 
         if ($data->isEmpty())
-            return redirect()->back()->withAlertWarning("Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
-        //return redirect()->route('magas.addStock', ['p_id' => $p_id])->withAlertInfo("Le stock de ce magasin est vide, vous pouvez commencer par le créer.");
-        //view('Espace_Magas.add-stock-form')->with('alert_info',"Le stock de ce magasin est vide mais vous pouvez le créer immédiatement");//->back()->withInput()->with('alert_warning', 'Le stock de ce magasin est vide.');
+            return redirect()->back()->withAlertWarning("Le stock de ce magasin est vide, vous pouvez commencer par le créer.")->withRouteWarning('/magas/addStock/' . $p_id);
         else
             return view('Espace_Magas.liste-stocks')->withData($data)->withMagasin($magasin)->withTailles($tailles);
     }
+    //------------------------------------------------------------------------------------------------------------------
 
-    public function submitAddStockIN()
-    {
-        //dump(request()->all());
-
-        return Stock::addStockIN(request());
-
-        $id_magasin = request()->get('id_magasin');
-        $id_stocks = request()->get('id_stock');
-        $quantiteINs = request()->get('quantiteIN');
-        $id_taille_artiles = request()->get('id_taille_article');
-        //$quantite = request()->get('quantite');
-
-        $id_stransaction = Transaction::getNextID();
-
-
-        $transaction = new Transaction();
-        $transaction->id_stransaction = $id_stransaction;
-        $transaction->id_magasin = $id_magasin;
-        $transaction->id_type_transaction = Type_transaction::where('libelle', "in")->get()->first()->id_type_transaction;
-        $transaction->annulee = false;
-
-
-        foreach ($id_stocks as $id_stock) {
-            if (isset($quantiteINs[$id_stock])) {
-
-                $stock = Stock::find($id_stock);
-                echo "Stock: " . $stock->id_stock . "<br> article: " . Article::getDesignation($stock->id_article) . " | quantite_min: " . $stock->quantite_min . "| quantite_max: " . $stock->quantite_max . " <br> ";
-
-                $i = 1;
-                foreach ($quantiteINs[$id_stock] as $quantite) {
-                    if ($quantite == null || $quantite == 0) //continue;
-                        echo "Skip: ";
-                    else
-                        echo "handling... ";
-                    echo " ( " . $quantite . " - " . Taille_article::getTaille($id_taille_artiles[$id_stock][$i]) . " ) , ";
-                    $i++;
-                }
-            }
-        }
-    }
-
-
-    public
-    function addStock($p_id)
+    //Creation du stock de tt les magasins -----------------------------------------------------------------------------
+    public function addStock($p_id)
     {
         $magasin = Magasin::find($p_id);
         $articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
@@ -126,8 +82,7 @@ class StockController extends Controller
         return view('Espace_Magas.add-stock-form')->withMagasin($magasin)->withArticles($articles);
     }
 
-    public
-    function submitAddStock(Request $request)
+    public function submitAddStock(Request $request)
     {
         return Stock::addStock($request);
 
@@ -182,42 +137,85 @@ class StockController extends Controller
                         return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' articles.');
                 }*/
     }
+    //------------------------------------------------------------------------------------------------------------------
 
-    public
-    function addStockIN($p_id_stock)
+    //Stock IN for main magasin ----------------------------------------------------------------------------------------
+    public function addStockIN()
     {
-        $data = Stock::find($p_id_stock);
+        $p_id_magasin = Session::get('id_magasin');
+        $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data == null)
             return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
 
-        $magasin = Magasin::find(Stock::find($p_id_stock)->id_magasin);
+        $magasin = Magasin::find(1);
         $tailles = Taille_article::all();
-        $article = Article::find(Stock::find($p_id_stock)->id_article);
-
-        $article_tailles = Stock_taille::where('id_stock', $p_id_stock)->get();
-
-        //$articles = collect(DB::select("call getArticlesForStock(" . $p_id . "); "));
-
-        $error = "";
-        if ($magasin == null)
-            $error = $error . "<li>Le magasin choisi n'existe pas.";
-
-        if ($article == null)
-            $error = $error . "<li>L'article choisi n'existe pas.";
-        if ($error != "")
-            return redirect()->back()->withInput()->withAlertWarning($error);
-
-        //return redirect()->back()->withInput()->with('alert_warning', "La base de données des articles est vide, veuillez ajouter les articles avant de procéder à la création des stocks.");
-
-        return view('Espace_Magas.add-stockIN-form')->withMagasin($magasin)->withData($data)->withTaille($tailles)->withArticle($article)->withArticleTailles($article_tailles);
+        return view('Espace_Magas.add-stockIN-form')->withMagasin($magasin)->withData($data)->withTailles($tailles);
     }
 
+    public function submitAddStockIN()
+    {
+        return Stock::addStockIN(request());
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Stock OUT for main magasin ----------------------------------------------------------------------------------------
+    public function addStockOUT()
+    {
+        $p_id_magasin = Session::get('id_magasin');
+        $data = Stock::where('id_magasin', $p_id_magasin)->get();
+        if ($data == null)
+            return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
+
+        $magasin = Magasin::find(1);
+        $tailles = Taille_article::all();
+        return view('Espace_Magas.add-stockOUT-form')->withMagasin($magasin)->withData($data)->withTailles($tailles);
+    }
+
+    public function submitAddStockOUT()
+    {
+        return Stock::addStockOUT(request());
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Stock OUT for main magasin ----------------------------------------------------------------------------------------
+    public function addStockTransfertIN($p_id_magasin_source)
+    {
+        $source = Magasin::find($p_id_magasin_source);
+        $destination = Magasin::find(1);
+        echo "magasin source: ".$source->id_magasin." -> ".$source->libelle;
+        echo "<br>";
+        echo "magasin destination: ".$destination->id_magasin." -> ".$destination->libelle;
+
+        return '.';
+
+        $p_id_magasin = Session::get('id_magasin');
+        $data = Stock::where('id_magasin', $p_id_magasin)->get();
+        if ($data == null)
+            return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
+
+        $magasin = Magasin::find(1);
+        $tailles = Taille_article::all();
+        return view('Espace_Magas.add-stockOUT-form')->withMagasin($magasin)->withData($data)->withTailles($tailles);
+    }
+    public function addStockTransfertOUT($p_id_magasin_destination)
+    {
+        $destination = Magasin::find($p_id_magasin_destination);
+        $source = Magasin::find(1);
+        echo "magasin source: ".$source->id_magasin." -> ".$source->libelle;
+        echo "<br>";
+        echo "magasin destination: ".$destination->id_magasin." -> ".$destination->libelle;
+
+        return '.';
+    }
+
+    public function submitAddStockTransfert()
+    {
+        //return Stock::addStockTransfert(request());
+    }
+    //------------------------------------------------------------------------------------------------------------------
 
     /*****************************************************************************
      * Lister Stocks
      *****************************************************************************/
-    public
-    function listerStocks($p_id_magasin)
+    public function listerStocks($p_id_magasin)
     {
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data->isEmpty())
@@ -229,8 +227,7 @@ class StockController extends Controller
     /*****************************************************************************
      * Afficher le fomulaire d'ajout pour le stock
      *****************************************************************************/
-    public
-    function addStockaa($p_id_magasin)
+    public function addStockaa($p_id_magasin)
     {
         $magasin = Magasin::where('id_magasin', $p_id_magasin)->first();        //$articles = Article::all();
 
@@ -252,8 +249,7 @@ class StockController extends Controller
     /*****************************************************************************
      * Afficher le formulaire d'alimentation de stock (liste du stock )
      ******************************************************************************/
-    public
-    function stockIN($p_id)
+    public function stockIN($p_id)
     {
         return 'StockController@StockIN';
 
@@ -271,8 +267,7 @@ class StockController extends Controller
             return view('Espace_Magas.supply-stock_Magasin-form')->with(['data' => $data, 'magasin' => $magasin]);
     }
 
-    public
-    function StockOUT($p_id)
+    public function StockOUT($p_id)
     {
         return 'StockController@StockOUT';
     }
@@ -280,8 +275,7 @@ class StockController extends Controller
     /*****************************************************************************
      * Valider le formulaire d'alimentation de stock
      ******************************************************************************/
-    public
-    function submitStockIN()
+    public function submitStockIN()
     {
 
         $id_magasin = request()->get('id_magasin');

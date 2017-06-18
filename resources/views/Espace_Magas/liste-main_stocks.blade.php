@@ -14,10 +14,18 @@
         <li class="breadcrumb-item active">Stock du magasin: {{ $magasin->libelle  }}</li>
     </ol>
 
+    <div class="row" align="center">
+        <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockIN') }}">
+            <i class="glyphicon glyphicon-arrow-down"></i> Entrée de stock</a>
+        <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockOUT') }}">
+            Sortie de stock <i class="glyphicon glyphicon-arrow-up"></i> </a>
+    </div>
+
+    <br>
+
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
-
 
                 @foreach( $data as $item )
 
@@ -138,7 +146,6 @@
 
                 @endforeach
 
-
             </div>
         </div>
     </div>
@@ -151,7 +158,6 @@
 
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
-
 
 @section('scripts')
     <script>
