@@ -92,10 +92,10 @@
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
 
                         <div class="btn-group">
-                            <button type="button"
-                                    class="btn btn-danger" {!! setPopOver("","Afficher le stock du magasin: ".$data->libelle) !!}>
+                            <a href="{{ Route('magas.stocks',['p_id'=>$data->id_magasin]) }}"
+                               class="btn btn-danger" {!! setPopOver("","Afficher le stock du magasin: ".$data->libelle) !!}>
                                 Afficher le stock
-                            </button>
+                            </a>
                             <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
@@ -122,7 +122,8 @@
                             le stock</a>
 
                         <a href="{{ Route('magas.addStock',[ 'p_id' => $data->id_magasin]) }}"
-                           class="btn btn-outline btn-success" {!! setPopOver("Creer le stock du magasin","Définir l'ensemble des articles qui peuvent être disponible dans ce magasin.") !!}>Creer stock</a>
+                           class="btn btn-outline btn-success" {!! setPopOver("Creer le stock du magasin","Définir l'ensemble des articles qui peuvent être disponible dans ce magasin.") !!}>Creer
+                            stock</a>
 
                     </div>
                 </div>
@@ -149,8 +150,7 @@
                                 <a class="toggle-vis" data-column="3">Designation</a> -
                                 <a class="toggle-vis" data-column="4">Couleur</a> -
                                 <a class="toggle-vis" data-column="5">Sexe</a> -
-                                <a class="toggle-vis" data-column="6">Prix d'achat</a> -
-                                <a class="toggle-vis" data-column="7">Prix de vente</a>
+                                <a class="toggle-vis" data-column="6">Prix</a>
                             </div>
 
                             <table id="tableArticles"
@@ -181,16 +181,15 @@
                                 </tfoot>
 
                                 <tbody>
-                                @foreach( $articles as $item )
+                                @foreach( $stock as $item )
                                     <tr>
                                         <td>{{ $loop->index+1 }}</td>
-                                        <td align="right">{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</td>
-                                        <td align="right">{{ $item->code }}</td>
-                                        <td>{{ $item->designation }}</td>
-                                        <td>{{ $item->couleur }}</td>
-                                        <td>{{ $item->sexe }}</td>
-                                        <td align="right">{{ $item->prix_a }} DH</td>
-                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!}
+                                        <td align="right">{{ \App\Models\Article::getRef($item->id_article) }} {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '. (\App\Models\Article::getAlias($item->id_article)) : '' }}</td>
+                                        <td align="right">{{ \App\Models\Article::getCode($item->id_article) }}</td>
+                                        <td>{{ \App\Models\Article::getDesignation($item->id_article) }}</td>
+                                        <td>{{ \App\Models\Article::getCouleur($item->id_article) }}</td>
+                                        <td>{{ \App\Models\Article::getSexe($item->id_article) }}</td>
+                                        <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}
                                             DH
                                         </td>
                                         <td>
@@ -210,8 +209,8 @@
                                                             Plus de detail</a>
                                                     </li>
                                                     <li>
-                                                        <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation_c }} ?')"
-                                                           href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
+                                                        <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
+                                                           href="{{ Route('magas.home') }}"
                                                                 {!! setPopOver("","Effacer l'article") !!}><i
                                                                     class="glyphicon glyphicon-trash"></i>
                                                             Effacer</a>
@@ -248,15 +247,9 @@
                                                         </p>
                                                         <p><b>Couleur</b> {{ $item->couleur }}</p>
                                                         <p><b>sexe</b> {{ $item->sexe }}</p>
-                                                        <p><b>Prix d'achat</b></p>
-                                                        <p>{{ number_format($item->prix_a, 2) }} DH
-                                                            HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
-                                                            Dhs TTC </p>
-                                                        <p><b>Prix de vente</b></p>
-                                                        <p>{{ number_format($item->prix_vente, 2) }} DH
-                                                            HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
-                                                            DH TTC </p>
-                                                        <p>{{ $item->designation_l }}</p>
+                                                        <p><b>Prix</b></p>
+                                                        <p>{{ \App\Models\Article::getPrix_TTC(($item->prix_v)) }} DH
+                                                            TTC</p>
 
                                                         @if( $item->image != null) <img
                                                                 src="{{ $item->image }}"

@@ -37,7 +37,7 @@ class StockController extends Controller
             return view('Espace_Magas.info-stock')->withData($data)->withMagasin($magasin);
     }
 
-    //afficher le stock du main magasin --------------------------------------------------------------------------------
+    //afficher le stock du magasin  et du main -------------------------------------------------------------------------
     public function main_stocks()
     {
         $data = Stock::where('id_magasin', 1)->get();
@@ -50,7 +50,6 @@ class StockController extends Controller
             return view('Espace_Magas.liste-main_stocks')->withData($data)->withMagasin($magasin)->withTailles($tailles);
     }
 
-    //afficher le stock du magasin
     public function stocks($p_id)
     {
         if ($p_id == 1)
