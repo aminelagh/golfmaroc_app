@@ -231,4 +231,65 @@ class Stock extends Model
         //--------------------------------------------------------------------------------------------------------------
         return redirect()->back()->withAlertSuccess("Sortie de stock effectuée avec succès");
     }
+
+    //Transfert de stock OUT: main magasin vers X(request)
+    public static function addStockTransfertOUT(Request $request)
+    {
+        //variables du formulaires -------------------------------------------------------------------------------------
+        $id_magasin_destination = request()->get('id_magasin_destination');
+        $id_stocks = request()->get('id_stock');
+        $quantiteOUTs = request()->get('quantiteOUT');
+        //$quantite = request()->get('quantite');
+        $id_taille_articles = request()->get('id_taille_article');
+        //--------------------------------------------------------------------------------------------------------------
+
+        //verifier la validitee des donnees ----------------------------------------------------------------------------
+        $hasData = false;
+        foreach ($id_stocks as $id_stock) {
+            if (isset($quantiteOUTs[$id_stock])) {
+                $i = 1;
+                foreach ($quantiteOUTs[$id_stock] as $quantiteOUT) {
+                    if ($quantiteOUT != null && $quantiteOUT > 0) {
+                        $hasData = true;
+                    }
+                    $i++;
+                }
+            }
+        }
+        if (!$hasData)
+            return redirect()->back()->withInput()->withAlertInfo("Remplissez les formulaires dans les onglets <b>Stock</b>");
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Creation d'une transaction -----------------------------------------------------------------------------------
+        $id_transaction = Transaction::getNextID();
+        Transaction::createTransactionTransfertOUT($id_transaction, $id_magasin_destination);
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Creation des trans_articles ----------------------------------------------------------------------------------
+        foreach ($id_stocks as $id_stock) {
+            if (isset($quantiteOUTs[$id_stock])) {
+                //$stock = Stock::find($id_stock);
+                $i = 1;
+                foreach ($quantiteOUTs[$id_stock] as $quantite) {
+                    if ($quantite != null && $quantite != 0) {
+                        //verifier que la taille existe dans Stock_taille ----------------------------------------------
+                        if (Stock_taille::tailleExiste($id_stock, $id_taille_articles[$id_stock][$i])) {
+                            //decrementer le stock -------------------------------------------------------------
+                            Stock_taille::decrementer($id_stock, $id_taille_articles[$id_stock][$i], $quantite);
+                            //----------------------------------------------------------------------------------
+                        } else {
+                            return redirect()->back()->withInput()->withAlertDanger("Une erreur s'est produite lors de la sortie de stock");
+                        }
+                        //----------------------------------------------------------------------------------------------
+                        //Creer une nouvelle ligne dans: trans_article -------------------------------------------------
+                        Trans_article::create($id_transaction, self::getIdArticle($id_stock), $id_taille_articles[$id_stock][$i], $quantite);
+                        //----------------------------------------------------------------------------------------------
+                    }
+                    $i++;
+                }
+            }
+        }
+        //--------------------------------------------------------------------------------------------------------------
+        return redirect()->back()->withAlertSuccess("Sortie de stock effectuée avec succès");
+    }
 }

@@ -54,4 +54,19 @@ class Transaction extends Model
         }
     }
 
+    public static function createTransactionTransfertOUT($id_transaction,$id_magasin_destination)
+    {
+        $item = new Transaction();
+        $item->id_transaction = $id_transaction;
+        $item->id_magasin = $id_magasin_destination;
+        $item->id_user = Session::get('id_user');
+        $item->id_type_transaction = Type_transaction::where('libelle', "transfertOUT")->get()->first()->id_type_transaction; //4
+        $item->annulee = false;
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withAlertDanger("Erreur de creation de la transaction.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+    }
+
 }

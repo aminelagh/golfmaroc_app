@@ -1,205 +1,143 @@
 @extends('layouts.main_master')
 
-@section('title') Stock du main magasin: {{ $magasin->libelle }}  @endsection
+@section('title') Stock du magasin: {{ $magasin->libelle }}  @endsection
 
 @section('main_content')
 
-    <h3 class="page-header">Stock du main magasin:
+    <h3 class="page-header">Stock du magasin:
         <strong>{{ $magasin->libelle }}</strong></h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item ">{{ $magasin->libelle  }}</li>
+        <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
         <li class="breadcrumb-item active">Stock du magasin: {{ $magasin->libelle  }}</li>
     </ol>
+
+    <br>
 
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
 
-                {{-- *************** form ***************** --}}
-                <form role="form" name="myForm" id="myForm" method="post"
-                      action="{{ Route('magas.submitAddStockIN') }}">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
+                @foreach( $data as $item )
 
-                    @foreach( $data as $item )
-                        <input type="hidden" name="id_stock[{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
+                    {{-- Container --}}
+                    <div class="panel panel-{{ \App\Models\Stock::getStockState($item->id_stock) }}">
+                        <div class="panel-heading">
+                            <h4><b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b></h4>
+                        </div>
 
+                        <div class="panel-body">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#article_{{ $loop->index+1 }}" data-toggle="tab">Article</a>
+                                </li>
+                                <li>
+                                    <a href="#stock_{{ $loop->index+1 }}" data-toggle="tab">Stock</a>
+                                </li>
+                            </ul>
 
-                        {{-- Container --}}
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4><b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b></h4>
-                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="article_{{ $loop->index+1 }}">
+                                    <table class="table table-striped table-bordered table-hover">
+                                        <tr>
+                                            <td align="right">Marque</td>
+                                            <th>{{ \App\Models\Article::getMarque($item->id_article) }}</th>
+                                            <td align="right">Categorie</td>
+                                            <th>{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
+                                            <td align="right">Fournisseur</td>
+                                            <th>{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Code</td>
+                                            <th>{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                            <td align="right">Reference</td>
+                                            <th>{{ \App\Models\Article::getRef($item->id_article) }}
+                                                {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article) : '' }}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Couleur</td>
+                                            <th>{{ \App\Models\Article::getCouleur($item->id_article) }}</th>
+                                            <td align="right">Sexe</td>
+                                            <th>{{ \App\Models\Article::getSexe($item->id_article) }}</th>
+                                            <td align="right">Prix</td>
+                                            <th align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}
+                                                Dhs
+                                            </th>
+                                        </tr>
 
-                            <div class="panel-body">
-                                <ul class="nav nav-tabs">
-                                    <li class="active">
-                                        <a href="#article_{{ $loop->index+1 }}" data-toggle="tab">Article</a>
-                                    </li>
-                                    <li>
-                                        <a href="#stock_{{ $loop->index+1 }}" data-toggle="tab">Stock</a>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content">
-                                    <div class="tab-pane fade in active" id="article_{{ $loop->index+1 }}">
-                                        <table class="table table-striped table-bordered table-hover">
+                                        @if( \App\Models\Stock_taille::hasTailles($item->id_stock))
                                             <tr>
-                                                <td align="right">Marque</td>
-                                                <th>{{ \App\Models\Article::getMarque($item->id_article) }}</th>
-                                                <td align="right">Categorie</td>
-                                                <th>{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
-                                                <td align="right">Fournisseur</td>
-                                                <th>{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                <td colspan="6" align="center"><b><i>Etat du stock</i></b></td>
                                             </tr>
-                                            <tr>
-                                                <td align="right">Code</td>
-                                                <th>{{ \App\Models\Article::getCode($item->id_article) }}</th>
-                                                <td align="right">Reference</td>
-                                                <th>{{ \App\Models\Article::getRef($item->id_article) }}
-                                                    {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article) : '' }}
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td align="right">Couleur</td>
-                                                <th>{{ \App\Models\Article::getCouleur($item->id_article) }}</th>
-                                                <td align="right">Sexe</td>
-                                                <th>{{ \App\Models\Article::getSexe($item->id_article) }}</th>
-                                                <td align="right">Prix</td>
-                                                <th align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }} Dhs</th>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="tab-pane fade" id="stock_{{ $loop->index+1 }}">
-                                        <table id="example_{{$loop->index+1}}"
-                                               class="table table-striped table-bordered table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>Taille</th>
-                                                <th>Quantite disponible</th>
-                                                <th>Quantite a ajouter</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @if( \App\Models\Stock_taille::hasTailles($item->id_stock))
+                                            @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
+                                                <tr>
+                                                    <td align="right">
+                                                        Taille
+                                                        <b>{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</b>
+                                                    </td>
+                                                    <td colspan="5">
+                                                        <div class="progress">
+                                                            <div style="width: {{ ($taille->quantite/$item->quantite_max)*100 }}%"
+                                                                 class="progress-bar progress-bar-{{ \App\Models\Stock::getStockState($item->id_stock) }} progress-bar-striped active">
+                                                                {{ ($taille->quantite/$item->quantite_max)*100 }}%
+                                                            </div>
+                                                        </div>
 
-                                                @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
-                                                    <tr>
-                                                        <input type="hidden"
-                                                               name="id_taille_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
-                                                               value="{{ $taille->id_taille_article }}"/>
+                                                    </td>
 
-                                                        <td align="right">{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</td>
-                                                        <td align="right">{{ $taille->quantite }}</td>
-                                                        <td><input type="number" min="0" placeholder="Quantite IN"
-                                                                   width="5" class="form-control"
-                                                                   name="quantiteIN[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
-                                                                   value="{{ old('quantiteIN.'.($item->id_stock).'.'.($loop->index+1).'') }}">
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="6" align="center"><b><i>Stock vide</i></b></td>
+                                            </tr>
+                                        @endif
 
-                                            </tbody>
-                                            <tfoot>
-                                            <td colspan="3" align="center">
-                                                <button id="addRow_{{ $loop->index+1 }}"
-                                                        form="NotFormSubmiForm"
-                                                        class="btn btn-outline btn-primary btn-sm"
-                                                        {!! $loop->index==0 ?  setPopOverDown("","Cliquez ici pour ajouter une nouvelle taille pour cet article") : setPopOver("","Cliquez ici pour ajouter une nouvelle taille pour cet article") !!}>
-                                                    Ajouter une taille
-                                                </button>
-                                            </td>
-                                            </tfoot>
-                                        </table>
-                                    </div>
+
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="stock_{{ $loop->index+1 }}">
+                                    <table id="example_{{$loop->index+1}}"
+                                           class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Taille</th>
+                                            <th>Quantite disponible</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @if( \App\Models\Stock_taille::hasTailles($item->id_stock))
+                                            @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
+                                                <tr>
+
+
+                                                    <td align="right">{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</td>
+                                                    <td align="right"> {{ ($taille->quantite/$item->quantite_max)*100 }}
+                                                        % ({{ $taille->quantite }} unites)
+                                                    </td>
+
+
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="3" align="center">Non disponible</td>
+                                            </tr>
+                                        @endif
+
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        {{-- /.Container --}}
+                    </div>
+                    {{-- /.Container --}}
 
-
-                        <script type="text/javascript" charset="utf-8">
-                            $(document).ready(function () {
-
-                                var t_{{$loop->index+1}} = $('#example_{{$loop->index+1}}').DataTable({
-                                    "ordering": false,
-                                    "paging": false,
-                                    "searching": false,
-                                    "info": true,
-                                    "language": {
-                                        "emptyTable": "Aucune taille n'est disponible, pour ajouter des tailles cliquez sur le bouton en dessous",
-                                        "lengthMenu": "Display _MENU_ records per page",
-                                        "zeroRecords": "Nothing found - sorry",
-                                        "info": "Showing page _PAGE_ of _PAGES_",
-                                        "infoEmpty": "No records available",
-                                        "infoFiltered": "(filtered from _MAX_ total records)"
-                                    },
-                                });
-                                var counter = 1;
-
-                                $('#addRow_{{ $loop->index+1 }}').on('click', function () {
-
-                                    @if( \App\Models\Stock_taille::hasTailles($item->id_stock))
-
-                                    if (counter == 1) {
-                                        counter = {{ count(\App\Models\Stock_taille::getTailles($item->id_stock))+1 }};
-                                    }
-
-                                    t_{{$loop->index+1}}.row.add([
-                                        '<select name="id_taille_article[{{ $item->id_stock }}][' + counter + ']" class="form-control" form="myForm">' +
-                                        @foreach($tailles as $taille)
-                                            '<option value="{{ $taille->id_taille_article }}">{{ $taille->taille }}</option>' +
-                                        @endforeach
-                                            '</select>',
-                                        '0',
-                                        '<input type="number" min="0" placeholder="Quantite IN" width="5" ' +
-                                        'class="form-control" name="quantiteIN[{{ $item->id_stock }}][' + counter + ']" ' +
-                                        'value="">'
-                                    ]).draw(false);
-
-                                    @else
-
-                                    if (counter == 1) {
-                                        /*t_{{$loop->index+1}}.row.add([
-                                         '<b>Taille</b>',
-                                         '<b>Quantite</b>',
-                                         '<b>Quantite in</b>'
-                                         ]).draw(false);*/
-                                    }
-
-                                    t_{{$loop->index+1}}.row.add([
-                                        '<select name="id_taille_article[{{ $item->id_stock }}][' + counter + ']" class="form-control">' +
-                                        @foreach($tailles as $taille)
-                                            '<option value="{{ $taille->id_taille_article }}">{{ $taille->taille }}</option>' +
-                                        @endforeach
-                                            '</select>',
-                                        '0',
-                                        '<input type="number" min="0" placeholder="Quantite IN" width="5" ' +
-                                        'class="form-control" name="quantiteIN[{{ $item->id_stock }}][' + counter + ']" ' +
-                                        'value="">',
-                                    ]).draw(false);
-
-
-                                    @endif
-                                        counter++;
-                                });
-
-                                //$('#addRow_{{$loop->index+1}}').click();
-
-                                //popover
-                                $('[data-toggle="popover"]').popover();
-                            });
-                        </script>
-
-                    @endforeach
-
-                    <input type="submit" value="Ajouter StockIN" class="btn btn-outline btn-success"
-                           formtarget="_blank">
-                </form>
+                @endforeach
 
             </div>
         </div>
@@ -213,7 +151,6 @@
 
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
-
 
 @section('scripts')
     <script>

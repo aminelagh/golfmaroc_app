@@ -121,9 +121,8 @@
                            class="btn btn-outline btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
                             le stock</a>
 
-                        <a href="{{ Route('magas.addStockTransfertIN',[ 'p_id_magasin_source' => $data->id_magasin]) }}"
-                           class="btn btn-outline btn-success" {!! setPopOver("","Transferer des articles depuis le stock du magasin principal vers le stock de ce magasin") !!}>Transferer
-                            vers magasin</a>
+                        <a href="{{ Route('magas.addStock',[ 'p_id' => $data->id_magasin]) }}"
+                           class="btn btn-outline btn-success" {!! setPopOver("Creer le stock du magasin","Définir l'ensemble des articles qui peuvent être disponible dans ce magasin.") !!}>Creer stock</a>
 
                     </div>
                 </div>
