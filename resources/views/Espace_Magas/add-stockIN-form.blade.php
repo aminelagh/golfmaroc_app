@@ -25,9 +25,9 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
 
+
                     @foreach( $data as $item )
                         <input type="hidden" name="id_stock[{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
-
 
                         {{-- Container --}}
                         <div class="panel panel-default">
@@ -124,7 +124,6 @@
                         </div>
                         {{-- /.Container --}}
 
-
                         <script type="text/javascript" charset="utf-8">
                             $(document).ready(function () {
 
@@ -148,7 +147,7 @@
 
                                     @if( \App\Models\Stock_taille::hasTailles($item->id_stock))
 
-                                    if (counter == 1) {
+                                    if (counter === 1) {
                                         counter = {{ count(\App\Models\Stock_taille::getTailles($item->id_stock))+1 }};
                                     }
 
@@ -169,7 +168,6 @@
                                     if (counter == 1) {
                                         /*t_{{$loop->index+1}}.row.add([
                                          '<b>Taille</b>',
-                                         '<b>Quantite</b>',
                                          '<b>Quantite in</b>'
                                          ]).draw(false);*/
                                     }
@@ -200,8 +198,7 @@
 
                     @endforeach
                     <div class="row" align="center">
-                        <input type="submit" value="Valider l'entrée de stock"
-                               class="btn btn-outline btn-success">
+                        <input type="submit" value="Valider l'entrée de stock" class="btn btn-outline btn-success">
                     </div>
 
                 </form>

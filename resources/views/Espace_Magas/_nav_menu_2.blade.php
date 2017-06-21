@@ -36,6 +36,29 @@
                 </ul>
             </li>
 
+            <li>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des transactions <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="/home">Entrees de stock</a>
+                    </li>
+                    <li>
+                        <a href="/home">Sorties de stock</a>
+                    </li>
+                    <li>
+                        <a href="/home">Transfert IN</a>
+                    </li>
+                    <li>
+                        <a href="/home">Transfert OUT</a>
+                    </li>
+
+                    <li>
+                        <a href="/home">Ventes</a>
+                    </li>
+
+                </ul>
+            </li>
+
         </ul>
     </div>
 </div>

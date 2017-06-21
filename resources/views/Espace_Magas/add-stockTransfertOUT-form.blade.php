@@ -92,6 +92,10 @@
                                                 @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
                                                     <tr>
                                                         <input type="hidden"
+                                                               name="id_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
+                                                               value="{{ $item->id_article }}"/>
+
+                                                        <input type="hidden"
                                                                name="id_taille_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
                                                                value="{{ $taille->id_taille_article }}"/>
 
@@ -124,7 +128,7 @@
                     @endforeach
 
                     <div class="row" align="center">
-                        <input type="submit" value="Valider le transfert"
+                        <input type="submit" value="Valider le transfert" formtarget="_blank"
                                class="btn btn-outline btn-success">
                     </div>
                 </form>

@@ -141,14 +141,14 @@ class StockController extends Controller
     //Stock IN for main magasin ----------------------------------------------------------------------------------------
     public function addStockIN()
     {
-        $p_id_magasin = Session::get('id_magasin');
+        $p_id_magasin = 1;Session::get('id_magasin');
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
-        if ($data == null)
+        if ($data->isEmpty())
             return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
 
         $magasin = Magasin::find(1);
         $tailles = Taille_article::all();
-        return view('Espace_Magas.add-stockIN-form')->withMagasin($magasin)->withData($data)->withTailles($tailles);
+        return view('Espace_Magas.add-stockIN-form')->withData($data)->withMagasin($magasin)->withTailles($tailles);
     }
 
     public function submitAddStockIN()
@@ -156,10 +156,10 @@ class StockController extends Controller
         return Stock::addStockIN(request());
     }
     //------------------------------------------------------------------------------------------------------------------
-    //Stock OUT for main magasin ----------------------------------------------------------------------------------------
+    //Stock OUT for main magasin ---------------------------------------------------------------------------------------
     public function addStockOUT()
     {
-        $p_id_magasin = Session::get('id_magasin');
+        $p_id_magasin = 1;//Session::get('id_magasin');
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data == null)
             return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
@@ -174,34 +174,15 @@ class StockController extends Controller
         return Stock::addStockOUT(request());
     }
     //------------------------------------------------------------------------------------------------------------------
-    //Stock OUT for main magasin ----------------------------------------------------------------------------------------
-    public function addStockTransfertIN($p_id_magasin_source)
-    {
-        $source = Magasin::find($p_id_magasin_source);
-        $destination = Magasin::find(1);
-        echo "magasin source: ".$source->id_magasin." -> ".$source->libelle;
-        echo "<br>";
-        echo "magasin destination: ".$destination->id_magasin." -> ".$destination->libelle;
-
-        return '.';
-
-        $p_id_magasin = Session::get('id_magasin');
-        $data = Stock::where('id_magasin', $p_id_magasin)->get();
-        if ($data == null)
-            return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
-
-        $magasin = Magasin::find(1);
-        $tailles = Taille_article::all();
-        return view('Espace_Magas.add-stockOUT-form')->withMagasin($magasin)->withData($data)->withTailles($tailles);
-    }
+    //Stock OUT for main magasin ---------------------------------------------------------------------------------------
     public function addStockTransfertOUT($p_id_magasin_destination)
     {
         $data = Stock::where('id_magasin', 1)->get();
-        if ($data == null)
-            return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Le stock du magasin principal est vide, veuillez commencer par l'alimenter avant de procéder à un transfert.");
 
         $magasinDestination = Magasin::find($p_id_magasin_destination);
-        if($magasinDestination ==null )
+        if ($magasinDestination == null)
             return redirect()->back()->withInput()->withAlertWarning("le magasin choisi n'existe pas.");
 
         $magasinSource = Magasin::find(1);
@@ -209,10 +190,30 @@ class StockController extends Controller
 
         return view('Espace_Magas.add-stockTransfertOUT-form')->withMagasinSource($magasinSource)->withMagasinDestination($magasinDestination)->withData($data)->withTailles($tailles);
     }
-
     public function submitAddStockTransfertOUT()
     {
         return Stock::addStockTransfertOUT(request());
+    }
+
+    public function addStockTransfertIN($p_id_magasin_source)
+    {
+        $data = Stock::where('id_magasin', $p_id_magasin_source)->get();
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Le stock du magasin principal est vide, veuillez commencer par l'alimenter avant de procéder à un transfert.");
+
+        $magasinSource = Magasin::find($p_id_magasin_source);
+        if ($magasinSource == null)
+            return redirect()->back()->withInput()->withAlertWarning("le magasin choisi n'existe pas.");
+
+        $magasinDestination = Magasin::find(1);
+        $tailles = Taille_article::all();
+
+        return view('Espace_Magas.add-stockTransfertIN-form')->withMagasinSource($magasinSource)->withMagasinDestination($magasinDestination)->withData($data)->withTailles($tailles);
+    }
+
+    public function submitAddStockTransfertIN()
+    {
+        return Stock::addStockTransfertIN(request());
     }
     //------------------------------------------------------------------------------------------------------------------
 
@@ -227,11 +228,6 @@ class StockController extends Controller
         else
             return view('Espace_Magas.liste-stocks')->with('data', $data);
     }
-
-
-
-
-
 
 
 }

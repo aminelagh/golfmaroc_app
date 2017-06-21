@@ -15,7 +15,16 @@ Route::get('/home', function () {
 })->name('home');
 Route::get('/s', function () {
 
-    dump( Session::all());
+    //dump( Session::all());
+    $id_magasin = 1;
+    $id_article = 5;
+
+    $data = \App\Models\Stock::getStock(1,1);
+    dump($data);
+});
+
+Route::get('/session', function () {
+    dump(session()->all());
 });
 
 /***************************************
@@ -57,6 +66,10 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/addStockTransfertOUT/{p_id_magasin_destination}', 'StockController@addStockTransfertOUT')->name('magas.addStockTransfertOUT');
     Route::post('/magas/submitAddStockTransfertIN', 'StockController@submitAddStockTransfertIN')->name('magas.submitAddStockTransfertIN');
     Route::post('/magas/submitAddStockTransfertOUT', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');
+    //..................................................................................................................
+
+    //Transactions .....................................................................................................
+    //Route::get('/magas/ins', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');
     //..................................................................................................................
     //------------------------------------------------------------------------------------------------------------------
 
