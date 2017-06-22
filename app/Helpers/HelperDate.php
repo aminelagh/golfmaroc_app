@@ -7,21 +7,12 @@ Helper pour le gerer les dates
 use Carbon\Carbon;
 
 // retourn date simple
-if( !function_exists('getSimpleDateHelper') )
+if( !function_exists('getDateSimple') )
 {
-    function getSimpleDateHelper($value)
+    function getDateSimple($value)
     {
-        $date = Carbon::createFromFormat('d-m-Y', date('d-m-Y', strtotime($value)));
-        return $date->day."/".$date->month."/".$date->year;
-    }
-}
-
-if( !function_exists('getSimpleDateHelper') )
-{
-    function getSimpleDateHelper($value)
-    {
-        $date = Carbon::createFromFormat('d-m-Y', date('d-m-Y', strtotime($value)));
-        return $date->day."/".$date->month."/".$date->year;
+        $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d', strtotime($value)));
+        return $date->day."/".$date->month."/".$date->year." -> ".$date->dayOfWeek ;
     }
 }
 
@@ -30,7 +21,8 @@ if( !function_exists('getDateHelper') )
 {
 	function getDateHelper($value)
 	{
-		$date = Carbon::createFromFormat('d-m-Y', date('d-m-Y', strtotime($value)));
+		//$date = Carbon::createFromFormat('d-m-Y', date('d-m-Y', strtotime($value)));
+        $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d', strtotime($value)));
 
 		switch($date->dayOfWeek)
 		{
@@ -46,18 +38,18 @@ if( !function_exists('getDateHelper') )
 
 		switch($date->month)
 		{
-		 case '01': $M = 'Janvier';	    break;
-		 case '02': $M = 'Février';		break;
-		 case '03': $M = 'Mars';		break;
-		 case '04': $M = 'Avril';		break;
-		 case '05': $M = 'Mai';			break;
-		 case '06': $M = 'Juin';		break;
-		 case '07': $M = 'Juillet';		break;
-		 case '08': $M = 'Août';		break;
-		 case '09': $M = 'Septembre';	break;
-		 case '10': $M = 'Octobre';		break;
-		 case '11': $M = 'Novembre';	break;
-		 case '12': $M = 'Décembre';	break;
+		 case '01': $M = 'janvier';	    break;
+		 case '02': $M = 'février';		break;
+		 case '03': $M = 'mars';		break;
+		 case '04': $M = 'avril';		break;
+		 case '05': $M = 'mai';			break;
+		 case '06': $M = 'juin';		break;
+		 case '07': $M = 'juillet';		break;
+		 case '08': $M = 'août';		break;
+		 case '09': $M = 'septembre';	break;
+		 case '10': $M = 'octobre';		break;
+		 case '11': $M = 'novembre';	break;
+		 case '12': $M = 'décembre';	break;
 		 default:   $M = '/ '.$date->month.' /';
 		}
 		return $J." ".$date->day." ".$M." ".$date->year;
@@ -69,9 +61,7 @@ if( !function_exists('getTimeHelper') )
 {
 	function getTimeHelper($value)
 	{
-		$date = Carbon::createFromFormat('H:m:s /i', date('H:m:s /i', strtotime($value)));
-		//$date = Carbon::now();
-		//dump($date);
-		return $date->hour.":".$date->minute;//.":".$date->second;
+        $date = Carbon::createFromFormat('H:m:s', date('H:m:s', strtotime($value)));
+		return $date->hour.":".$date->minute.":".$date->second;
 	}
 }

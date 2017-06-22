@@ -10,10 +10,11 @@
     <link href="{{ asset('vendor/morrisjs/morris.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('anime/anime.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{{ asset('img/golfmaroc.png') }}}">
 
 </head>
 
-<body background="img\golf1.jpg" background-position="center">
+<body background="{{{ asset('img/golf1.jpg') }}}" background-position="center">
 
 <div class="container">
     <div class="row">
@@ -21,9 +22,8 @@
 
         <div class="col-md-4 col-md-offset-4">
             <div class="login-panel panel panel-default">
-
                 <div class="panel-heading">
-                    <h3 class="panel-title">Please Sign In</h3>
+                    <h3 class="panel-title"><b>Authentification</b></h3>
                 </div>
                 <div class="panel-body">
                     <form role="form" action="{{ route('submitLogin') }}" method="POST">
@@ -38,7 +38,7 @@
 
                             <div class="form-group">
                                 <input class="form-control" placeholder="Password"
-                                       name="password" type="password" value="" required>
+                                       name="password" type="password" required>
                             </div>
 
 
@@ -65,3 +65,5 @@
 </body>
 
 </html>
+
+

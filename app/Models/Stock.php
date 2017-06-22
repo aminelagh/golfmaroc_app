@@ -302,17 +302,30 @@ class Stock extends Model
             $id_article = self::getIdArticle($id_stock_source);
             //echo "<li><b>Stock source: id_stock: " . $stock->id_stock . ", id_magasin: " . $stock->id_magasin . ", id_article: " . $id_article . "</b></li>";
 
+            //Verifier que, pour l'id_stock X, une quantite existe et >0 -----------------------------------------------
+            $hasQuantite = false;
+            if (isset($quantiteOUTs[$id_stock_source])) {
+                foreach ($quantiteOUTs[$id_stock_source] as $quantite) {
+                    if ($quantite != null && $quantite > 0) {
+                        $hasQuantite = true;
+                    }
+                }
+            }
+            //----------------------------------------------------------------------------------------------------------
             //Si la ligne n existe pas, la creer -----------------------------------------------------------------------
-            if (!self::stockExists($id_magasin_destination, $id_article))
+            if (!self::stockExists($id_magasin_destination, $id_article) && $hasQuantite)
                 echo self::creerStock($id_magasin_destination, $id_article, $stock->quantite_min, $stock->quantite_max);
             //----------------------------------------------------------------------------------------------------------
 
             //recuperer l'id_stock_destination -------------------------------------------------------------------------
-            $data = self::getStock($id_magasin_destination, $id_article);
-            $id_stock_destination = $data->id_stock;
+            if($hasQuantite)
+            {
+                $data = self::getStock($id_magasin_destination, $id_article);
+                $id_stock_destination = $data->id_stock;
+            }
             //----------------------------------------------------------------------------------------------------------
 
-            if (isset($quantiteOUTs[$id_stock_source])) {
+            if (isset($quantiteOUTs[$id_stock_source]) && $hasQuantite) {
                 $i = 1;
 
                 //Loop pour chaque quantite / taille_article -----------------------------------------------------------
@@ -329,7 +342,107 @@ class Stock extends Model
                         Stock_taille::decrementer($id_stock_source, $id_taille_article, $quantite);
                         //----------------------------------------------------------------------------------------------
                         //Incrementer le Stock du magasin destination: -------------------------------------------------
-                        Stock_taille::incrementer($id_stock_destination, $id_taille_article , $quantite);
+                        Stock_taille::incrementer($id_stock_destination, $id_taille_article, $quantite);
+                        //----------------------------------------------------------------------------------------------
+
+                        //Creer une nouvelle ligne dans: trans_article -------------------------------------------------
+                        Trans_article::create($id_transaction, self::getIdArticle($id_stock), $id_taille_article, $quantite);
+                        //----------------------------------------------------------------------------------------------
+
+                    }
+                    $i++;
+                }
+                //------------------------------------------------------------------------------------------------------
+            }
+            echo "<hr>";
+        }
+
+        //--------------------------------------------------------------------------------------------------------------
+        return redirect()->back()->withAlertSuccess("Transfert vers le stock du magasin <b>" . Magasin::getLibelle($id_magasin_destination) . "</b>effectuée avec succès");
+    }
+
+    //Transfert de stock IN: main magasin vers X(request)
+    public static function addStockTransfertIN(Request $request)
+    {
+        $id_magasin_destination = 1;
+        //variables du formulaires -------------------------------------------------------------------------------------
+        $id_magasin_source = request()->get('id_magasin_source');
+        $id_stocks = request()->get('id_stock');
+        $quantiteOUTs = request()->get('quantiteOUT');
+        $id_article = request()->get('id_article');
+        $id_taille_articles = request()->get('id_taille_article');
+        //--------------------------------------------------------------------------------------------------------------
+
+        //verifier la validitee des donnees ----------------------------------------------------------------------------
+        $hasData = false;
+        foreach ($id_stocks as $id_stock) {
+            if (isset($quantiteOUTs[$id_stock])) {
+                $i = 1;
+                foreach ($quantiteOUTs[$id_stock] as $quantiteOUT) {
+                    if ($quantiteOUT != null && $quantiteOUT > 0) {
+                        $hasData = true;
+                    }
+                    $i++;
+                }
+            }
+        }
+        if (!$hasData)
+            return redirect()->back()->withInput()->withAlertInfo("Remplissez les formulaires dans les onglets <b>Stock</b>");
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Creation d'une transaction -----------------------------------------------------------------------------------
+        $id_transaction = Transaction::getNextID();
+        echo Transaction::createTransactionTransfertOUT($id_transaction, $id_magasin_destination);
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Creation des trans_articles ----------------------------------------------------------------------------------
+        foreach ($id_stocks as $id_stock_source) {
+
+            $stock = Stock::find($id_stock_source);
+            $id_article = self::getIdArticle($id_stock_source);
+            //echo "<li><b>Stock source: id_stock: " . $stock->id_stock . ", id_magasin: " . $stock->id_magasin . ", id_article: " . $id_article . "</b></li>";
+
+            //Verifier que, pour l'id_stock X, une quantite existe et >0 -----------------------------------------------
+            $hasQuantite = false;
+            if (isset($quantiteOUTs[$id_stock_source])) {
+                foreach ($quantiteOUTs[$id_stock_source] as $quantite) {
+                    if ($quantite != null && $quantite > 0) {
+                        $hasQuantite = true;
+                    }
+                }
+            }
+            //----------------------------------------------------------------------------------------------------------
+            //Si la ligne n existe pas, la creer -----------------------------------------------------------------------
+            if (!self::stockExists($id_magasin_destination, $id_article) && $hasQuantite)
+                echo self::creerStock($id_magasin_destination, $id_article, $stock->quantite_min, $stock->quantite_max);
+            //----------------------------------------------------------------------------------------------------------
+
+            //recuperer l'id_stock_destination -------------------------------------------------------------------------
+            if($hasQuantite)
+            {
+                $data = self::getStock($id_magasin_destination, $id_article);
+                $id_stock_destination = $data->id_stock;
+            }
+            //----------------------------------------------------------------------------------------------------------
+
+            if (isset($quantiteOUTs[$id_stock_source]) && $hasQuantite) {
+                $i = 1;
+
+                //Loop pour chaque quantite / taille_article -----------------------------------------------------------
+                foreach ($quantiteOUTs[$id_stock_source] as $quantite) {
+                    if ($quantite != null && $quantite > 0) {
+                        $id_taille_article = $id_taille_articles[$id_stock_source][$i];
+
+                        //si la ligne Stock_taille n'existe pas, la creer ----------------------------------------------
+                        if (!Stock_taille::tailleExiste($id_stock_destination, $id_taille_article))
+                            Stock_taille::create($id_stock_destination, $id_taille_article, 0);
+                        //----------------------------------------------------------------------------------------------
+
+                        //Decrementer le Stock du magasin source -------------------------------------------------------
+                        Stock_taille::decrementer($id_stock_source, $id_taille_article, $quantite);
+                        //----------------------------------------------------------------------------------------------
+                        //Incrementer le Stock du magasin destination: -------------------------------------------------
+                        Stock_taille::incrementer($id_stock_destination, $id_taille_article, $quantite);
                         //----------------------------------------------------------------------------------------------
 
                         //Creer une nouvelle ligne dans: trans_article -------------------------------------------------

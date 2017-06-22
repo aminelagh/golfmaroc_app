@@ -141,7 +141,8 @@ class StockController extends Controller
     //Stock IN for main magasin ----------------------------------------------------------------------------------------
     public function addStockIN()
     {
-        $p_id_magasin = 1;Session::get('id_magasin');
+        $p_id_magasin = 1;
+        Session::get('id_magasin');
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data->isEmpty())
             return redirect()->back()->withInput()->withAlertWarning("Cet element du stock n'existe pas.");
@@ -190,6 +191,7 @@ class StockController extends Controller
 
         return view('Espace_Magas.add-stockTransfertOUT-form')->withMagasinSource($magasinSource)->withMagasinDestination($magasinDestination)->withData($data)->withTailles($tailles);
     }
+
     public function submitAddStockTransfertOUT()
     {
         return Stock::addStockTransfertOUT(request());
@@ -197,9 +199,10 @@ class StockController extends Controller
 
     public function addStockTransfertIN($p_id_magasin_source)
     {
+        return back()->withAlertInfo("Transfert IN is not set for the moment.");
         $data = Stock::where('id_magasin', $p_id_magasin_source)->get();
         if ($data->isEmpty())
-            return redirect()->back()->withInput()->withAlertWarning("Le stock du magasin principal est vide, veuillez commencer par l'alimenter avant de procéder à un transfert.");
+            return redirect()->back()->withInput()->withAlertWarning("Le stock du magasin <b>" . Magasin::getLibelle($p_id_magasin_source) . "</b> est vide, veuillez commencer par l'alimenter avant de procéder à un transfert.");
 
         $magasinSource = Magasin::find($p_id_magasin_source);
         if ($magasinSource == null)

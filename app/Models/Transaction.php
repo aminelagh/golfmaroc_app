@@ -69,4 +69,6 @@ class Transaction extends Model
         }
     }
 
+    //public static function
+
 }

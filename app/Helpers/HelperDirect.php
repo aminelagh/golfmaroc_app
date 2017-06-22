@@ -4,18 +4,6 @@ Helper pour le adminController
 */
 
 
-
-
-//test if is Color
-if (!function_exists('isColor')) {
-    function isColor($value)
-    {
-        return substr($value, 0, 1) == '#' ? true : false;
-    }
-}
-
-
-
 //pour les pop over
 if (!function_exists('setPopOver')) {
     function setPopOver($title, $content)
@@ -23,6 +11,7 @@ if (!function_exists('setPopOver')) {
         return 'data-toggle="popover" data-placement="top" data-trigger="hover" title="' . $title . '" data-content="' . $content . '"';
     }
 }
+
 //pour les pop over
 if (!function_exists('setPopOverDown')) {
     function setPopOverDown($title, $content)

@@ -3,8 +3,9 @@
 use App\Models\User;
 use App\Models\Marque;
 use App\Models\SentinelUser;
-use App\Models\SentinelRole;
-use \App\Models\Stock_taille;
+use App\Models\Type_transaction;
+use \App\Models\Transaction;
+use Carbon\Carbon;
 
 
 Route::get('/', function () {
@@ -15,12 +16,8 @@ Route::get('/home', function () {
 })->name('home');
 Route::get('/s', function () {
 
-    //dump( Session::all());
-    $id_magasin = 1;
-    $id_article = 5;
 
-    $data = \App\Models\Stock::getStock(1,1);
-    dump($data);
+
 });
 
 Route::get('/session', function () {
@@ -69,7 +66,10 @@ Route::group(['middleware' => 'magas'], function () {
     //..................................................................................................................
 
     //Transactions .....................................................................................................
-    //Route::get('/magas/ins', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');
+    Route::get('/magas/entrees', 'TransactionController@entrees')->name('magas.entrees');
+    Route::get('/magas/entree/{p_id}', 'TransactionController@entree')->name('magas.entree');
+
+    Route::get('/magas/sorties', 'TransactionController@sorties')->name('magas.sorties');
     //..................................................................................................................
     //------------------------------------------------------------------------------------------------------------------
 
