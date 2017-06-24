@@ -89,7 +89,7 @@ class Article extends Model
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
-            return Marque::getLibelle($data->id_categorie);
+            return Categorie::getLibelle($data->id_categorie);
         else return null;
     }
 
@@ -161,7 +161,23 @@ class Article extends Model
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
-            return $data->prix_v;
+            return number_format($data->prix_v,2);
+        else return null;
+    }
+
+    public static function getPrixGrosTTC($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return number_format(($data->prix_v * 1.2), 2);
+        else return null;
+    }
+
+    public static function getPrixGrosHT($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return number_format($data->prix_v,2);
         else return null;
     }
 

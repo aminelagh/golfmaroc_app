@@ -71,4 +71,14 @@ class Stock_taille extends Model
             return redirect()->back()->withInput()->withAlertDanger("Erreur.<br>Message d'erreur:<b>" . $e->getMessage() . "</b>.");
         }
     }
+
+    public static function hasItems($id_magasin,$id_article)
+    {
+        //$id_stock = Stock::where('id_magasin',$id_magasin)->where('id_article',$id_article)->get()->first()->id_stock;
+
+        /*$data = self::where('id_stock',$id_stock)->get();
+        if($data->isEmpty())
+            return false;
+        else return true;*/
+    }
 }

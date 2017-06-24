@@ -260,5 +260,23 @@
     @endif
 @endsection
 
+@section('styles')
+    <style>
+        #examplea {
+            width: 100%;
+            border: 1px solid #D9D5BE;
+            border-collapse: collapse;
+            margin: 0px;
+            background: white;
+            font-size: 1em;
+        }
+
+        #examplea td {
+            padding: 0.1px;
+        }
+    </style>
+@endsection
+
+
 @section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection

@@ -3,7 +3,7 @@
         <ul class="nav" id="side-menu">
 
             <li>
-                <a href="/magas"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                <a href="{{ Route('magas.home') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
             </li>
 
             <li>

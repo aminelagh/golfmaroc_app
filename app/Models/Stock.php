@@ -72,6 +72,37 @@ class Stock extends Model
         }
     }
 
+    public static function getState($id_stock)
+    {
+        $stock = self::find($id_stock);
+        if(!Stock_taille::hasTailles($id_stock))
+            return 0;
+        else {
+            $tailles = Stock_taille::getTailles($id_stock);
+            $nombreArticles = self::getNombreArticles($id_stock);
+            if($nombreArticles < $stock->quantite_min)
+                return 1;
+            elseif ($nombreArticles == $stock->quantite_min)
+                return 2;
+            else return 3;
+        }
+    }
+
+    public static function getNombreArticles($id_stock)
+    {
+        if(!Stock_taille::hasTailles($id_stock))
+            return 0;
+        else {
+            $tailles = Stock_taille::getTailles($id_stock);
+            $nbreArticles = 0;
+            foreach ($tailles as $item)
+            {
+                $nbreArticles += $item->quantite;
+            }
+        }
+        return $nbreArticles;
+    }
+
     //Creer le stock d un magasin
     public static function addStock(Request $request)
     {
