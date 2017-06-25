@@ -14,8 +14,8 @@ Route::get('/', function () {
 Route::get('/home', function () {
     return view('home');
 })->name('home');
-Route::get('/s', function () {
 
+Route::get('/s', function () {
 
 
 });
@@ -23,6 +23,7 @@ Route::get('/s', function () {
 Route::get('/session', function () {
     dump(session()->all());
 });
+
 
 /***************************************
  * Magas routes protected by adminMiddleware
@@ -45,11 +46,12 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/stocks/{p_id?}', 'StockController@stocks')->name('magas.stocks');
 
     //afficher un article du stock en detail
-    Route::get('/magas/stock/{p_id}', 'StockController@stocks')->name('magas.stock');
+    Route::get('/magas/stock/{p_id}', 'StockController@stock')->name('magas.stock');
 
-    //creer le stock
+    //creer le stock....................................................................................................
     Route::get('/magas/addStock/{p_id}', 'StockController@addStock')->name('magas.addStock');
     Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
+    //..................................................................................................................
 
     //main magasin stock IN et OUT .....................................................................................
     Route::get('/magas/addStockIN', 'StockController@addStockIN')->name('magas.addStockIN');
@@ -59,7 +61,7 @@ Route::group(['middleware' => 'magas'], function () {
     //..................................................................................................................
 
     //Transferer stock .................................................................................................
-    Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');
+    //Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');
     Route::get('/magas/addStockTransfertOUT/{p_id_magasin_destination}', 'StockController@addStockTransfertOUT')->name('magas.addStockTransfertOUT');
     Route::post('/magas/submitAddStockTransfertIN', 'StockController@submitAddStockTransfertIN')->name('magas.submitAddStockTransfertIN');
     Route::post('/magas/submitAddStockTransfertOUT', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');

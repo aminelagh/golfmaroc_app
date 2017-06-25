@@ -125,20 +125,20 @@ class MagasController extends Controller
             return redirect()->back()->withInput()->with('alert_info',"Vous ne pouvez pas acceder a ce magasin de cette maniere.");
 
         $data = Magasin::find($p_id);
-        $stock = Stock::where('id_magasin', $p_id)->get();
+        //$stock = Stock::where('id_magasin', $p_id)->get();
 
         if ($data == null)
             return redirect()->back()->with('alert_warning', "Le magasin choisi n'existe pas.");
 
-        return view('Espace_Magas.info-magasin')->withData($data)->withStock($stock);
+        return view('Espace_Magas.info-magasin')->withData($data);//->withStock($stock);
     }
 
     public function main_magasin()
     {
         $data = Magasin::find(1);
-        $stock = Stock::where('id_magasin', 1)->get();
+        //$stock = Stock::where('id_magasin', 1)->get();
 
-        return view('Espace_Magas.info-main_magasin')->withData($data)->withStock($stock);
+        return view('Espace_Magas.info-main_magasin')->withData($data);//->withStock($stock);
     }
 
 

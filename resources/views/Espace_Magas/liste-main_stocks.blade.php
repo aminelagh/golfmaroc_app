@@ -1,6 +1,6 @@
 @extends('layouts.main_master')
 
-@section('title') Stock du main magasin: {{ $magasin->libelle }}  @endsection
+@section('title') {{ $magasin->libelle }}  @endsection
 
 @section('main_content')
 
@@ -11,7 +11,7 @@
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
         <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
-        <li class="breadcrumb-item active">Stock du magasin: {{ $magasin->libelle  }}</li>
+        <li class="breadcrumb-item active">Stock</li>
     </ol>
 
     <div class="row" align="center">
@@ -77,7 +77,8 @@
                     </tfoot>
                     <tbody>
                     @foreach( $data as $item )
-                        <tr>
+                        <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
+
                             <td>{{ $loop->index+1 }}</td>
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}
@@ -96,23 +97,22 @@
                             <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
                             <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
                             <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                            <td>
+                            <td align="center">
                                 @if(\App\Models\Stock::getState($item->id_stock) == 0)
-                                    <div id="circle" style="background: darkred;"></div>
-                                    Aucun
+                                    <div id="circle"
+                                         style="background: darkred;" {!! setPopOver("indisponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article") !!}></div>
                                 @elseif(\App\Models\Stock::getState($item->id_stock) == 1)
-                                    <div id="circle" style="background: red;"></div>
-
+                                    <div id="circle"
+                                         style="background: red;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
                                 @elseif(\App\Models\Stock::getState($item->id_stock) == 2)
-                                    <div id="circle" style="background: orange;"></div>
+                                    <div id="circle"
+                                         style="background: orange;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
                                 @elseif(\App\Models\Stock::getState($item->id_stock) == 3)
-                                    <div id="circle" style="background: lawngreen;"></div>
-                                    Disponible
+                                    <div id="circle"
+                                         style="background: lawngreen;" {!! setPopOver("Disponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
                                 @endif
                             </td>
-                            <td>
-                                <a href=""><i class="glyphicon glyphicon-plus"></i></a>
-                                <a href=""><i class="glyphicon glyphicon-minus"></i></a>
+                            <td align="center">
                                 <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
                                             class="glyphicon glyphicon-info-sign"
                                             aria-hidden="false"></i></a>
@@ -133,30 +133,51 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-lg-4">Code</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Code</li>
+                                            </div>
                                             <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getCode($item->id_article) }}</b></div>
+                                                <b>{{ \App\Models\Article::getCode($item->id_article) }}</b>
+                                            </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-4">Reference</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Reference</li>
+                                            </div>
                                             <div class="col-md-6"><b>
                                                     {{ \App\Models\Article::getRef($item->id_article) }}
                                                     {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
                                                 </b>
                                             </div>
                                         </div>
+                                        {{-- marque --}}
                                         <div class="row">
-                                            <div class="col-lg-4">Marque</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Marque</li>
+                                            </div>
                                             <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getMarque($item->id_article) }}</b></div>
+                                                <b>{{ \App\Models\Article::getMarque($item->id_article) }}</b>
+                                            </div>
                                         </div>
+                                        {{-- categorie --}}
                                         <div class="row">
-                                            <div class="col-lg-4">Categorie</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Categorie</li>
+                                            </div>
                                             <div class="col-lg-6">
-                                                <b>{{ \App\Models\Article::getCategorie($item->id_article) }}</b></div>
+                                                <b>{{ \App\Models\Article::getCategorie($item->id_article) }}</b>
+                                            </div>
                                         </div>
+                                        {{-- fournisseur --}}
                                         <div class="row">
-                                            <div class="col-lg-4">Fournisseur</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Fournisseur</li>
+                                            </div>
                                             <div class="col-md-6">
                                                 <b>{{ \App\Models\Article::getFournisseur($item->id_article) }}</b>
                                             </div>
@@ -166,36 +187,60 @@
                                             <hr/>
                                         </div>
 
+                                        {{-- couleur --}}
                                         <div class="row">
-                                            <div class="col-lg-4">Couleur</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Couleur</li>
+                                            </div>
                                             <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getCouleur($item->id_article) }}</b></div>
+                                                <b>{{ \App\Models\Article::getCouleur($item->id_article) }}</b>
+                                            </div>
                                         </div>
+                                        {{-- sexe --}}
                                         <div class="row">
-                                            <div class="col-lg-4">Sexe</div>
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Sexe</li>
+                                            </div>
                                             <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getSexe($item->id_article) }}</b></div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4">Prix de gros</div>
-                                            <div class="col-md-2">HT</div>
-                                            <div class="col-md-2">
-                                                <b>{{ \App\Models\Article::getPrixGrosHT($item->id_article) }}</b>
+                                                <b>{{ \App\Models\Article::getSexe($item->id_article) }}</b>
                                             </div>
-                                            <div class="col-md-2">TTC</div>
-                                            <div class="col-md-2">
-                                                <b>{{ \App\Models\Article::getPrixGrosTTC($item->id_article) }}</b>
+                                        </div>
+                                        {{-- Prix de gros --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Prix de gros</li>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-4">Prix</div>
-                                            <div class="col-md-2">HT</div>
-                                            <div class="col-md-2">
-                                                <b>{{ \App\Models\Article::getPrixHT($item->id_article) }}</b>
+                                            <div class="col-lg-3"></div>
+                                            <div class="col-md-1">HT</div>
+                                            <div class="col-md-3">
+                                                <b>{{ \App\Models\Article::getPrixGrosHT($item->id_article) }} Dhs</b>
                                             </div>
-                                            <div class="col-md-2">TTC</div>
-                                            <div class="col-md-2">
-                                                <b>{{ \App\Models\Article::getPrixTTC($item->id_article) }}</b>
+                                            <div class="col-md-1">TTC</div>
+                                            <div class="col-md-3">
+                                                <b>{{ \App\Models\Article::getPrixGrosTTC($item->id_article) }} Dhs</b>
+                                            </div>
+                                        </div>
+                                        {{-- Prix --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Prix</li>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3"></div>
+                                            <div class="col-md-1">HT</div>
+                                            <div class="col-md-3">
+                                                <b>{{ \App\Models\Article::getPrixHT($item->id_article) }} Dhs</b>
+                                            </div>
+                                            <div class="col-md-1">TTC</div>
+                                            <div class="col-md-3">
+                                                <b>{{ \App\Models\Article::getPrixTTC($item->id_article) }} Dhs</b>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -214,9 +259,9 @@
                                             @endforeach
                                         @else
                                             <div class="row">
-                                                <div class="col-md-4">a</div>
-                                                <div class="col-md-4">b</div>
-                                                <div class="col-md-4">c</div>
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4"><b><i>Aucun taille</i></b></div>
+                                                <div class="col-md-4"></div>
                                             </div>
 
                                         @endif
@@ -260,7 +305,7 @@
                         $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "HT" || title == "TTC") {
-                        $(this).html('<input type="text" size="3" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="2" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Prix d'achat" || title == "Prix de vente") {
                         $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
@@ -288,12 +333,12 @@
                         {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
                         {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
 
-                        {"width": "03%", "targets": 6, "type": "string", "visible": true},      //HT
-                        {"width": "03%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "03%", "targets": 8, "type": "string", "visible": true},      //HT
-                        {"width": "03%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "08%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
 
                         {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
@@ -350,4 +395,3 @@
 
     </style>
 @endsection
-

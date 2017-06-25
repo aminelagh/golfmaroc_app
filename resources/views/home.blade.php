@@ -48,7 +48,7 @@
 <!-- Header -->
 <header id="top" class="header">
     <div class="text-vertical-center">
-        <h1>Bienvenue a GolMaroc-App</h1>
+        <h1>Bienvenue a GolfMaroc-App</h1>
         <h3>Gestion de stock des différents Proshops du groupe GolfMaroc</h3>
         <br>
         <a href="{{ Route('login') }}" class="btn btn-dark btn-lg">Se connecter</a>

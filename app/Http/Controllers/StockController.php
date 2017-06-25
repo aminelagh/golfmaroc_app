@@ -24,19 +24,6 @@ use Illuminate\Support\Facades\Session;
 
 class StockController extends Controller
 {
-    public function stock($p_id)
-    {
-        return "StcckController@stock(id)";
-        $data = Stock_taille::where('id_stock', $p_id)->get();
-        $magasin = Magasin::find($p_id);
-
-        if ($data->isEmpty())
-            return redirect()->route('magas.addStockIN', ['p_id' => $p_id])->withAlertInfo("Cet article n'est pas disponible dans le stock. Vous pouvez commencer par l'alimenter.");
-        //return redirect()->back()->withInput()->withAlertInfo("Cet article n'est pas disponible dans le stock.");
-        else
-            return view('Espace_Magas.info-stock')->withData($data)->withMagasin($magasin);
-    }
-
     //afficher le stock du magasin  et du main -------------------------------------------------------------------------
     public function main_stocks()
     {
@@ -64,7 +51,24 @@ class StockController extends Controller
         else
             return view('Espace_Magas.liste-stocks')->withData($data)->withMagasin($magasin)->withTailles($tailles);
     }
+
     //------------------------------------------------------------------------------------------------------------------
+    public function stock($id_stock)
+    {
+        $stock = Stock::find($id_stock);
+
+        if ($stock == null)
+            return redirect()->back()->withAlertWarning("L'element du stock choisi n'existe pas.");
+        $article = Article::find($stock->id_article);
+        if (Stock_taille::hasTailles($id_stock))
+            $data = Stock_taille::where('id_stock', $id_stock)->get();
+        else
+            return redirect()->back()->withInput()->withAlertWarning("l'article choisi n'est pas disponible.");
+
+        $magasin = Magasin::find($stock->id_magasin);
+
+        return view('Espace_Magas.info-main_stock')->withData($data)->withMagasin($magasin)->withStock($stock)->withArticle($article);
+    }
 
     //Creation du stock de tt les magasins -----------------------------------------------------------------------------
     public function addStock($p_id)
@@ -84,57 +88,6 @@ class StockController extends Controller
     public function submitAddStock(Request $request)
     {
         return Stock::addStock($request);
-
-        /*
-                //array des element du formulaire
-                $id_article = request()->get('id_article');
-                $designation = request()->get('designation');
-                $quantite_min = request()->get('quantite_min');
-                $quantite_max = request()->get('quantite_max');
-
-                $error = "";
-                $alert2 = "";
-                $hasError = false;
-                $error2 = false;
-                $nbre_articles = 0;
-
-                for ($i = 1; $i <= count($id_article); $i++) {
-                    //verifier si l utilisateur n a pas saisi les quantites min ou Max
-                    if ($quantite_min[$i] == null || $quantite_max[$i] == null) continue;
-
-                    if ($quantite_min[$i] >= $quantite_max[$i])
-                    {
-                        $hasError = true;
-                        $error = $error."<li>Quantite min > Quantite max pour l'article numero $i: <b>" . $designation[$i] . "</b>";
-                        //return redirect()->back()->withInput()->withAlertWarning("Quantite min > Quantite max pour l'article numero $i: <b>" . $designation[$i] . "</b>")->withalignWarning("right")->withTimerWarning(6000);
-                    }
-
-
-                    if ($quantite_min[$i] <= $quantite_max[$i]) {
-                        $item = new Stock;
-                        $item->id_magasin = $id_magasin;
-                        $item->id_article = $id_article[$i];
-                        $item->quantite_min = $quantite_min[$i];
-                        $item->quantite_max = $quantite_max[$i];
-
-                        try {
-                            //$item->save();
-                            $nbre_articles++;
-                        } catch (Exception $e) {
-                            $alert2 = $alert2 . "<li>Erreur d'ajout de l'article: <b>" . $designation[$i] . "</b> <br>Message d'erreur: " . $e->getMessage() . ". ";
-                        }
-                    }
-                }
-
-
-                if ($hasError)
-                    return redirect()->back()->withInput()->withAlertWarning($error)->withalignWarning("right")->withTimerWarning(10000);
-                else {
-                    if ($nbre_articles > 1)
-                        return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' article.');
-                    else
-                        return redirect()->back()->with('alert_success', 'Ajout de ' . $nbre_articles . ' articles.');
-                }*/
     }
     //------------------------------------------------------------------------------------------------------------------
 
@@ -220,17 +173,15 @@ class StockController extends Controller
     }
     //------------------------------------------------------------------------------------------------------------------
 
-    /*****************************************************************************
-     * Lister Stocks
-     *****************************************************************************/
-    public function listerStocks($p_id_magasin)
+
+    /*public function listerStocks($p_id_magasin)
     {
         $data = Stock::where('id_magasin', $p_id_magasin)->get();
         if ($data->isEmpty())
             return redirect()->back()->withInput()->with('alert_warning', "Le stock de ce magasin est vide.");
         else
             return view('Espace_Magas.liste-stocks')->with('data', $data);
-    }
+    }*/
 
 
 }

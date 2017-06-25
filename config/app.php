@@ -179,6 +179,7 @@ return [
 
         //Sentinel
         Cartalyst\Sentinel\Laravel\SentinelServiceProvider::class,
+	Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
     ],
 
@@ -233,7 +234,9 @@ return [
         'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
         'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
-
+	
+	'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
+        'CustomAliasTwo' => Example\Support\Facades\CustomAliasTwo::class,
     ],
 
 ];
