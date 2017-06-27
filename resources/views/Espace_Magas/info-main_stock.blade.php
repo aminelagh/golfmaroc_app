@@ -15,13 +15,61 @@
         <li class="breadcrumb-item active">{{ $article->designation  }}</li>
     </ol>
 
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            {{ $article->designation }}
+        </div>
+
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td align="right">Marque</td>
+                <th>{{ \App\Models\Article::getMarque($article->id_article) }}</th>
+                <td align="right">Categorie</td>
+                <th>{{ \App\Models\Article::getCategorie($article->id_article) }}</th>
+                <td align="right">Fournisseur</td>
+                <th>{{ \App\Models\Article::getFournisseur($article->id_article) }}</th>
+            </tr>
+            <tr>
+                <td align="right">Code</td>
+                <th>{{ \App\Models\Article::getCode($article->id_article) }}</th>
+                <td align="right">Reference</td>
+                <th>{{ \App\Models\Article::getRef($article->id_article) }}
+                    {{ \App\Models\Article::getAlias($article->id_article)!=null ? ' - '.\App\Models\Article::getAlias($article->id_article) : '' }}
+                </th>
+            </tr>
+            <tr>
+                <td align="right">Couleur</td>
+                <th>{{ \App\Models\Article::getCouleur($article->id_article) }}</th>
+                <td align="right">Sexe</td>
+                <th>{{ \App\Models\Article::getSexe($article->id_article) }}</th>
+            </tr>
+            <tr><td colspan="6"></td></tr>
+            <tr>
+                <th align="right">Prix</th>
+                <th align="right">{{ \App\Models\Article::getPrixHT($article->id_article) }} Dhs HT</th>
+                <th align="left">{{ \App\Models\Article::getPrixTTC($article->id_article) }} Dhs TTC</th>
+
+                <th align="right">Prix de gros</th>
+                <th align="right">{{ \App\Models\Article::getPrixGrosHT($article->id_article) }} Dhs HT</th>
+                <th align="left">{{ \App\Models\Article::getPrixGrosTTC($article->id_article) }} Dhs TTC</th>
+            </tr>
+        </table>
+
+
+        <div class="panel-footer">
+            Footer
+        </div>
+    </div>
+
+
+
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th> #</th>
+                        <th></th>
                         <th>Taille</th>
                         <th>Quantite</th>
 
@@ -38,7 +86,7 @@
                     @foreach( $data as $item )
                         <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
 
-                            <td>{{ $loop->index+1 }}</td>
+                            <td></td>
                             <td>{{ \App\Models\Taille_article::getTaille($item->id_taille_article) }}</td>
                             <td>{{ $item->quantite }}</td>
 
@@ -57,8 +105,27 @@
 
 @section('scripts')
     @if( !$data->isEmpty() )
-        <script type="text/javascript" charset="utf-8">
+
+        <script>
             $(document).ready(function () {
+                var table = $('#myTable').DataTable({
+                    //"searching": true,
+                    "paging": false,
+                    "columnDefs": [
+                        {"searchable": false, "orderable": false, "targets": 0},
+                        //{"width": "05%", "targets": 1, "type": "string", "visible": false},
+                        // {"width": "07%", "targets": 2, "type": "string", "visible": false},
+                    ],
+                    "order": [[1, 'asc']]
+                    //"info": true,
+                });
+
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {
                     var title = $(this).text();
@@ -76,27 +143,14 @@
                     }
                 });
 
-                var table = $('#myTable').DataTable({
-                    //"scrollY": "50px",
-                    //"scrollX": true,
-                    "searching": true,
-                    "paging": true,
-                    //"autoWidth": true,
-                    "info": true,
-                    stateSave: false,
-                    "columnDefs": [
-                        {"width": "03%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
-                        //{"width": "05%", "targets": 1, "type": "string", "visible": false},
-                       // {"width": "07%", "targets": 2, "type": "string", "visible": false},
-                    ]
-                });
-
+                //footer input: hide text
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
                     column.visible(!column.visible());
                 });
 
+                //footer search
                 table.columns().every(function () {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
@@ -105,8 +159,11 @@
                         }
                     });
                 });
+
+
             });
         </script>
+
     @endif
 @endsection
 
