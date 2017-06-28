@@ -61,7 +61,7 @@ Route::group(['middleware' => 'magas'], function () {
     //..................................................................................................................
 
     //Transferer stock .................................................................................................
-    //Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');
+    Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');
     Route::get('/magas/addStockTransfertOUT/{p_id_magasin_destination}', 'StockController@addStockTransfertOUT')->name('magas.addStockTransfertOUT');
     Route::post('/magas/submitAddStockTransfertIN', 'StockController@submitAddStockTransfertIN')->name('magas.submitAddStockTransfertIN');
     Route::post('/magas/submitAddStockTransfertOUT', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');
@@ -199,34 +199,7 @@ Route::get('/export/{p_table}', 'ExcelController@export')->name('export');
 /*********************************************************************************/
 
 
-/*
-Route::get('/admin/update/{p_table}/{p_id}', 'UpdateController@updateForm')->name('admin.update');
-Route::post('/admin/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->name('admin.submitUpdate');
-
-Route::get('/direct/update/{p_table}/{p_id}', 'UpdateController@updateForm')->name('direct.update');
-Route::post('/direct/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->name('direct.submitUpdate');
-
-Route::get('/magas/update/{p_table}/{p_id}', 'UpdateController@updateForm')->name('magas.update');
-Route::post('/magas/submitUpdate/{p_table}', 'UpdateController@submitUpdate')->name('magas.submitUpdate');
-/******************************************************************************/
-
-
-/*
-Route::get('/direct/addStock/{p_id_magasin}', 'StockController@addStock')->name('direct.addStock');
-Route::post('/direct/submitAddStock', 'StockController@submitAddStock')->name('direct.submitAddStock');
-
-Route::get('/direct/supply/{p_id_magasin}', 'StockController@supplyStock')->name('direct.supplyStock');
-Route::post('/direct/submitSupply', 'StockController@submitSupplyStock')->name('direct.submitSupplyStock');
-
-//magasinier
-Route::get('/magas/addStock/{p_id_magasin}', 'StockController@addStock')->name('magas.addStock');
-Route::post('/magas/submitAddStock', 'StockController@submitAddStock')->name('magas.submitAddStock');
-
-Route::get('/magas/supply/{p_id_magasin}', 'StockController@supplyStock')->name('magas.supplyStock');
-Route::post('/magas/submitSupply', 'StockController@submitSupplyStock')->name('magas.submitSupplyStock');
-/*******************************************************************************/
 
 
 //Auth::routes();
-
 //Route::get('/home', 'HomeController@index')->name('home');

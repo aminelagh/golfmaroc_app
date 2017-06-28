@@ -323,7 +323,7 @@ class Stock extends Model
 
         //Creation d'une transaction -----------------------------------------------------------------------------------
         $id_transaction = Transaction::getNextID();
-        echo Transaction::createTransactionTransfertOUT($id_transaction, $id_magasin_destination);
+        Transaction::createTransactionTransfertOUT($id_transaction, $id_magasin_destination);
         //--------------------------------------------------------------------------------------------------------------
 
         //Creation des trans_articles ----------------------------------------------------------------------------------
@@ -331,7 +331,6 @@ class Stock extends Model
 
             $stock = Stock::find($id_stock_source);
             $id_article = self::getIdArticle($id_stock_source);
-            //echo "<li><b>Stock source: id_stock: " . $stock->id_stock . ", id_magasin: " . $stock->id_magasin . ", id_article: " . $id_article . "</b></li>";
 
             //Verifier que, pour l'id_stock X, une quantite existe et >0 -----------------------------------------------
             $hasQuantite = false;
@@ -345,7 +344,7 @@ class Stock extends Model
             //----------------------------------------------------------------------------------------------------------
             //Si la ligne n existe pas, la creer -----------------------------------------------------------------------
             if (!self::stockExists($id_magasin_destination, $id_article) && $hasQuantite)
-                echo self::creerStock($id_magasin_destination, $id_article, $stock->quantite_min, $stock->quantite_max);
+                self::creerStock($id_magasin_destination, $id_article, $stock->quantite_min, $stock->quantite_max);
             //----------------------------------------------------------------------------------------------------------
 
             //recuperer l'id_stock_destination -------------------------------------------------------------------------

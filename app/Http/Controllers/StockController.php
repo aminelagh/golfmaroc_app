@@ -67,7 +67,7 @@ class StockController extends Controller
 
         $magasin = Magasin::find($stock->id_magasin);
 
-        return view('Espace_Magas.info-main_stock')->withData($data)->withMagasin($magasin)->withStock($stock)->withArticle($article);
+        return view('Espace_Magas.info-stock')->withData($data)->withMagasin($magasin)->withStock($stock)->withArticle($article);
     }
 
     //Creation du stock de tt les magasins -----------------------------------------------------------------------------

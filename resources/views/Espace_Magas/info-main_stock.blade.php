@@ -36,14 +36,16 @@
                 <th>{{ \App\Models\Article::getRef($article->id_article) }}
                     {{ \App\Models\Article::getAlias($article->id_article)!=null ? ' - '.\App\Models\Article::getAlias($article->id_article) : '' }}
                 </th>
+                <td align="center">Couleur: <b>{{ \App\Models\Article::getCouleur($article->id_article) }}</b></td>
+                <td align="center">Sexe: <b>{{ \App\Models\Article::getSexe($article->id_article) }}</b></td>
             </tr>
             <tr>
-                <td align="right">Couleur</td>
-                <th>{{ \App\Models\Article::getCouleur($article->id_article) }}</th>
-                <td align="right">Sexe</td>
-                <th>{{ \App\Models\Article::getSexe($article->id_article) }}</th>
+
+
             </tr>
-            <tr><td colspan="6"></td></tr>
+            <tr>
+                <td colspan="6"></td>
+            </tr>
             <tr>
                 <th align="right">Prix</th>
                 <th align="right">{{ \App\Models\Article::getPrixHT($article->id_article) }} Dhs HT</th>
@@ -60,8 +62,6 @@
             Footer
         </div>
     </div>
-
-
 
     <div class="row">
         <div class="table-responsive">
@@ -105,7 +105,6 @@
 
 @section('scripts')
     @if( !$data->isEmpty() )
-
         <script>
             $(document).ready(function () {
                 var table = $('#myTable').DataTable({
@@ -163,7 +162,6 @@
 
             });
         </script>
-
     @endif
 @endsection
 
