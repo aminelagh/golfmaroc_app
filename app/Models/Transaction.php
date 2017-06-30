@@ -69,6 +69,19 @@ class Transaction extends Model
         }
     }
 
-    //public static function
+    public static function createTransactionTransfertIN($id_transaction,$id_magasin_source)
+    {
+        $item = new Transaction();
+        $item->id_transaction = $id_transaction;
+        $item->id_magasin = $id_magasin_source;
+        $item->id_user = Session::get('id_user');
+        $item->id_type_transaction = Type_transaction::where('libelle', "transfertIN")->get()->first()->id_type_transaction; //3
+        $item->annulee = false;
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withAlertDanger("Erreur de creation de la transaction.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+    }
 
 }

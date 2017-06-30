@@ -129,6 +129,22 @@ class StockController extends Controller
     }
     //------------------------------------------------------------------------------------------------------------------
     //Stock OUT for main magasin ---------------------------------------------------------------------------------------
+    public function addStockTransfertOUTall()
+    {
+        $data = Stock::where('id_magasin', 1)->get();
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Le stock du magasin principal est vide, veuillez commencer par l'alimenter avant de procéder à un transfert.");
+
+        $magasins = Magasin::where('id_magasin','!=',1)->get();
+        if ($magasins->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Veuillez creer des magasins avant de proceder a un transfert.");
+
+        $magasinSource = Magasin::find(1);
+        $tailles = Taille_article::all();
+
+        return view('Espace_Magas.add-stockTransfertOUTall-form')->withMagasinSource($magasinSource)->withMagasins($magasins)->withData($data)->withTailles($tailles);
+    }
+
     public function addStockTransfertOUT($p_id_magasin_destination)
     {
         $data = Stock::where('id_magasin', 1)->get();
@@ -152,7 +168,7 @@ class StockController extends Controller
 
     public function addStockTransfertIN($p_id_magasin_source)
     {
-        return back()->withAlertInfo("Transfert IN is not set for the moment.");
+        //return back()->withAlertInfo("Transfert IN is not set for the moment.");
         $data = Stock::where('id_magasin', $p_id_magasin_source)->get();
         if ($data->isEmpty())
             return redirect()->back()->withInput()->withAlertWarning("Le stock du magasin <b>" . Magasin::getLibelle($p_id_magasin_source) . "</b> est vide, veuillez commencer par l'alimenter avant de procéder à un transfert.");
@@ -162,9 +178,9 @@ class StockController extends Controller
             return redirect()->back()->withInput()->withAlertWarning("le magasin choisi n'existe pas.");
 
         $magasinDestination = Magasin::find(1);
-        $tailles = Taille_article::all();
+        //$tailles = Taille_article::all();
 
-        return view('Espace_Magas.add-stockTransfertIN-form')->withMagasinSource($magasinSource)->withMagasinDestination($magasinDestination)->withData($data)->withTailles($tailles);
+        return view('Espace_Magas.add-stockTransfertIN-form')->withMagasinSource($magasinSource)->withMagasinDestination($magasinDestination)->withData($data);//->withTailles($tailles);
     }
 
     public function submitAddStockTransfertIN()

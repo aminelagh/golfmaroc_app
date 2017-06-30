@@ -4,14 +4,14 @@
 
 @section('main_content')
 
-    <h3 class="page-header">Stock du magasin principal:
+    <h3 class="page-header">Stock du magasin:
         <strong>{{ $magasin->libelle }}</strong></h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
         <li class="breadcrumb-item "><a href="{{ route('magas.magasins') }}">Liste des magasins</a></li>
-        <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
+        <li class="breadcrumb-item "><a href="{{ route('magas.magasin',['id'=>$magasin->id_magasin]) }}">{{ $magasin->libelle  }}</a></li>
         <li class="breadcrumb-item active">Stock</li>
     </ol>
 
@@ -299,7 +299,7 @@
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 var table = $('#myTable').DataTable({
-                    "lengthMenu": [[5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, "Tout"]],
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
                     //"autoWidth": true,

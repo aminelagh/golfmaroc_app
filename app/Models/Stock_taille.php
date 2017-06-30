@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Stock_taille extends Model
 {
@@ -47,6 +48,7 @@ class Stock_taille extends Model
             return redirect()->back()->withInput()->withAlertDanger("Erreur.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
     }
+
     public static function decrementer($p_id_stock, $p_id_taille_article, $p_quantite)
     {
         $item = self::where('id_stock', $p_id_stock)->where('id_taille_article', $p_id_taille_article)->get()->first();
@@ -59,26 +61,23 @@ class Stock_taille extends Model
         }
     }
 
-    public static function create($id_stock, $id_taille_article,$quantite)
+    public static function create($id_stock, $id_taille_article, $quantite)
     {
-        $new_stock_taille = new Stock_taille();
-        $new_stock_taille->id_stock = $id_stock;
-        $new_stock_taille->id_taille_article = $id_taille_article;
-        $new_stock_taille->quantite = $quantite;
+        $item = new Stock_taille();
+        $item->id_stock = $id_stock;
+        $item->id_taille_article = $id_taille_article;
+        $item->quantite = $quantite;
         try {
-            $new_stock_taille->save();
+            $item->save();
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withAlertDanger("Erreur.<br>Message d'erreur:<b>" . $e->getMessage() . "</b>.");
         }
     }
 
-    public static function hasItems($id_magasin,$id_article)
+    public static function deleteEmptyItems()
     {
-        //$id_stock = Stock::where('id_magasin',$id_magasin)->where('id_article',$id_article)->get()->first()->id_stock;
-
-        /*$data = self::where('id_stock',$id_stock)->get();
-        if($data->isEmpty())
-            return false;
-        else return true;*/
+        $data = DB::select("delete from stock_tailles where quantite=0");
+        //$data = DB::select("show tables");
+        //dump($data);
     }
 }

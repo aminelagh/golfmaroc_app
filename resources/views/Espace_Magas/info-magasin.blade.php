@@ -89,7 +89,10 @@
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
 
                         <a href="{{ Route('magas.stocks',['id_magasin'=> $data->id_magasin ]) }}"
-                           class="btn btn-outline btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
+                           class="btn btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
+                            le stock</a>
+                        <a href="{{ Route('magas.addStock',['p_id' => $data->id_magasin]) }}"
+                           class="btn btn-success" {!! setPopOver("","Creer le stock du magasin") !!}>Creer
                             le stock</a>
                     </div>
                 </div>

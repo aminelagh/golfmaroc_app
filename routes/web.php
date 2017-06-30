@@ -17,6 +17,9 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
+    \App\Models\Stock_taille::deleteEmptyItems();
+
+
 
 });
 
@@ -61,8 +64,9 @@ Route::group(['middleware' => 'magas'], function () {
     //..................................................................................................................
 
     //Transferer stock .................................................................................................
-    Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');
-    Route::get('/magas/addStockTransfertOUT/{p_id_magasin_destination}', 'StockController@addStockTransfertOUT')->name('magas.addStockTransfertOUT');
+    Route::get('/magas/addStockTransfertOUT', 'StockController@addStockTransfertOUTall')->name('magas.addStockTransfertOUT');//transfert out vers any magasin
+    Route::get('/magas/addStockTransfertIN/{p_id_magasin_source}', 'StockController@addStockTransfertIN')->name('magas.addStockTransfertIN');//Transfert IN depuis un magasin X
+    Route::get('/magas/addStockTransfertOUT/{p_id_magasin_destination?}', 'StockController@addStockTransfertOUT')->name('magas.addStockTransfertOUT');//transfert out vers un magasin X
     Route::post('/magas/submitAddStockTransfertIN', 'StockController@submitAddStockTransfertIN')->name('magas.submitAddStockTransfertIN');
     Route::post('/magas/submitAddStockTransfertOUT', 'StockController@submitAddStockTransfertOUT')->name('magas.submitAddStockTransfertOUT');
     //..................................................................................................................
@@ -197,8 +201,6 @@ Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('m
  ****************************************/
 Route::get('/export/{p_table}', 'ExcelController@export')->name('export');
 /*********************************************************************************/
-
-
 
 
 //Auth::routes();

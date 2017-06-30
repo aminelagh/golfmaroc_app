@@ -17,6 +17,8 @@
     <div class="row" align="center">
         <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockIN') }}">
             <i class="glyphicon glyphicon-arrow-down"></i> Entrée de stock</a>
+        <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockTransfertOUT') }}">
+            Transfert</a>
         <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockOUT') }}">
             Sortie de stock <i class="glyphicon glyphicon-arrow-up"></i> </a>
     </div>
@@ -317,10 +319,9 @@
 
 
                 var table = $('#myTable').DataTable({
-                    "lengthMenu": [[5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, "Tout"]],
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
-                    //"autoWidth": true,
                     "info": false,
                     stateSave: false,
                     "columnDefs": [
