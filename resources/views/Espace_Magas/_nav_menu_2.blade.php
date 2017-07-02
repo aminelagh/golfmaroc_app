@@ -19,6 +19,21 @@
             </li>
 
             <li>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des ventes <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="{{ Route('magas.addVente') }}">Nouvelle vente</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.ventes') }}">Ventes</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.clients') }}">Clients</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des articles <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>

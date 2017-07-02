@@ -7,8 +7,8 @@
     <h1 class="page-header">Ajouter une marque</h1>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-        <li class="breadcrumb-item ">Gestion des Articles</li>
-        <li class="breadcrumb-item active"><a href="{{ Route('magas.marques') }}">
+        <li class="breadcrumb-item">Gestion des Articles</li>
+        <li class="breadcrumb-item"><a href="{{ Route('magas.marques') }}">
                 Liste des marques</a></li>
         <li class="breadcrumb-item active">Création d'une marque</li>
     </ol>

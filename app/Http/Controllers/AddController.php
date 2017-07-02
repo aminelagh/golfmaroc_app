@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use Illuminate\Support\Facades\Session;
 use Sentinel;
 use Illuminate\Http\Request;
 use Auth;
@@ -25,6 +27,10 @@ use \Exception;
 
 class AddController extends Controller
 {
+    public function addClient()
+    {
+        return view('Espace_Magas.add-client-form');
+    }
 
     public function addMarque()
     {
@@ -69,6 +75,34 @@ class AddController extends Controller
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    public function submitAddClient()
+    {
+        $nom = request()->get('nom');
+        $prenom = request()->get('prenom');
+        if (Client::Exists($nom, $prenom))
+            return redirect()->back()->withInput()->with('alert_warning', "le client <b>" . $nom." " .$prenom. "</b> existe deja.");
+
+
+        $age = request()->get('age');
+        $ville = request()->get('ville');
+        $sexe = request()->get('sexe');
+
+        $item = new Client;
+        $item->id_magasin = Session::get('id_magasin');
+        $item->nom = $nom;
+        $item->prenom = $prenom;
+        $item->ville = $ville;
+        $item->age = $age;
+        $item->sexe = $sexe;
+        $item->deleted = false;
+
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation du client.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "Le client <b>" . $nom." ". $prenom . "</b> a bien été créer");
+    }
 
     public function submitAddMarque()
     {

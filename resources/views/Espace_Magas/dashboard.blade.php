@@ -6,6 +6,9 @@
     <h1 class="page-header">Espace magasinier</h1>
 
 
+    <div class="row">
+        <a href="{{ Route('magas.ventes') }}">Ventes</a>
+    </div>
 
 
 @endsection

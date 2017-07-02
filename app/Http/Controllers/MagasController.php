@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
+use App\Models\Client;
 use App\Models\Stock;
 use App\Models\Article;
 use App\Models\Categorie;
@@ -10,6 +11,7 @@ use App\Models\Fournisseur;
 use App\Models\Magasin;
 use App\Models\Marque;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Mockery\Exception;
 
 class MagasController extends Controller
@@ -61,11 +63,25 @@ class MagasController extends Controller
         $data = Magasin::where('deleted', false)->where('id_magasin', '!=', 1)->get();
         return view('Espace_Magas.liste-magasins')->withData($data);
     }
+    public function clients()
+    {
+        $data = Client::where('deleted', false)->where('id_magasin', Session::get('id_magasin'))->get();
+        return view('Espace_Magas.liste-clients')->withData($data);
+    }
     /******************************************************************************************************************/
 
     /********************************************************
      * Afficher les infos
      *********************************************************/
+    public function client($p_id)
+    {
+        $data = Client::find($p_id);
+        if ($data == null)
+            return redirect()->back()->with('alert_warning', "Le client choisi n'existe pas.");
+
+        return view('Espace_Magas.info-client')->withData($data);
+    }
+
     public function marque($p_id)
     {
         $data = Marque::find($p_id);

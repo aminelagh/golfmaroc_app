@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -18,6 +19,35 @@ use Mockery\Exception;
 
 class UpdateController extends Controller
 {
+
+    public function submitUpdateClient()
+    {
+        $id_client = request()->get('id_client');
+        $nom = request()->get('nom');
+        $prenom = request()->get('prenom');
+
+        if (Client::ExistForUpdate($id_client, $nom, $prenom))
+            return redirect()->back()->withInput()->withAlertWarning("Le client: <b>" . $nom . " " . $prenom . "</b> existe deja.");
+
+        $sexe = request()->get('sexe');
+        $age = request()->get('age');
+        $ville = request()->get('ville');
+
+        $item = Client::find($id_client);
+        try {
+            $item->update([
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'sexe' => $sexe,
+                'age' => $age,
+                'ville' => $ville,
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->back()->with('alert_success', "Modification reussie.");
+    }
+
     public function submitUpdateMarque()
     {
         $id_marque = request()->get('id_marque');

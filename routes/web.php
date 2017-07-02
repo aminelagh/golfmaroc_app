@@ -74,9 +74,23 @@ Route::group(['middleware' => 'magas'], function () {
     //Transactions .....................................................................................................
     Route::get('/magas/entrees', 'TransactionController@entrees')->name('magas.entrees');
     Route::get('/magas/entree/{p_id}', 'TransactionController@entree')->name('magas.entree');
-
     Route::get('/magas/sorties', 'TransactionController@sorties')->name('magas.sorties');
     //..................................................................................................................
+    //------------------------------------------------------------------------------------------------------------------
+
+
+    //Vente ------------------------------------------------------------------------------------------------------------
+    Route::get('/magas/ventes', 'VenteController@ventes')->name('magas.ventes');
+    Route::get('/magas/vente/{p_id}', 'VenteController@vente')->name('magas.vente');
+    Route::get('/magas/addVente', 'VenteController@addVente')->name('magas.addVente');
+    Route::post('/magas/submitAddVente', 'VenteController@submitAddMarque')->name('magas.submitAddVente');
+    Route::post('/magas/submitUpdateVente', 'VenteController@submitUpdateMarque')->name('magas.submitUpdateVente');
+    //Client ...........................................................................................................
+    Route::get('/magas/clients', 'MagasController@clients')->name('magas.clients');
+    Route::get('/magas/client/{p_id}', 'MagasController@client')->name('magas.client');
+    Route::get('/magas/addClient', 'AddController@addClient')->name('magas.addClient');
+    Route::post('/magas/submitAddClient', 'AddController@submitAddClient')->name('magas.submitAddClient');
+    Route::post('/magas/submitUpdateClient', 'UpdateController@submitUpdateClient')->name('magas.submitUpdateClient');
     //------------------------------------------------------------------------------------------------------------------
 
 

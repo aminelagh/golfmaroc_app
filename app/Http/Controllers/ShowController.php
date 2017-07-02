@@ -22,7 +22,7 @@ class ShowController extends Controller
     /****************************************
      * info: retourner la vue pour afficher les details
      *****************************************/
-    public function info($p_table, $p_id)
+    /*public function info($p_table, $p_id)
     {
         switch ($p_table) {
 
@@ -90,12 +90,12 @@ class ShowController extends Controller
                 return back()->withInput()->with('alert_warning', 'Vous avez pris le mauvais chemin. ==> ShowController@info');
                 break;
         }
-    }
+    }*/
 
     /****************************************
      * retourner la vue pour afficher les tables
      *****************************************/
-    public function lister($p_table)
+    /*public function lister($p_table)
     {
         switch ($p_table) {
             case 'agents':
@@ -129,7 +129,7 @@ class ShowController extends Controller
             default:
                 return back()->withInput()->with('alert_warning', 'Vous avez pris le mauvais chemin. ==> ShowController@lister');
         }
-    }
+    }*/
 
 
 }
