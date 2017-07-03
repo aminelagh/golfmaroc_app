@@ -4,8 +4,7 @@
 
 @section('main_content')
 
-    <h3 class="page-header">Stock du magasin:
-        <strong>{{ $magasin->libelle }}</strong></h3>
+    <h3 class="page-header">Nouvelle vente</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
@@ -14,288 +13,148 @@
         <li class="breadcrumb-item active">Nouvelle vente</li>
     </ol>
 
-    <div class="row" align="center">
-        <a type="button" class="btn btn-outline btn-primary"
-           href="{{ Route('magas.addStockTransfertOUT',[ 'id_magasin_source' => $magasin->id_magasin]) }}"
-                {!! setPopOver("","Transferer des articles depuis le stock du magasin principal vers le stock de ce magasin (".$magasin->libelle.").") !!}>
-            <i class="glyphicon glyphicon-arrow-down"></i>Transferer vers ce magasin
-        </a>
-        <a type="button" class="btn btn-outline btn-primary"
-           href="{{ Route('magas.addStockTransfertIN',[ 'id_magasin_destination' => $magasin->id_magasin ]) }}" {!! setPopOver("","Transferer des articles depuis le stock ce magasin (".$magasin->libelle.") vers le stock du magasin principal.") !!}>
-            Transferer depuis ce magasin <i class="glyphicon glyphicon-arrow-up"></i>
-        </a>
-    </div>
-
-    <div class="row">
-        @if( !$data->isEmpty() )
-            <div class="breadcrumb">
-                Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Designation</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a>
-            </div>
-        @endif
-    </div>
-
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
-                <table id="myTable" class="table table-striped table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th rowspan="2"></th>
-                        <th rowspan="2">Reference</th>
-                        <th rowspan="2">Code</th>
-                        <th rowspan="2">Designation</th>
-                        <th rowspan="2">Marque</th>
-                        <th rowspan="2">Categorie</th>
-                        <th colspan="2">Prix de gros</th>
-                        <th colspan="2">Prix</th>
-                        <th rowspan="2">Etat</th>
-                        <th rowspan="2">Actions</th>
 
-                    </tr>
-                    <tr>
-                        <th>HT</th>
-                        <th>TTC</th>
-                        <th>HT</th>
-                        <th>TTC</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <th></th>
-                        <th>Reference</th>
-                        <th>Code</th>
-                        <th>Designation</th>
-                        <th>Marque</th>
-                        <th>Categorie</th>
-                        <th>HT</th>
-                        <th>TTC</th>
-                        <th>HT</th>
-                        <th>TTC</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    @foreach( $data as $item )
-                        <script>
-                            function newWindow() {
-                                var myWindow = window.open("{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}", "_self", "width=1000,height=800");
-                            }
-                        </script>
+                {{-- *************** form ***************** --}}
+                <form role="form" name="myForm" id="myForm" method="post"
+                      action="{{ Route('magas.submitAddStockOUT') }}">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
 
+                    <table id="myTable" class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th rowspan="2"> #</th>
+                            <th rowspan="2">Reference</th>
+                            <th rowspan="2">Code</th>
+                            <th rowspan="2">Designation</th>
+                            <th rowspan="2">Marque</th>
+                            <th rowspan="2">Categorie</th>
+                            <th colspan="2">Prix de gros</th>
+                            <th colspan="2">Prix de vente</th>
+                            <th rowspan="2">Etat</th>
+                            <th rowspan="2">Actions</th>
 
-                        <tr onclick="newWindow()">
-
-                            <td></td>
-                            <td>
-                                {{ \App\Models\Article::getRef($item->id_article) }}
-                                {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
-                            </td>
-                            <td>{{ \App\Models\Article::getCode($item->id_article) }}</td>
-                            <td>
-                                @if( App\Models\Article::getImage($item->id_article) != null) <img
-                                        src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
-                                        width="40px">@endif
-                                {{ \App\Models\Article::getDesignation($item->id_article) }}
-                            </td>
-                            <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
-                            <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
-                            <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                            <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                            <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                            <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                            <td align="center">
-                                @if(\App\Models\Stock::getState($item->id_stock) == 0)
-                                    <div id="circle"
-                                         style="background: darkred;" {!! setPopOver("indisponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article") !!}></div>
-                                @elseif(\App\Models\Stock::getState($item->id_stock) == 1)
-                                    <div id="circle"
-                                         style="background: red;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
-                                @elseif(\App\Models\Stock::getState($item->id_stock) == 2)
-                                    <div id="circle"
-                                         style="background: orange;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
-                                @elseif(\App\Models\Stock::getState($item->id_stock) == 3)
-                                    <div id="circle"
-                                         style="background: lawngreen;" {!! setPopOver("Disponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
-                                @endif
-                            </td>
-                            <td align="center">
-                                <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
-                                            class="glyphicon glyphicon-info-sign"
-                                            aria-hidden="false"></i></a>
-                            </td>
                         </tr>
+                        <tr>
+                            <th>HT</th>
+                            <th>TTC</th>
+                            <th>HT</th>
+                            <th>TTC</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>Reference</th>
+                            <th>Code</th>
+                            <th>Designation</th>
+                            <th>Marque</th>
+                            <th>Categorie</th>
+                            <th>HT</th>
+                            <th>TTC</th>
+                            <th>HT</th>
+                            <th>TTC</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        @foreach( $data as $item )
 
-                        {{-- Modal (pour afficher les details de chaque article) --}}
-                        <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog"
-                             tabindex="-1" aria-labelledby="gridSystemModalLabel">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close"><span
-                                                    aria-hidden="true">&times;</span></button>
-                                        <h3 class="modal-title" id="gridSystemModalLabel">
-                                            <b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b></h3>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Code</li>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getCode($item->id_article) }}</b>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Reference</li>
-                                            </div>
-                                            <div class="col-md-6"><b>
-                                                    {{ \App\Models\Article::getRef($item->id_article) }}
-                                                    {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
-                                                </b>
-                                            </div>
-                                        </div>
-                                        {{-- marque --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Marque</li>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getMarque($item->id_article) }}</b>
-                                            </div>
-                                        </div>
-                                        {{-- categorie --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Categorie</li>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <b>{{ \App\Models\Article::getCategorie($item->id_article) }}</b>
-                                            </div>
-                                        </div>
-                                        {{-- fournisseur --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Fournisseur</li>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getFournisseur($item->id_article) }}</b>
-                                            </div>
-                                        </div>
+                                <tr data-toggle="collapse" data-target="#demo_{{ $loop->index+1 }}">
 
-                                        <div class="row">
-                                            <hr/>
-                                        </div>
+                                <td>{{ $loop->index+1 }}</td>
+                                <td>
+                                    {{ \App\Models\Article::getRef($item->id_article) }}
+                                    {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
+                                </td>
+                                <td>{{ \App\Models\Article::getCode($item->id_article) }}</td>
+                                <td>
+                                    @if( App\Models\Article::getImage($item->id_article) != null) <img
+                                            src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
+                                            width="40px">@endif
+                                    {{ \App\Models\Article::getDesignation($item->id_article) }}
+                                </td>
+                                <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
+                                <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
+                                <td align="center">
+                                    @if(\App\Models\Stock::getState($item->id_stock) == 0)
+                                        <div id="circle"
+                                             style="background: darkred;" {!! setPopOver("indisponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article") !!}></div>
+                                    @elseif(\App\Models\Stock::getState($item->id_stock) == 1)
+                                        <div id="circle"
+                                             style="background: red;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
+                                    @elseif(\App\Models\Stock::getState($item->id_stock) == 2)
+                                        <div id="circle"
+                                             style="background: orange;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
+                                    @elseif(\App\Models\Stock::getState($item->id_stock) == 3)
+                                        <div id="circle"
+                                             style="background: lawngreen;" {!! setPopOver("Disponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    <button type="button" class="btn btn-info" data-toggle="collapse"
+                                            data-target="#demo_{{ $loop->index+1 }}" @if(!\App\Models\Stock_taille::hasTailles($item->id_stock)) disabled @endif>Button
+                                    </button>
+                                </td>
+                            </tr>
+                            @if(\App\Models\Stock_taille::hasTailles($item->id_stock))
+                                <tr>
+                                    <td></td>
+                                    <td colspan="10">
+                                        <div id="demo_{{ $loop->index+1 }}" class="collapse">
+                                            <table id="skipTable" class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>Taille</th>
+                                                    <th>Quantite</th>
+                                                    <th>Quantite a vendre</th>
+                                                </tr>
+                                                </thead>
 
-                                        {{-- couleur --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Couleur</li>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getCouleur($item->id_article) }}</b>
-                                            </div>
+                                                @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
+                                                    <tr>
+                                                        <td align="right">{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</td>
+                                                        <td align="right">{{ $taille->quantite }}</td>
+                                                        <td><input type="number" min="0"
+                                                                   max="{{ $taille->quantite }}"
+                                                                   placeholder="Quantite"
+                                                                   width="5" class="form-control"
+                                                                   name="quantiteOUT[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
+                                                                   value="{{ old('quantiteOUT.'.($item->id_stock).'.'.($loop->index+1).'') }}">
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
                                         </div>
-                                        {{-- sexe --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Sexe</li>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>{{ \App\Models\Article::getSexe($item->id_article) }}</b>
-                                            </div>
-                                        </div>
-                                        {{-- Prix de gros --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Prix de gros</li>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-3"></div>
-                                            <div class="col-md-1">HT</div>
-                                            <div class="col-md-3">
-                                                <b>{{ \App\Models\Article::getPrixGrosHT($item->id_article) }} Dhs</b>
-                                            </div>
-                                            <div class="col-md-1">TTC</div>
-                                            <div class="col-md-3">
-                                                <b>{{ \App\Models\Article::getPrixGrosTTC($item->id_article) }} Dhs</b>
-                                            </div>
-                                        </div>
-                                        {{-- Prix --}}
-                                        <div class="row">
-                                            <div class="col-lg-2"></div>
-                                            <div class="col-lg-4">
-                                                <li>Prix</li>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-3"></div>
-                                            <div class="col-md-1">HT</div>
-                                            <div class="col-md-3">
-                                                <b>{{ \App\Models\Article::getPrixHT($item->id_article) }} Dhs</b>
-                                            </div>
-                                            <div class="col-md-1">TTC</div>
-                                            <div class="col-md-3">
-                                                <b>{{ \App\Models\Article::getPrixTTC($item->id_article) }} Dhs</b>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <hr/>
-                                        </div>
-                                        @if(\App\Models\Stock_taille::hasTailles($item->id_stock))
-                                            <div class="row">
-                                                <div class="col-md-2">Tailles:</div>
-                                            </div>
-                                            @foreach(\App\Models\Stock_taille::getTailles($item->id_stock) as $taille)
-                                                <div class="row">
-                                                    <div class="col-md-2"></div>
-                                                    <div class="col-md-2">{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</div>
-                                                    <div class="col-md-2"><b>{{ $taille->quantite }}</b></div>
-                                                </div>
-                                            @endforeach
-                                        @else
-                                            <div class="row">
-                                                <div class="col-md-4"></div>
-                                                <div class="col-md-4"><b><i>Aucune taille</i></b></div>
-                                                <div class="col-md-4"></div>
-                                            </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            @endif
+                        @endforeach
 
-                                        @endif
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- fin Modal (pour afficher les details de chaque article) --}}
-                    @endforeach
+                        </tbody>
+                    </table>
 
-                    </tbody>
-                </table>
+
+                    <div class="row" align="center">
+                        <input type="submit" value="Valider la sortie de stock"
+                               class="btn btn-outline btn-success">
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
 
     <br/>
-
     <hr/>
     <br/>
 @endsection
@@ -305,43 +164,41 @@
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 var table = $('#myTable').DataTable({
-                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
+                    "lengthMenu": [[50, 20, 30, 50, -1], [50, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
                     //"autoWidth": true,
                     "info": false,
                     stateSave: false,
                     "columnDefs": [
-                        {"visible": true, "targets": -1},
+                        //{"visible": true, "targets": -1},
 
-                        {"searchable": false, "orderable": false, "targets": 0},
-                        //{"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
+                        //{"searchable": false, "orderable": false, "targets": 0},
+                        {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
                         {"width": "05%", "targets": 1, "type": "string", "visible": true},  //ref
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
 
-                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
+                        {"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
                         {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
                         {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
 
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 6, "type": "num-fmt", "visible": true},      //HT
                         {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 8, "type": "num-fmt", "visible": true},      //HT
                         {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "05%", "targets": 10, "type": "num-fmt", "orderable": false, "visible": true}, //etat
 
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 11, "orderable": false, "type": "num-fmt", "searchable": false}
                     ],
-                    "select": {
-                        items: 'column'
-                    }
+                    //"select": {items: 'column'}
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                /*table.on('order.dt search.dt', function () {
+                 table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                 cell.innerHTML = i + 1;
+                 });
+                 }).draw();*/
 
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {
@@ -412,7 +269,5 @@
         #myTable td {
             padding: 5px;
         }
-
-
     </style>
 @endsection
