@@ -4,12 +4,13 @@
 <head>
     <title>@yield('title')</title>
 
-    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/metisMenu/metisMenu.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/css/sb-admin-2.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/morrisjs/morris.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('anime/anime.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-toggle.css') }}" rel="stylesheet">
 
     <script src="{{ asset('js/datatables.min.js') }}"></script>
 
@@ -54,6 +55,7 @@
 <script src="{{ asset('js/metisMenu.min.js') }}"></script>
 <script src="{{ asset('js/sb-admin-2.js') }}"></script>
 <script src="{{ asset('anime/bootstrap-notify.js') }}"></script>
+<script src="{{ asset('js/bootstrap-toggle.js') }}"></script>
 <script>
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover();

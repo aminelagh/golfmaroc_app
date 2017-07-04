@@ -83,7 +83,7 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/ventes', 'VenteController@ventes')->name('magas.ventes');
     Route::get('/magas/vente/{p_id}', 'VenteController@vente')->name('magas.vente');
     Route::get('/magas/addVente', 'VenteController@addVente')->name('magas.addVente');
-    Route::post('/magas/submitAddVente', 'VenteController@submitAddMarque')->name('magas.submitAddVente');
+    Route::post('/magas/submitAddVentePhase1', 'VenteController@submitAddVentePhase1')->name('magas.submitAddVentePhase1');
     Route::post('/magas/submitUpdateVente', 'VenteController@submitUpdateMarque')->name('magas.submitUpdateVente');
     //Client ...........................................................................................................
     Route::get('/magas/clients', 'MagasController@clients')->name('magas.clients');
