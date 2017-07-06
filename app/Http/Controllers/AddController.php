@@ -74,6 +74,14 @@ class AddController extends Controller
         return view('Espace_Magas.add-article-form')->withFournisseurs($fournisseurs)->withMarques($marques)->withCategories($categories);
     }
 
+    public function addPromotion()
+    {
+        $articles = Article::where('valide',true)->where('deleted',false)->get();
+        $magasins = Magasin::where('deleted',true)->get();
+
+        return view('Espace_Magas.add-promotions-form')->with(['articles' => $articles, 'magasins' => $magasins]);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     public function submitAddClient()
     {

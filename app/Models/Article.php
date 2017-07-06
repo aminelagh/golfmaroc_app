@@ -32,11 +32,6 @@ class Article extends Model
         }
     }
 
-    public static function getPrix_TTC($prix_HT)
-    {
-        return number_format(($prix_HT * 1.2), 2);
-    }
-
     static function getNextID()
     {
         $lastRecord = DB::table('articles')->orderBy('id_article', 'desc')->first();

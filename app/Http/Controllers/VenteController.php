@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Magasin;
+use App\Models\Mode_paiement;
+use App\Models\Panier;
+use App\Models\Panier_article;
 use App\Models\Stock;
 use App\Models\Vente;
 use Illuminate\Support\Facades\DB;
@@ -26,14 +29,18 @@ class VenteController extends Controller
         if ($data->isEmpty())
             return redirect()->back()->withAlertWarning("Le stock du magasin est vide, veuillez commencer par l'alimenter.");
         $magasin = Magasin::find(1);
-        return view('Espace_Magas.add-vente-form')->withData($data)->withMagasin($magasin);
+        $modes = Mode_paiement::all();
+        return view('Espace_Magas.add-vente-form')->withData($data)->withMagasin($magasin)->withModesPaiement($modes);
     }
 
     public function submitAddVentePhase1()
     {
         if (request()->has('type_prix'))
-            echo "vente de gros";
-        else echo "vente simple";
+            $type_vente = "gros";
+        else $type_vente = "simple";
+
+        //Delete Panier
+        Panier::deletePanier();
 
         //variables du formulaires -------------------------------------------------------------------------------------
         $id_magasin = request()->get('id_magasin');
@@ -56,13 +63,12 @@ class VenteController extends Controller
             }
         }
         if (!$hasData)
-            echo "No data<hr>"; //return redirect()->back()->withInput()->withAlertInfo("Remplissez les formulaires dans les onglets <b>Stock</b>");
+            return redirect()->back()->withInput()->withAlertInfo("Remplissez les formulaires dans les onglets <b>Stock</b>");
         //--------------------------------------------------------------------------------------------------------------
 
         //Creation d'une transaction -----------------------------------------------------------------------------------
-        //$id_transaction = Transaction::getNextID();
-        //Transaction::createTransactionOUT($id_transaction);
-        echo "<li>creer Panier.<br>";
+        $id_panier = Panier::getNextID();
+        Panier::createPanier($id_panier,$type_vente);
         //--------------------------------------------------------------------------------------------------------------
 
         //Creation des trans_articles ----------------------------------------------------------------------------------
@@ -80,19 +86,34 @@ class VenteController extends Controller
                         //----------------------------------------------------------------------------------
 
                         //Creer une nouvelle ligne dans: panier_articles -----------------------------------------------
-                        echo "<li> New Panier_article: id_article: $id_article - id_taille_article: $id_taille_article - quantite: $quantite <br>";
+                        //echo "<li> New Panier_article: id_article: $id_article - id_taille_article: $id_taille_article - quantite: $quantite <br>";
+                        Panier_article::createPanierArticle($id_panier,$id_article,$id_taille_article,$quantite);
                         //----------------------------------------------------------------------------------------------
                     }
                     $i++;
                 }
             }
-            echo "<hr>";
         }
         //--------------------------------------------------------------------------------------------------------------
         //return redirect()->back()->withAlertSuccess("Sortie de stock effectuée avec succès");
+        //return view('Espace_Magas.add-vente_2-form')->withAlertInfo("Un nouveau panier a ete cree.");
+        return redirect()->route('magas.addVentePhase2');
     }
 
-    public function submitAddVentePhase()
+    public function addVentePhase2()
+    {
+        $id_user = Session::get('id_user');
+        $panier = collect(DB::select("select * from paniers where id_user=".$id_user." "))->first();
+        $id_panier = $panier->id_panier;
+        //$articles = collect(DB::select("select * from panier_articles where id_panier=".$id_panier." "));
+        $articles = Panier_article::where('id_panier',$id_panier)->get();
+        $magasin = Magasin::find(1);
+
+        return view('Espace_Magas.add-vente_2-form')->withPanier($panier)->withData($articles)->withMagasin($magasin);
+
+    }
+
+    public function submitAddVenteeee()
     {
         dump(request()->all());
 

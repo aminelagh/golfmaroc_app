@@ -46,49 +46,6 @@
 
                 <div class="container-fluid">
 
-                    <div class="row">
-                        <div class="col-lg-2"></div>
-
-                        <div class="col-lg-8">
-                            {{-- Debut Alerts --}}
-                            @if (session('alert_success'))
-                                <div class="alert alert-success alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                        &times;
-                                    </button> {!! session('alert_success') !!}
-                                </div>
-                            @endif
-
-                            @if (session('alert_info'))
-                                <div class="alert alert-info alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                        &times;
-                                    </button> {!! session('alert_info') !!}
-                                </div>
-                            @endif
-
-                            @if (session('alert_warning'))
-                                <div class="alert alert-warning alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                        &times;
-                                    </button> {!! session('alert_warning') !!}
-                                </div>
-                            @endif
-
-                            @if (session('alert_danger'))
-                                <div class="alert alert-danger alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                        &times;
-                                    </button> {!! session('alert_danger') !!}
-                                </div>
-                            @endif
-                            {{-- Fin Alerts --}}
-                        </div>
-
-                        <div class="col-lg-2"></div>
-
-                    </div>
-
 
                     <!-- Row 1 -->
                     <div class="row">
@@ -110,9 +67,7 @@
                                         </div>
 
                                         <div class="col-lg-5">
-
                                             <div class="form-group">
-
                                                 <label>Mode de Paiement</label>
 
                                                 <select class="form-control" name="mode">
@@ -235,21 +190,27 @@
                                                                             <p>
                                                                                 <b>numero</b> {{ getChamp('articles', 'id_article', $item->id_article , 'num_article') }}
                                                                             </p>
+
                                                                             <p><b>code a
                                                                                     barres</b> {{ getChamp('articles', 'id_article', $item->id_article , 'code_barre') }}
                                                                             </p>
+
                                                                             <p>
                                                                                 <b>Taille</b> {{ getChamp('articles', 'id_article', $item->id_article , 'taille') }}
                                                                             </p>
+
                                                                             <p>
                                                                                 <b>Couleur</b> {{ getChamp('articles', 'id_article', $item->id_article , 'couleur') }}
                                                                             </p>
+
                                                                             <p>
                                                                                 <b>sexe</b> {{ getSexeName(getChamp('articles', 'id_article', $item->id_article , 'sexe')) }}
                                                                             </p>
+
                                                                             <p><b>Prix
                                                                                     d'achat</b> {{ getChamp('articles', 'id_article', $item->id_article , 'prix_achat') }}
                                                                             </p>
+
                                                                             <p><b>Prix de
                                                                                     vente</b> {{ getChamp('articles', 'id_article', $item->id_article , 'prix_vente') }}
                                                                             </p>

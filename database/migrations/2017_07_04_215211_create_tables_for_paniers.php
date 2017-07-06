@@ -19,7 +19,7 @@ class CreateTablesForPaniers extends Migration
             $table->integer('id_magasin')->nullable();
             $table->integer('id_user')->nullable();
             $table->integer('id_client')->nullable();
-
+            $table->string('type_vente')->nullable();
             $table->boolean('annulee')->nullable();
 
             $table->timestamps();

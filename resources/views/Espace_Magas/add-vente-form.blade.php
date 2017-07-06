@@ -1,8 +1,9 @@
 @extends('layouts.main_master')
 
-@section('title') Nouvelle vente  @endsection
+@section('title') vente @endsection
 
 @section('main_content')
+
     <h3 class="page-header">Nouvelle vente</h3>
 
     <ol class="breadcrumb">
@@ -14,7 +15,8 @@
 
     <div class="row">
         <div class="table-responsive">
-            <div class="col-lg-12">
+            <div align="center">
+
 
                 {{-- *************** form ***************** --}}
                 <form role="form" name="myForm" id="myForm" method="post"
@@ -22,301 +24,210 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
 
-                    <table id="myTable" class="table table-striped table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th rowspan="2"> #</th>
-                            <th rowspan="2">Reference</th>
-                            <th rowspan="2">Code</th>
-                            <th rowspan="2">Designation</th>
-                            <th rowspan="2">Marque</th>
-                            <th rowspan="2">Categorie</th>
-                            <th colspan="2">Prix de gros</th>
-                            <th colspan="2">Prix de vente</th>
-                            <th rowspan="2">Etat</th>
-                            <th rowspan="2">Actions</th>
 
-                        </tr>
-                        <tr>
-                            <th>HT</th>
-                            <th>TTC</th>
-                            <th>HT</th>
-                            <th>TTC</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th></th>
-                            <th>Reference</th>
-                            <th>Code</th>
-                            <th>Designation</th>
-                            <th>Marque</th>
-                            <th>Categorie</th>
-                            <th>HT</th>
-                            <th>TTC</th>
-                            <th>HT</th>
-                            <th>TTC</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                        @foreach( $data as $item )
-                            <tr>
-                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
-                                       value="{{ $item->id_stock }}"/>
+                    @foreach( $data as $item )
 
-                                <td>{{ $loop->index+1 }}</td>
-                                <td>
-                                    {{ \App\Models\Article::getRef($item->id_article) }}
-                                    {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
-                                </td>
-                                <td>{{ \App\Models\Article::getCode($item->id_article) }}</td>
-                                <td>@if( App\Models\Article::getImage($item->id_article) != null)
-                                        <img src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
-                                             width="40px">
-                                    @endif
-                                    {{ \App\Models\Article::getDesignation($item->id_article) }}
-                                </td>
-                                <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
-                                <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                                <td align="center">
-                                    @if(\App\Models\Stock::getState($item->id_stock) == 0)
-                                        <div id="circle"
-                                             style="background: darkred;" {!! setPopOver("indisponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article") !!}></div>
-                                    @elseif(\App\Models\Stock::getState($item->id_stock) == 1)
-                                        <div id="circle"
-                                             style="background: red;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
-                                    @elseif(\App\Models\Stock::getState($item->id_stock) == 2)
-                                        <div id="circle"
-                                             style="background: orange;" {!! setPopOver("",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
-                                    @elseif(\App\Models\Stock::getState($item->id_stock) == 3)
-                                        <div id="circle"
-                                             style="background: lawngreen;" {!! setPopOver("Disponible",\App\Models\Stock::getNombreArticles($item->id_stock)." article(s)") !!}></div>
-                                    @endif
-                                </td>
-                                <td align="center">
-                                    <div data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
-                                                class="glyphicon glyphicon-plus"></i></div>
+                        <script>
+                            function callQ_{{ $loop->iteration }}(cpt) {
+                                var total = 0;
+                                var prix = document.getElementById("prix_"+{{ $loop->iteration }}).value;
+                                for (i = 1; i <= cpt; i++) {
+                                    var qi = document.getElementById("quantite_{{ $loop->iteration }}_" + i).value;
+                                    //alert("QI = "+qi);
+                                    if(qi == "")
+                                    {
+                                        qi = 0;
+                                    }else if(qi<0)
+                                    {
+                                        alert("Erreur, q<0");
+                                        break;
+                                    }
+                                    total += parseInt(qi);
+                                }
+                                document.getElementById("sommeQ_"+{{ $loop->iteration }}).value = total;
+                                document.getElementById("total_"+{{ $loop->iteration }}).value = total*parseFloat(prix);
+                            }
+                        </script>
 
-                                    {{-- Modal (pour afficher les details de chaque article) --}}
-                                    <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog"
-                                         tabindex="-1" aria-labelledby="gridSystemModalLabel">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close"><span
-                                                                aria-hidden="true">&times;</span></button>
-                                                    <h3 class="modal-title" id="gridSystemModalLabel">
-                                                        <b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b>
-                                                    </h3>
-                                                </div>
-                                                <div class="modal-body">
-                                                    {{-- code --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Code</li>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <b>{{ \App\Models\Article::getCode($item->id_article) }}</b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- ref --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Reference</li>
-                                                        </div>
-                                                        <div class="col-md-6"><b>
-                                                                {{ \App\Models\Article::getRef($item->id_article) }}
-                                                                {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
-                                                            </b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- marque --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Marque</li>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <b>{{ \App\Models\Article::getMarque($item->id_article) }}</b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- categorie --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Categorie</li>
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <b>{{ \App\Models\Article::getCategorie($item->id_article) }}</b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- fournisseur --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Fournisseur</li>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <b>{{ \App\Models\Article::getFournisseur($item->id_article) }}</b>
-                                                        </div>
-                                                    </div>
+                        <input type="hidden" id="prix_{{ $loop->iteration }}"
+                               value="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">
 
-                                                    <div class="row">
-                                                        <hr/>
-                                                    </div>
+                        <h3 onclick="calcQ({{ $loop->iteration }});">{{ \App\Models\Article::getDesignation($item->id_article) }}
+                            : {{ \App\Models\Article::getPrixTTC($item->id_article) }}</h3>
 
-                                                    {{-- couleur --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Couleur</li>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <b>{{ \App\Models\Article::getCouleur($item->id_article) }}</b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- sexe --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Sexe</li>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <b>{{ \App\Models\Article::getSexe($item->id_article) }}</b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- Prix de gros --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Prix de gros</li>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-3"></div>
-                                                        <div class="col-md-1">HT</div>
-                                                        <div class="col-md-3">
-                                                            <b>{{ \App\Models\Article::getPrixGrosHT($item->id_article) }}
-                                                                Dhs</b>
-                                                        </div>
-                                                        <div class="col-md-1">TTC</div>
-                                                        <div class="col-md-3">
-                                                            <b>{{ \App\Models\Article::getPrixGrosTTC($item->id_article) }}
-                                                                Dhs</b>
-                                                        </div>
-                                                    </div>
-                                                    {{-- Prix de vente --}}
-                                                    <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4">
-                                                            <li>Prix de vente</li>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-3"></div>
-                                                        <div class="col-md-1">HT</div>
-                                                        <div class="col-md-3">
-                                                            <b>{{ \App\Models\Article::getPrixHT($item->id_article) }}
-                                                                Dhs</b>
-                                                        </div>
-                                                        <div class="col-md-1">TTC</div>
-                                                        <div class="col-md-3">
-                                                            <b>{{ \App\Models\Article::getPrixTTC($item->id_article) }}
-                                                                Dhs</b>
-                                                        </div>
-                                                    </div>
+                        @if(\App\Models\Stock_taille::hasTailles($item->id_stock))
+                            <table border="1">
+                                @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
+                                    <tr>
 
-                                                    <div class="row">
-                                                        <hr/>
-                                                    </div>
 
-                                                    @if(\App\Models\Stock_taille::hasTailles($item->id_stock))
-                                                        <div class="row">
-                                                            <div class="col-md-2">Tailles:</div>
-                                                        </div>
-                                                        <table class="table table-striped table-bordered table-hover">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>Taille</th>
-                                                                <th>Quantite</th>
-                                                                <th>Quantite a vendre</th>
-                                                            </tr>
-                                                            </thead>
+                                        <input type="hidden"
+                                               name="quantite[{{ $item->id_stock }}][{{ $loop->iteration }}]"
+                                               value="{{ $taille->quantite }}"/>
 
-                                                            @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
-                                                                <tr>
-                                                                    <input type="hidden"
-                                                                           name="id_taille_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
-                                                                           value="{{ $taille->id_taille_article }}"/>
+                                        <td align="center">{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</td>
+                                        <td align="center">{{ $taille->quantite }}</td>
+                                        <td>
+                                            <input type="number" min="0" class="form-control"
+                                                   max="{{ $taille->quantite }}"
+                                                   placeholder="Quantite"
+                                                   name="quantiteOUT[{{ $item->id_stock }}][{{ $loop->iteration }}]"
+                                                   value="{{ old('quantiteOUT.'.($item->id_stock).'.'.($loop->iteration).'') }}"
+                                                   id="quantite_{{ $loop->parent->iteration }}_{{ $loop->iteration }}"
+                                                   onkeyup="callQ_{{ $loop->parent->iteration }}({{ \App\Models\Stock_taille::getTailles($item->id_stock)->count() }});"
+                                                   >
 
-                                                                    <input type="hidden"
-                                                                           name="quantite[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
-                                                                           value="{{ $taille->quantite }}"/>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr>
+                                    <th colspan="2">Qts</th>
+                                    <td><input type="number" disabled class="form-control"
+                                               id="sommeQ_{{ $loop->iteration }}"
+                                               value="0"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Total</th>
+                                    <td><input type="number" name="result" pattern=".##"
+                                               disabled onchange="doResult()"
+                                               id="total_{{ $loop->iteration }}"
+                                               class="form-control"/></td>
+                                </tr>
 
-                                                                    <td align="right">{{ \App\Models\Taille_article::getTaille($taille->id_taille_article) }}</td>
-                                                                    <td align="right">{{ $taille->quantite }}</td>
-                                                                    <td><input type="number" min="0"
-                                                                               max="{{ $taille->quantite }}"
-                                                                               placeholder="Quantite"
-                                                                               width="5" class="form-control"
-                                                                               name="quantiteOUT[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
-                                                                               value="{{ old('quantiteOUT.'.($item->id_stock).'.'.($loop->index+1).'') }}">
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </table>
-                                                    @else
-                                                        <div class="row">
-                                                            <div class="col-md-4"></div>
-                                                            <div class="col-md-4"><b><i>Aucun article disponible</i></b>
-                                                            </div>
-                                                            <div class="col-md-4"></div>
-                                                        </div>
+                            </table>
+                        @else
+                            <div class="row">
+                                <b><i>Aucun article disponible</i></b>
+                            </div>
+                        @endif
 
-                                                    @endif
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                        Fermer
-                                                    </button>
-                                                </div>
-                                            </div>
+                    @endforeach
+
+
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-2">
+                                    <input data-toggle="toggle" data-on="Vente de gros" data-onstyle="warning"
+                                           data-off="Vente simple" data-offstyle="info" type="checkbox"
+                                           name="type_prix">
+                                </div>
+                                <div class="col-lg-2">
+                                    <div data-toggle="modal" data-target="#squarespaceModal"
+                                         class="btn btn-primary center-block">Payement
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="submit" value="Valider la sortie de stock" formtarget="_blank"
+                                           class="btn btn-outline btn-success">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal fade" id="squarespaceModal" tabindex="-1" role="dialog"
+                         aria-labelledby="modalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                    <h3 class="modal-title" id="lineModalLabel">My Modal</h3>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="col-lg-2">
+                                        <div class="form-group">
+                                            <label {!! setPopOver("Obligatoire","Sélectionnez le mode de paiement") !!}>Mode
+                                                de Paiement *</label>
+                                            <select class="form-control" name="id_mode_paiement">
+                                                @foreach( $modes_paiement as $mode )
+                                                    <option value="{{$mode->id_mode_paiement }}" {{$mode->id_mode=="2" ? 'selected' : '' }}>{{$mode->libelle }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    {{-- fin Modal (pour afficher les details de chaque article) --}}
 
-                                </td>
-                            </tr>
+                                    <div class="col-lg-3">
+                                        <label>Reference chequier</label>
+                                        <input class="form-control" type="text" placeholder="ref" name="ref"
+                                               value="{{ old('ref') }}">
+                                    </div>
+
+                                    <div class="col-lg-2"></div>
+
+                                    <div class="col-lg-2">
+                                        <label>Taux de Remise</label>
+                                        <input class="form-control" type="number" min="0"
+                                               placeholder="Taux" value="{{ old('taux_remise') }}"
+                                               name="taux_remise" {!! setPopOver("","Taux de la remise, si vous voullez (exemple: 15%)") !!}>
+                                    </div>
 
 
+                                    <div class="col-lg-3">
+                                        <label>Raison de la remise</label>
+                                        <input class="form-control" type="text"
+                                               placeholder="Raison" name="raison" value="{{ old('raison') }}">
+                                    </div>
 
-                        @endforeach
 
-                        </tbody>
-                    </table>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Email address</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1"
+                                               placeholder="Enter email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Password</label>
+                                        <input type="password" class="form-control" id="exampleInputPassword1"
+                                               placeholder="Password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputFile">File input</label>
+                                        <input type="file" id="exampleInputFile">
 
+                                        <p class="help-block">Example block-level help text here.</p>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox"> Check me out
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-default">Submit</button>
+                                    <
 
-                    <div class="row" align="center">
-                        <input data-toggle="toggle" data-on="Vente de gros" data-onstyle="warning"
-                               data-off="Vente simple" data-offstyle="info" type="checkbox" name="type_prix">
-
-                        <input type="submit" value="Valider la sortie de stock" formtarget="_blank"
-                               class="btn btn-outline btn-success">
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                    role="button">Close
+                                            </button>
+                                        </div>
+                                        <div class="btn-group btn-delete hidden" role="group">
+                                            <button type="button" id="delImage" class="btn btn-default btn-hover-red"
+                                                    data-dismiss="modal" role="button">Delete
+                                            </button>
+                                        </div>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" id="saveImage" class="btn btn-default btn-hover-green"
+                                                    data-action="save" role="button">Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </form>
 
             </div>
         </div>
     </div>
+
+
 
     <br/>
     <hr/>

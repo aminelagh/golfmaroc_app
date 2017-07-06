@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agent;
 use App\Models\Client;
+use App\Models\Promotion;
 use App\Models\Stock;
 use App\Models\Article;
 use App\Models\Categorie;
@@ -67,6 +68,12 @@ class MagasController extends Controller
     {
         $data = Client::where('deleted', false)->where('id_magasin', Session::get('id_magasin'))->get();
         return view('Espace_Magas.liste-clients')->withData($data);
+    }
+
+    public function promotions()
+    {
+        $data = Promotion::where('deleted', false)->where('id_magasin', Session::get('id_magasin'))->get();
+        return view('Espace_Magas.liste-promotions')->withData($data);
     }
     /******************************************************************************************************************/
 

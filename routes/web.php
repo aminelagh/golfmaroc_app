@@ -17,7 +17,7 @@ Route::get('/home', function () {
 
 Route::get('/s', function () {
 
-    \App\Models\Stock_taille::deleteEmptyItems();
+    \App\Models\Article::getPrixPromo(1);
 
 
 
@@ -84,7 +84,12 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/vente/{p_id}', 'VenteController@vente')->name('magas.vente');
     Route::get('/magas/addVente', 'VenteController@addVente')->name('magas.addVente');
     Route::post('/magas/submitAddVentePhase1', 'VenteController@submitAddVentePhase1')->name('magas.submitAddVentePhase1');
-    Route::post('/magas/submitUpdateVente', 'VenteController@submitUpdateMarque')->name('magas.submitUpdateVente');
+
+    Route::get('/magas/addVentePhase2', 'VenteController@addVentePhase2')->name('magas.addVentePhase2');
+    Route::post('/magas/submitAddVentePhase2', 'VenteController@submitAddVentePhase2')->name('magas.submitAddVentePhase2');
+
+    Route::get('/back',function(){return redirect()->back()->withInput();})->name('back');
+
     //Client ...........................................................................................................
     Route::get('/magas/clients', 'MagasController@clients')->name('magas.clients');
     Route::get('/magas/client/{p_id}', 'MagasController@client')->name('magas.client');
@@ -93,7 +98,13 @@ Route::group(['middleware' => 'magas'], function () {
     Route::post('/magas/submitUpdateClient', 'UpdateController@submitUpdateClient')->name('magas.submitUpdateClient');
     //------------------------------------------------------------------------------------------------------------------
 
-
+    //Promotion --------------------------------------------------------------------------------------------------------
+    Route::get('/magas/promotions', 'MagasController@promotions')->name('magas.promotions');
+    Route::get('/magas/promotion/{p_id}', 'MagasController@promotion')->name('magas.promotion');
+    Route::get('/magas/addPromotion', 'AddController@addPromotion')->name('magas.addPromotion');
+    Route::post('/magas/submitAddPromotion', 'AddController@submitAddPromotion')->name('magas.submitAddPromotion');
+    Route::post('/magas/submitUpdatePromotion', 'UpdateController@submitUpdatePromotion')->name('magas.submitUpdatePromotion');
+    //------------------------------------------------------------------------------------------------------------------
     //Marque -----------------------------------------------------------------------------------------------------------
     Route::get('/magas/marques', 'MagasController@marques')->name('magas.marques');
     Route::get('/magas/marque/{p_id}', 'MagasController@marque')->name('magas.marque');
