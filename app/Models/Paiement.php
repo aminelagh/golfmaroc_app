@@ -17,7 +17,7 @@ class Paiement extends Model
     public function creer($id_paiement, $id_mode_paiement, $ref)
     {
         try{
-            $item = $this;
+            $item = new Paiement();
             $item->id_paiement = $id_paiement;
             $item->id_mode_paiement = $id_mode_paiement;
             $item->ref = $ref;

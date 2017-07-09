@@ -86,8 +86,6 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/addVenteGros', 'VenteController@addVenteGros')->name('magas.addVenteGros');
     Route::post('/magas/submitAddVente', 'VenteController@submitAddVente')->name('magas.submitAddVente');
 
-    Route::get('/back',function(){return redirect()->back()->withInput();})->name('back');
-
     //Client ...........................................................................................................
     Route::get('/magas/clients', 'MagasController@clients')->name('magas.clients');
     Route::get('/magas/client/{p_id}', 'MagasController@client')->name('magas.client');

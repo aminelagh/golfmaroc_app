@@ -24,7 +24,7 @@ class Remise extends Model
     public function creer($id_remise, $taux, $raison)
     {
         try {
-            $item = $this;
+            $item = new Remise();
             $item->id_remise = $id_remise;
             $item->taux = $taux;
             $item->raison = $raison;

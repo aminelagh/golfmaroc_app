@@ -77,6 +77,8 @@
 
                             <tr {{--ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');" --}}>
 
+                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
+
                                 <td>{{ $loop->index+1 }}</td>
                                 <td>
                                     {{ \App\Models\Article::getRef($item->id_article) }}
@@ -208,6 +210,10 @@
                                                                     </thead>
                                                                     @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
                                                                         <tr>
+                                                                            <input type="hidden"
+                                                                                   name="id_taille_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
+                                                                                   value="{{ $taille->id_taille_article }}"/>
+
                                                                             <input type="hidden"
                                                                                    name="quantite[{{ $item->id_stock }}][{{ $loop->iteration }}]"
                                                                                    value="{{ $taille->quantite }}"/>
@@ -357,12 +363,11 @@
                                                     <td>
                                                         <select class="form-control" name="id_mode_paiement">
                                                             @foreach( $modes_paiement as $mode )
-                                                                <option value="{{$mode->id_mode_paiement }}" {{$mode->id_mode=="2" ? 'selected' : '' }}>{{$mode->libelle }}</option>
+                                                                <option value="{{$mode->id_mode_paiement }}" {{$mode->id_mode==old('id_mode_paiement') ? 'selected' : '' }}>{{$mode->libelle }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                 </tr>
-
                                                 <tr>
                                                     <th>
                                                         <label {!! setPopOver("","saisissez la reference du cheque. (si paiement est effectué par par cheque") !!}>Reference
@@ -372,6 +377,18 @@
                                                         <input class="form-control" type="text" placeholder="ref"
                                                                name="ref"
                                                                value="{{ old('ref') }}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>
+                                                        <label>Client</label>
+                                                    </th>
+                                                    <td>
+                                                        <select class="form-control" name="id_client">
+                                                            @foreach( $clients as $client )
+                                                                <option value="{{$client->id_client }}" {{$client->id_client==old('id_client') ? 'selected' : '' }}>{{ $client->nom }} {{ $client->prenom }}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </td>
                                                 </tr>
                                             </table>
