@@ -19,7 +19,7 @@ class VenteController extends Controller
         return view('Espace_Magas.liste-ventes')->withData($data);
     }
 
-    public function addVente()
+    public function addVenteSimple()
     {
         $data = Stock::where('id_magasin', 1)->get();
         //$data = collect(DB::select("select * from stocks s join articles a on s.id_article = a.id_article join stock_tailles st on st.id_stock = s.id_stock where s.id_magasin=1 order by quantite desc"));
@@ -30,11 +30,28 @@ class VenteController extends Controller
             return redirect()->back()->withAlertWarning("Le stock du magasin est vide, veuillez commencer par l'alimenter.");
         $magasin = Magasin::find(1);
         $modes = Mode_paiement::all();
-        return view('Espace_Magas.add-vente-form')->withData($data)->withMagasin($magasin)->withModesPaiement($modes);
+        return view('Espace_Magas.add-vente_simple-form')->withData($data)->withMagasin($magasin)->withModesPaiement($modes);
     }
 
-    public function submitAddVentePhase1()
+    public function addVenteGros()
     {
+        $data = Stock::where('id_magasin', 1)->get();
+        //$data = collect(DB::select("select * from stocks s join articles a on s.id_article = a.id_article join stock_tailles st on st.id_stock = s.id_stock where s.id_magasin=1 order by quantite desc"));
+        //$data = collect(DB::select("select * from stocks s join stock_tailles st on st.id_stock = s.id_stock where s.id_magasin=1 order by st.quantite desc"));
+        //dump($data);
+
+        if ($data->isEmpty())
+            return redirect()->back()->withAlertWarning("Le stock du magasin est vide, veuillez commencer par l'alimenter.");
+        $magasin = Magasin::find(1);
+        $modes = Mode_paiement::all();
+        return view('Espace_Magas.add-vente_gros-form')->withData($data)->withMagasin($magasin)->withModesPaiement($modes);
+    }
+
+    public function submitAddVente()
+    {
+        dump(request()->all());
+        return 'done';
+
         if (request()->has('type_prix'))
             $type_vente = "gros";
         else $type_vente = "simple";

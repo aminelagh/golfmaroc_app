@@ -1,6 +1,6 @@
 @extends('layouts.main_master')
 
-@section('title') Nouvelle vente  @endsection
+@section('title') vente simple @endsection
 
 @section('main_content')
     <h3 class="page-header">Nouvelle vente simple</h3>
@@ -23,56 +23,6 @@
             </div>
         @endif
     </div>
-
-    <script>
-        function calcQ(groupe, cpt) {
-            var total = 0;
-            var prix = document.getElementById("prix_" + groupe).title;
-            //var prix = document.getElementById("prix_" +groupe);
-            //alert("Prix = "+prix);
-            for (i = 1; i <= cpt; i++) {
-                var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
-                //alert("QI = "+qi);
-                if (qi == "") {
-                    qi = 0;
-                } else if (qi < 0) {
-                    //alert("Erreur, q<0");
-                    break;
-                }
-                total += parseInt(qi);
-            }
-            //alert("total = "+total);
-            document.getElementById("sommeQ_" + groupe).value = total;
-            document.getElementById("total_" + groupe).value = total * parseFloat(prix);
-        }
-
-        function calcTotal(counter) {
-            var total = 0;
-            for (i = 1; i < counter; i++) {
-                var totali = document.getElementById("total_" + i).value;
-
-                if (totali == "") {
-                    totali = 0;
-                } else if (totali < 0) {
-                    alert("Erreur, totali<0");
-                    break;
-                }
-
-
-                total += parseFloat(totali);
-
-            }
-            document.getElementById("total_prix").value = total;
-        }
-
-        function appliquerRemise() {
-            var taux = document.getElementById("taux_remise").value;
-            var total = document.getElementById("total_prix").value;
-
-            document.getElementById("montant").value = total - total * taux / 100;
-
-        }
-    </script>
 
     <div class="row">
         <div class="table-responsive">
@@ -462,6 +412,56 @@
 
 @section('scripts')
     @if(!$data->isEmpty())
+
+        <script>
+            function calcQ(groupe, cpt) {
+                var total = 0;
+                var prix = document.getElementById("prix_" + groupe).title;
+                //var prix = document.getElementById("prix_" +groupe);
+                //alert("Prix = "+prix);
+                for (i = 1; i <= cpt; i++) {
+                    var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
+                    //alert("QI = "+qi);
+                    if (qi == "") {
+                        qi = 0;
+                    } else if (qi < 0) {
+                        //alert("Erreur, q<0");
+                        break;
+                    }
+                    total += parseInt(qi);
+                }
+                //alert("total = "+total);
+                document.getElementById("sommeQ_" + groupe).value = total;
+                document.getElementById("total_" + groupe).value = total * parseFloat(prix);
+            }
+
+            function calcTotal(counter) {
+                var total = 0;
+                for (i = 1; i < counter; i++) {
+                    var totali = document.getElementById("total_" + i).value;
+
+                    if (totali == "") {
+                        totali = 0;
+                    } else if (totali < 0) {
+                        alert("Erreur, totali<0");
+                        break;
+                    }
+
+
+                    total += parseFloat(totali);
+
+                }
+                document.getElementById("total_prix").value = total;
+            }
+
+            function appliquerRemise() {
+                var taux = document.getElementById("taux_remise").value;
+                var total = document.getElementById("total_prix").value;
+
+                document.getElementById("montant").value = total - total * taux / 100;
+
+            }
+        </script>
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell

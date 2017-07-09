@@ -22,7 +22,10 @@
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des ventes <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a href="{{ Route('magas.addVente') }}">Nouvelle vente</a>
+                        <a href="{{ Route('magas.addVenteSimple') }}">vente simple</a>
+                    </li>
+                    <li>
+                        <a href="{{ Route('magas.addVenteGros') }}">vente de gros</a>
                     </li>
                     <li>
                         <a href="{{ Route('magas.ventes') }}">Ventes</a>
