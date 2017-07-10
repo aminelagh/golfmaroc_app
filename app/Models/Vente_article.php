@@ -21,4 +21,21 @@ class Vente_article extends Model
         $result = ($lastRecord == null ? 1 : $lastRecord->id_vente_article + 1);
         return $result;
     }
+
+    public static function create($id_vente, $id_article,$id_taille_article,$quantite)
+    {
+        $item = new Vente_article();
+        $item->id_vente = $id_vente;
+        $item->id_article = $id_article;
+        $item->id_taille_article = $id_taille_article;
+        $item->quantite = $quantite;
+        $item->annulee = false;
+
+        try {
+            $item->save();
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withAlertDanger("Erreur.<br>Message d'erreur:<b>" . $e->getMessage() . "</b>.");
+        }
+
+    }
 }

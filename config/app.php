@@ -179,7 +179,13 @@ return [
 
         //Sentinel
         Cartalyst\Sentinel\Laravel\SentinelServiceProvider::class,
-	Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
+        //PDF
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+
+        //Excel
+        
 
     ],
 
@@ -234,9 +240,11 @@ return [
         'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
         'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
-	
-	'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
+
+        'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
         'CustomAliasTwo' => Example\Support\Facades\CustomAliasTwo::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        
     ],
 
 ];

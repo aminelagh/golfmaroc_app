@@ -15,9 +15,20 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 
-Route::get('/s', function () {
+Route::get('/facture', function () {
 
-    \App\Models\Article::getPrixPromo(1);
+
+    $pdf = PDF::loadView('pdf.pdf-facture');
+
+    $vente = \App\Models\Vente::where('id_vente',1)->get()->first();
+    $vente_articles = \App\Models\Vente_article::where('id_vente',1)->get();
+
+    return $pdf->stream('Facture ' . date('d-M-Y') . '.pdf');
+
+
+    $pdf = App::make('dompdf.wrapper');
+    $pdf->loadHTML('<h1>Test</h1>');
+    return $pdf->stream();
 
 
 

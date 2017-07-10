@@ -11,7 +11,6 @@
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('anime/anime.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-toggle.css') }}" rel="stylesheet">
-
     <script src="{{ asset('js/datatables.min.js') }}"></script>
 
     @yield('styles')
