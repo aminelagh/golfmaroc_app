@@ -1,12 +1,5 @@
 <?php
 
-use App\Models\User;
-use App\Models\Marque;
-use App\Models\SentinelUser;
-use App\Models\Type_transaction;
-use \App\Models\Transaction;
-use Carbon\Carbon;
-
 
 Route::get('/', function () {
     return view('home');
@@ -17,11 +10,22 @@ Route::get('/home', function () {
 
 Route::get('/facture', function () {
 
+    $view = "pdf.pdf-facture";
+    $pdf = PDF::loadView($view);
+    return $pdf->stream('facture.pdf');
 
-    $pdf = PDF::loadView('pdf.pdf-facture');
+    $data = null;
+    $mergeData = null;
+    $encoding = "UTF-8";
 
-    $vente = \App\Models\Vente::where('id_vente',1)->get()->first();
-    $vente_articles = \App\Models\Vente_article::where('id_vente',1)->get();
+    $pdf = PDF::loadView($view);
+    //$pdf = PDF::loadView($view, $data, $mergeData, $encoding);
+    //$pdf->setPaper("A4", 'portrait');
+    return $pdf->stream('facture.pdf');
+
+
+    //$vente = \App\Models\Vente::where('id_vente', 1)->get()->first();
+    //$vente_articles = \App\Models\Vente_article::where('id_vente', 1)->get();
 
     return $pdf->stream('Facture ' . date('d-M-Y') . '.pdf');
 
@@ -29,8 +33,6 @@ Route::get('/facture', function () {
     $pdf = App::make('dompdf.wrapper');
     $pdf->loadHTML('<h1>Test</h1>');
     return $pdf->stream();
-
-
 
 });
 

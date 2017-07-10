@@ -20,6 +20,7 @@
     </address>
     <span><img alt="" src="{{ asset('pdf/logo1.png') }}"><input type="file" accept="image/*"></span>
 </header>
+
 <article>
     <h1>Recipient</h1>
     <address>
