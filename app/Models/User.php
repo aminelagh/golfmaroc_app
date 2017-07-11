@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Session;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Session;
 
 class User extends Authenticatable
 {
@@ -13,12 +12,6 @@ class User extends Authenticatable
     protected $table = 'users';
     protected $primaryKey = 'id';
 
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'id_magasin', 'telephone', 'description',
         'nom', 'prenom', 'ville', 'email', 'password',
@@ -61,7 +54,6 @@ class User extends Authenticatable
     }
 
 
-
     public static function updateSession($p_id)
     {
         $user = self::where('id', $p_id)->first();
@@ -78,5 +70,13 @@ class User extends Authenticatable
         $role_id = \App\Models\Role_user::where('user_id', $p_id)->first()->role_id;
         $role = \App\Models\Role::where('id', $role_id)->first()->name;
         return $role;
+    }
+
+    public static function getMagasin($id)
+    {
+        $data = Magasin::where('id_magasin', $id)->get();
+        if($data->isEmpty())
+            return null;
+        else return $data->first()->libelle;
     }
 }

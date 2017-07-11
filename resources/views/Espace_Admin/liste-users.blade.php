@@ -3,17 +3,15 @@
 @section('title') Utlisateurs @endsection
 
 @section('main_content')
-    <h1 class="page-header">Liste des Employes</h1>
-
-    @include('layouts.alerts')
+    <h3 class="page-header">Liste des Employes</h3>
 
     {{-- div Table --}}
     <div class="table-responsive">
         <div class="col-lg-12">
-            <table id="example" class="table table-striped table-bordered table-hover" width="100%">
+            <table id="example" class="table table-striped table-bordered table-hover">
                 <thead bgcolor="#DBDAD8">
                 <tr>
-                    <th> # </th>
+                    <th> #</th>
                     <th>Role</th>
                     <th>Nom et Prenom</th>
                     <th>Ville</th>
@@ -46,87 +44,12 @@
                         <td>{{ $item->ville }}</td>
                         <td>{{ $item->email }}</td>
                         <td>
-                            <a href=""> {!! getMagasinName( $item->id_magasin )!=null ? getMagasinName( $item->id_magasin ) : '<i>Aucun</i>'   !!}</a>
+                            <a href=""> {!! App\Models\User::getMagasin( $item->id_magasin )!=null ? App\Models\User::getMagasin( $item->id_magasin ) : '<i>Aucun</i>'   !!}</a>
                         </td>
                         <td align="center">
-                            <div class="btn-group pull-right">
-                                <button type="button"
-                                        class="btn green btn-sm btn-outline dropdown-toggle"
-                                        data-toggle="dropdown">
-                                    <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                    <i class="fa fa-angle-down"></i>
-                                </button>
-                                <ul class="dropdown-menu pull-left" role="menu">
-                                    <li>
-                                        <a href="{{ Route('admin.user',['p_id' => $item->id ]) }}"
-                                           title="detail"><i class="glyphicon glyphicon-eye-open"></i>
-                                            Plus de detail
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ Route('magas.update',['p_table'=> 'agents', 'p_id' => $item->id_agent ]) }}"
-                                           title="modifier"><i class="glyphicon glyphicon-pencil"></i>
-                                            Modifier</a>
-                                    </li>
-                                    <li>
-                                        <a onclick="return confirm('Êtes-vous sure de vouloir effacer le Fournisseur: {{ $item->nom }} {{ $item->prenom }} ?')"
-                                           href="{{ Route('magas.delete',['p_table' => 'agents' , 'p_id' => $item->id_agent ]) }}"
-                                           title="effacer"><i class="glyphicon glyphicon-trash"></i>
-                                            Effacer</a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a data-toggle="modal"
-                                           data-target="#myModal{{ $loop->index+1 }}"><i
-                                                    {!! setPopOver("","Afficher plus de detail") !!} class="glyphicon glyphicon-info-sign"></i>
-                                            visualiser</a>
-                                    </li>
-                                </ul>
-                            </div>
-
-
+                            <a href="{{ route('admin.user',[ 'id'=>$item->id ]) }}" {!! setPopOver("","Profil de l'utilisateur") !!}><i
+                                        class="glyphicon glyphicon-info-sign"></i></a>
                         </td>
-
-                        {{-- Modal (pour afficher les details de chaque article) }}
-                        <div class="modal fade" id="myModal{{ $loop->index+1 }}" role="dialog">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">
-                                            &times;
-                                        </button>
-                                        <h4 class="modal-title">{{ $item->designation_c }}</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><b>numero</b> {{ $item->num_article }}</p>
-                                        <p><b>code a barres</b> {{ $item->code_barre }}</p>
-                                        <p><b>Taille</b> {{ $item->taille }}</p>
-                                        <p><b>Couleur</b> {{ $item->couleur }}</p>
-                                        <p><b>sexe</b> {{ $item->sexe }}</p>
-                                        <p><b>Prix d'achat</b></p>
-                                        <p>{{ number_format($item->prix_achat, 2) }} DH
-                                            HT, {{ number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
-                                            Dhs TTC </p>
-                                        <p><b>Prix de vente</b></p>
-                                        <p>{{ number_format($item->prix_vente, 2) }} DH
-                                            HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
-                                            DH TTC </p>
-                                        <p>{{ $item->designation_l }}</p>
-
-                                        @if( $item->image != null) <img
-                                                src="{{ $item->image }}"
-                                                width="150px">@endif
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default"
-                                                data-dismiss="modal">Fermer
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- fin Modal (pour afficher les details de chaque article) --}}
-
                     </tr>
                 @endforeach @endif
                 </tbody>
@@ -154,7 +77,8 @@
         </div>
 
         <a href="{{ Route('admin.addUser') }}" type="button"
-           class="btn btn-outline btn-default" {!! setPopOver("","Creer un nouvel utilisateur") !!}> Ajouter un utilisateur</a>
+           class="btn btn-outline btn-default" {!! setPopOver("","Creer un nouvel utilisateur") !!}> Ajouter un
+            utilisateur</a>
     </div>
 @endsection
 

@@ -140,14 +140,21 @@
                                             </div>
                                             <div class="modal-body">
                                                 <p><b>reference</b> {{ $item->ref }} - {{ $item->alias }}</p>
+
                                                 <p><b>code</b> {{ $item->code }}</p>
+
                                                 <p><b>Couleur</b> {{ $item->couleur }}</p>
+
                                                 <p><b>sexe</b> {{ $item->sexe }}</p>
+
                                                 <p><b>Prix d'achat</b></p>
+
                                                 <p>{{ number_format($item->prix_a, 2) }} DH
                                                     HT, {{ number_format($item->prix_a*1.2, 2) }}
                                                     Dhs TTC </p>
+
                                                 <p><b>Prix de vente</b></p>
+
                                                 <p>{{ number_format($item->prix_vente, 2) }} DH
                                                     HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
                                                     DH TTC </p>

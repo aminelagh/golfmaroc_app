@@ -2,28 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
-use Illuminate\Support\Facades\Session;
-use Sentinel;
-use Illuminate\Http\Request;
-use Auth;
-use DB;
-use Hash;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Input;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Magasin;
-use App\Models\Categorie;
-use App\Models\Fournisseur;
-use App\Models\Article;
 use App\Models\Agent;
+use App\Models\Article;
+use App\Models\Categorie;
+use App\Models\Client;
+use App\Models\Fournisseur;
+use App\Models\Magasin;
 use App\Models\Marque;
 use App\Models\Promotion;
 use Carbon\Carbon;
-use \Exception;
+use Exception;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Input;
 
 class AddController extends Controller
 {
@@ -74,12 +66,17 @@ class AddController extends Controller
         return view('Espace_Magas.add-article-form')->withFournisseurs($fournisseurs)->withMarques($marques)->withCategories($categories);
     }
 
-    public function addPromotion()
+    public function addPromotions()
     {
-        $articles = Article::where('valide',true)->where('deleted',false)->get();
-        $magasins = Magasin::where('deleted',true)->get();
+        $data = Article::where('valide', true)->where('deleted', false)->get();
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("veuillez creer des articles avant de proceder a la creation des promotions.");
 
-        return view('Espace_Magas.add-promotions-form')->with(['articles' => $articles, 'magasins' => $magasins]);
+        $magasins = Magasin::where('deleted', false)->get();
+        if ($magasins->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("veuillez creer des magasins avant de proceder a la creation des promotions.");
+
+        return view('Espace_Admin.add-promotion-form')->with(['data' => $data, 'magasins' => $magasins]);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -88,8 +85,7 @@ class AddController extends Controller
         $nom = request()->get('nom');
         $prenom = request()->get('prenom');
         if (Client::Exists($nom, $prenom))
-            return redirect()->back()->withInput()->with('alert_warning', "le client <b>" . $nom." " .$prenom. "</b> existe deja.");
-
+            return redirect()->back()->withInput()->with('alert_warning', "le client <b>" . $nom . " " . $prenom . "</b> existe deja.");
 
         $age = request()->get('age');
         $ville = request()->get('ville');
@@ -109,7 +105,7 @@ class AddController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation du client.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "Le client <b>" . $nom." ". $prenom . "</b> a bien été créer");
+        return redirect()->back()->with('alert_success', "Le client <b>" . $nom . " " . $prenom . "</b> a bien été créer");
     }
 
     public function submitAddMarque()
@@ -288,6 +284,8 @@ class AddController extends Controller
     //Valider la creation des promotions
     public function submitAddPromotions()
     {
+        dump(request()->all());
+        return 'a';
 
         $id_article = request()->get('id_article');
         $id_magasin = request()->get('id_magasin');

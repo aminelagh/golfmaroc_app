@@ -196,6 +196,15 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin/addArticle', 'AddController@addArticle')->name('admin.addArticle');
     Route::post('/admin/submitUpdateArticle', 'AdminController@submitUpdateArticle')->name('admin.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
+    //Promotion --------------------------------------------------------------------------------------------------------
+    Route::get('/admin/promotions', 'AdminController@promotions')->name('admin.promotions');
+    Route::get('/admin/promotion/{p_id}', 'AdminController@promotion')->name('admin.promotion');
+
+    Route::get('/admin/addPromotions', 'AddController@addPromotions')->name('admin.addPromotions');
+    Route::post('/admin/submitAddPromotions', 'AddController@submitAddPromotions')->name('admin.submitAddPromotions');
+    Route::post('/admin/submitUpdatePromotion', 'AddController@submitUpdatePromotion')->name('admin.submitUpdatePromotion');
+    //------------------------------------------------------------------------------------------------------------------
+
 
 });
 
