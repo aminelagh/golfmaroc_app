@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 
 class Promotion extends Model
@@ -44,6 +44,36 @@ class Promotion extends Model
             return $promo = collect(Promotion::where('id_article', $p_id_article)->where('id_magasin', $p_id_magasin)->where('active', true)->get())->first()->taux;
         } else return 0;
 
+    }
+
+    public static function Exists($id_magasin, $id_article)
+    {
+        $data = Promotion::where('id_article', $id_article)->where('id_magasin', $id_magasin)->where('active', true)->where('deleted', false)->get();
+        if ($data->isEmpty())
+            return false;
+        else return true;
+    }
+
+    public static function getPromotion($id_magasin, $id_article)
+    {
+        $data = Promotion::where('id_article', $id_article)->where('id_magasin', $id_magasin)->get();
+        if ($data->isEmpty())
+            return null;
+        else return $data->first();
+    }
+
+    public static function isDate($value)
+    {
+        if (!$value) {
+            return false;
+        }
+
+        try {
+            new \DateTime($value);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 

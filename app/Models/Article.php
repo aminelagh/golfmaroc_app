@@ -156,7 +156,7 @@ class Article extends Model
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
-            return number_format($data->prix_v,2);
+            return number_format($data->prix_v, 2);
         else return null;
     }
 
@@ -172,7 +172,23 @@ class Article extends Model
     {
         $data = self::where('id_article', $p_id)->get()->first();
         if ($data != null)
-            return number_format($data->prix_v,2);
+            return number_format($data->prix_v, 2);
+        else return null;
+    }
+
+    public static function getPrixAchatHT($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return number_format($data->prix_a, 2);
+        else return null;
+    }
+
+    public static function getPrixAchatTTC($p_id)
+    {
+        $data = self::where('id_article', $p_id)->get()->first();
+        if ($data != null)
+            return number_format($data->prix_a * 1.2, 2);
         else return null;
     }
 

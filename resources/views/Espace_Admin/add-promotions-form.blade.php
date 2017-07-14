@@ -26,13 +26,11 @@
     </div>
 
     <div class="row">
-        <div class="table-responsive">
-            <div class="col-lg-12">
-                {{-- *************** form ***************** --}}
-                <form role="form" name="myForm" id="myForm" method="post"
-                      action="{{ Route('admin.submitAddPromotions') }}">
-                    {{ csrf_field() }}
-
+        <form role="form" name="myForm" id="myForm" method="post"
+              action="{{ Route('admin.submitAddPromotions') }}">
+            {{ csrf_field() }}
+            <div class="table-responsive">
+                <div class="col-lg-12">
                     <table id="myTable" class="table table-striped table-bordered table-hover">
                         <thead>
                         <tr>
@@ -44,7 +42,6 @@
                             <th rowspan="2">Categorie</th>
                             <th colspan="2">Prix de gros</th>
                             <th colspan="2">Prix</th>
-                            <th rowspan="2">Taux</th>
                             <th rowspan="2">Actions</th>
                         </tr>
                         <tr>
@@ -67,7 +64,6 @@
                             <th>HT</th>
                             <th>TTC</th>
                             <th></th>
-                            <th></th>
                         </tr>
                         </tfoot>
                         <tbody>
@@ -75,8 +71,8 @@
 
                             <tr {{--ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');" --}}>
 
-                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
-                                       value="{{ $item->id_stock }}"/>
+                                <input type="hidden" name="id_article[{{ $loop->iteration }}]"
+                                       value="{{ $item->id_article }}"/>
 
                                 <td>{{ $loop->index+1 }}</td>
                                 <td>
@@ -102,14 +98,10 @@
                                 </td>
                                 <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                                <td align="center">
-                                    <input type="number" pattern="##.##" step="1" min="0" max="100" name="taux_promotion[{{ $loop->iteration }}]"
-                                           class="form-control">
-                                </td>
 
                                 <td align="center">
                                     <div data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
-                                        <i class="glyphicon glyphicon-info-sign"></i>
+                                        <i class="glyphicon glyphicon-info-sign" {!! setPopOver("Detail","formulaire de la promotion") !!}></i>
                                     </div>
 
                                     {{-- Modal (pour afficher les details de chaque article) --}}
@@ -186,6 +178,40 @@
                                                                     <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
                                                                 </tr>
                                                             </table>
+                                                            <table class="table table-striped table-bordered table-hover">
+                                                                <tr>
+                                                                    <th>Taux
+                                                                        <i class="glyphicon glyphicon-info-sign" {!! setPopOver("Taux de la promotion","(exemple 15%)") !!}></i>
+                                                                    </th>
+                                                                    <th>Date debut</th>
+                                                                    <th>Date fin</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="input-group">
+                                                                            <input type="number" pattern="##.##"
+                                                                                   step="0.01" min="0" max="100"
+                                                                                   name="taux[{{ $loop->iteration }}]"
+                                                                                   value="{{ old('taux.'.($loop->iteration).'') }}"
+                                                                                   class="form-control">
+                                                                            <span class="input-group-addon"
+                                                                                  id="basic-addon2">%</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="date" class="form-control" id="date"
+                                                                               name="date_debut[{{ $loop->iteration }}]"
+                                                                               value="{{ old('date_debut.'.($loop->iteration).'') }}"
+                                                                               placeholder="jj-mm-yyyy">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="date" class="form-control" id="date"
+                                                                               name="date_fin[{{ $loop->iteration }}]"
+                                                                               value="{{ old('date_fin.'.($loop->iteration).'') }}"
+                                                                               placeholder="jj-mm-yyyy">
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </div>
                                                     </div>
 
@@ -226,10 +252,9 @@
                         </div>
                     </div>
 
-                </form>
-
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <br/>
@@ -240,7 +265,35 @@
 
 @section('scripts')
     @if(!$data->isEmpty())
+        <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
+        <script>
+            (function ($) {
+                $.fn.datepicker.dates['fr'] = {
+                    days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+                    daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+                    daysMin: ["di", "lu", "ma", "me", "j", "v", "s"],
+                    months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+                    monthsShort: ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+                    today: "Aujourd'hui",
+                    monthsTitle: "Mois",
+                    clear: "Effacer",
+                    weekStart: 1,
+                    format: "dd/mm/yyyy"
+                };
+            }(jQuery));
 
+            $(document).ready(function () {
+                var date_input = $('input[id="date"]');
+                //var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+                date_input.datepicker({
+                    format: 'dd-mm-yyyy',
+                    //container: container,
+                    todayHighlight: true,
+                    autoclose: true,
+                    language: 'fr',
+                });
+            });
+        </script>
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell
@@ -288,9 +341,9 @@
                         {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
                         {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        //{"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'
@@ -311,15 +364,34 @@
                         }
                     });
                 });
+
+
+                //permet de d inclure les tt les pages
+                $('#myForm').on('submit', function (e) {
+                    var form = this;
+
+                    // Encode a set of form elements from all pages as an array of names and values
+                    var params = table.$('input,select,textarea').serializeArray();
+
+                    // Iterate over all form elements
+                    $.each(params, function () {
+                        // If element doesn't exist in DOM
+                        if (!$.contains(document, form[this.name])) {
+                            // Create a hidden element
+                            $(form).append(
+                                    $('<input>').attr('type', 'hidden').attr('name', this.name).val(this.value)
+                            );
+                        }
+                    });
+                });
+
             });
         </script>
     @endif
 @endsection
 
-@section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
-
 @section('styles')
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker3.css') }}"/>
     <style>
         #circle {
             width: 15px;
@@ -345,3 +417,8 @@
 
     </style>
 @endsection
+
+@section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
+
+

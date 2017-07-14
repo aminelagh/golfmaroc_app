@@ -40,6 +40,18 @@ Route::get('/session', function () {
     dump(session()->all());
 });
 
+Route::get('/s', function () {
+
+
+});
+
+
+Route::get('/a', function () {
+
+    return view('a');
+
+});
+
 
 /***************************************
  * Magas routes protected by adminMiddleware
@@ -202,7 +214,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/admin/addPromotions', 'AddController@addPromotions')->name('admin.addPromotions');
     Route::post('/admin/submitAddPromotions', 'AddController@submitAddPromotions')->name('admin.submitAddPromotions');
-    Route::post('/admin/submitUpdatePromotion', 'AddController@submitUpdatePromotion')->name('admin.submitUpdatePromotion');
+    Route::post('/admin/submitUpdatePromotion', 'UpdateController@submitUpdatePromotion')->name('admin.submitUpdatePromotion');
     //------------------------------------------------------------------------------------------------------------------
 
 

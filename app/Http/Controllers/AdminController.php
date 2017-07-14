@@ -3,20 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use Illuminate\Http\Request;
-use \Exception;
-use Auth;
-use DB;
-use Hash;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Magasin;
-use App\Models\Marque;
 use App\Models\Categorie;
 use App\Models\Fournisseur;
-use Illuminate\Support\Facades\Input;
-use Session;
+use App\Models\Magasin;
+use App\Models\Marque;
+use App\Models\Promotion;
+use App\Models\Role;
+use App\Models\User;
+use Exception;
+use Hash;
 use Sentinel;
+use Session;
 
 class AdminController extends Controller
 {
@@ -213,8 +210,8 @@ class AdminController extends Controller
     public function articles_nv()
     {
         $data = Article::nonValideArticles();
-        if($data->isEmpty())
-            return redirect()->back()->withInput()->with('alert_warning',"Aucun nouvel article a valider");
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->with('alert_warning', "Aucun nouvel article a valider");
         return view('Espace_Admin.liste-articles_nv')->withData($data);
     }
 
@@ -317,7 +314,25 @@ class AdminController extends Controller
             return redirect()->route('admin.articles_nv')->with('alert_success', "Modification de l'utilisateur reussi.");
         }
     }
+
     //---------------------------------------------------------------
+
+    public function promotions()
+    {
+        $data = Promotion::where('deleted', false)->get();
+        $data = \DB::table('promotions')->where('deleted', false)->orderBy('id_magasin', 'desc')->get();
+        return view('Espace_Admin.liste-promotions')->withData($data);
+    }
+
+    public function promotion($id_promotion)
+    {
+        $data = Promotion::find($id_promotion);
+        if ($data == null)
+            return redirect()->back()->withAlertWarning("La promotion choisie n'existe pas.");
+
+        $magasins = Magasin::all();
+        return view('Espace_Admin.info-promotion')->withData($data)->withMagasins($magasins);
+    }
 
 
 }

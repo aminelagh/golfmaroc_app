@@ -279,7 +279,6 @@ class MigrationCartalystSentinel extends Migration
             $table->integer('id_user');
             $table->integer('id_paiement');
             $table->integer('id_remise')->nullable();
-            $table->integer('id_promotion')->nullable();
             $table->integer('id_client');
 
             $table->dateTime('date');
@@ -292,6 +291,7 @@ class MigrationCartalystSentinel extends Migration
             $table->increments('id_vente_article');
             $table->integer('id_vente');
             $table->integer('id_article');
+            $table->integer('id_promotion')->nullable();
             $table->integer('id_taille_article')->nullable();
 
             $table->double('prix');

@@ -95,7 +95,7 @@
                                 <td>{{ $item->couleur }}</td>
                                 <td>{{ $item->sexe }}</td>
                                 <td align="right">{{ $item->prix_a }} DH</td>
-                                <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!} DH
+                                <td align="right">{!! \App\Models\Article::getPrixTTC($item->prix_v) !!} DH
                                 </td>
                                 <td>
                                     <div class="btn-group pull-right">

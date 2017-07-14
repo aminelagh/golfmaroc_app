@@ -2,24 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
-use Illuminate\Http\Request;
-use Auth;
-use DB;
-use Hash;
-use App\Models\User;
 use App\Models\Agent;
-use App\Models\Marque;
-use App\Models\Role;
-use App\Models\Magasin;
 use App\Models\Article;
-use App\Models\Fournisseur;
 use App\Models\Categorie;
+use App\Models\Client;
+use App\Models\Fournisseur;
+use App\Models\Magasin;
+use App\Models\Marque;
+use App\Models\Promotion;
+use Carbon\Carbon;
 use Mockery\Exception;
 
 class UpdateController extends Controller
 {
-
     public function submitUpdateClient()
     {
         $id_client = request()->get('id_client');
@@ -222,6 +217,69 @@ class UpdateController extends Controller
             'adresse' => request()->get('adresse'),
         ]);
         return redirect()->back()->withInput()->with('alert_success', 'Modification du magasin reussi.');
+    }
+
+    public function submitUpdatePromotion()
+    {
+        //recuperer les variables -----------------
+        $id_magasin = request()->get('id_magasin');
+        $id_promotion = request()->get('id_promotion');
+        $taux = request()->get('taux');
+        $date_debut = request()->get('date_debut');
+        $date_fin = request()->get('date_fin');
+        //-----------------------------------------
+
+        //checking data ---------------------------
+        if ($taux == 0 || $taux == null || $date_debut == null || $date_fin == null)
+            return redirect()->back()->withAlertInfo("Veuillez remplier les champs taux , date debut et date fin pour les articles souhaités.");
+        //-----------------------------------------
+
+
+        //verifier les dates et les champs -------------------------------------------------------------------------
+        if ($taux == 0 || $taux == null)
+            return redirect()->back()->withInput()->withAlertWarning("Veuillez remplir le champ <b>taux</b>.");
+
+        if (!Promotion::isDate($date_debut) || !Promotion::isDate($date_fin) || $date_debut == null || $date_fin == null)
+            return redirect()->back()->withInput()->withAlertWarning("Erreur de validité des dates");
+
+
+        $dd = Carbon::createFromFormat('d-m-Y', date('d-m-Y', strtotime($date_debut)));
+        $df = Carbon::createFromFormat('d-m-Y', date('d-m-Y', strtotime($date_fin)));
+
+        if ($dd->year > $df->year)
+            return redirect()->back()->withInput()->withAlertWarning("Erreur de validité des dates");
+
+        if ($dd->year == $df->year)
+            if ($dd->month > $df->month)
+                return redirect()->back()->withInput()->withAlertWarning("Erreur de validité des dates");
+            elseif ($dd->month == $df->month)
+                if ($dd->day > $df->day)
+                    return redirect()->back()->withInput()->withAlertWarning("Erreur de validité des dates");
+
+        //----------------------------------------------------------------------------------------------------------
+
+        //creer les dates pour la db -------------------------------------------------------------------------------
+        $debut = $dd->year . "-" . $dd->month . "-" . $dd->day;
+        $fin = $df->year . "-" . $df->month . "-" . $df->day;
+        //----------------------------------------------------------------------------------------------------------
+
+        try {
+            $item = Promotion::find($id_promotion);
+            $item->update([
+                'id_magasin' => $id_magasin,
+                'taux' => $taux,
+                'date_debut' => $debut,
+                'date_fin' => $fin,
+                'active' => true,
+                'deleted' => false
+            ]);
+
+        } catch (Exception $e) {
+            return rediret()->back()->withAlertDanger("Erreur de modification de la promotion. Message d'erreur: " . $e->getMessage() . "</li>");
+        }
+
+        //----------------------------------------------------------------------------------------------------------
+        return redirect()->back()->withInput()->withAlertSuccess("Modification de la promotion reussie.");
     }
 
 }

@@ -17,11 +17,8 @@
 </head>
 
 <body>
-
 <div id="wrapper">
-
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -37,7 +34,6 @@
         @yield('menu_2')
 
     </nav>
-
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -55,6 +51,7 @@
 <script src="{{ asset('js/sb-admin-2.js') }}"></script>
 <script src="{{ asset('anime/bootstrap-notify.js') }}"></script>
 <script src="{{ asset('js/bootstrap-toggle.js') }}"></script>
+
 <script>
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover();
