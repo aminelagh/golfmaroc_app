@@ -3,234 +3,295 @@
 @section('title') Promotions @endsection
 
 @section('main_content')
-
-    <h3 class="page-header">Liste des Promotions</h3>
+    <h3 class="page-header">Promotions</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-        <li class="breadcrumb-item ">Gestion des Promotions</li>
-        <li class="breadcrumb-item active"><a href="{{ route('magas.promotions') }}">Liste des Promotions</a></li>
+        <li class="breadcrumb-item ">Gestion des promotions</li>
+        <li class="breadcrumb-item active">Liste des promotions</li>
     </ol>
 
-    <div class="row">
-        <div class="col-lg-2"></div>
-        <div class="col-lg-10">
-            Afficher/Masquer:
-            <a class="toggle-vis" data-column="1"
-               title="cliquez pour afficher/masquer la colonne categorie">Categorie</a> -
-            <a class="toggle-vis" data-column="2">Fournisseur</a> -
-            <a class="toggle-vis" data-column="3">Article</a> -
-            <a class="toggle-vis" data-column="4">Magasin</a> -
-            <a class="toggle-vis" data-column="5">Taux</a>
-        </div>
-    </div>
-    <hr>
-
-    <!-- row table -->
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
                 <table id="example" class="table table-striped table-bordered table-hover">
-                    <thead bgcolor="#DBDAD8">
+                    <thead>
                     <tr>
-                        <th>#</th>
-                        <th><i class="fa fa-fw fa-sort"></i> Categorie</th>
-                        <th><i class="fa fa-fw fa-sort"></i> Fournisseur</th>
-                        <th><i class="fa fa-fw fa-sort"></i> Article</th>
-                        <th><i class="fa fa-fw fa-sort"></i> Magasin</th>
-                        <th><i class="fa fa-fw fa-sort"></i> Taux</th>
-                        <th>Date debut</th>
-                        <th>Date fin</th>
-                        <th>Autres</th>
+                        <th></th>
+                        <th>Magasin</th>
+                        <th>Article</th>
+                        <th>Taux</th>
+                        <th>Periode</th>
+                        <th>Etat</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
+                    @if( !$data->isEmpty() )
+                        <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>Magasin</th>
+                            <th>Article</th>
+                            <th>Taux</th>
+                            <th>Periode</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                    @endif
 
-                    <tfoot bgcolor="#DBDAD8">
-                    <tr>
-                        <th></th>
-                        <th>Categorie</th>
-                        <th>Fournisseur</th>
-                        <th>Article</th>
-                        <th>Magasin</th>
-                        <th>Taux</th>
-                        <th>Date debut</th>
-                        <th>Date fin</th>
-                        <th></th>
-                    </tr>
-                    </tfoot>
+                    <tbody>
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td colspan="7" align="center">Aucune promotion</td>
+                            <td colspan="7" align="center"><i>Aucune promotion</i></td>
                         </tr>
                     @else
-                        <tbody>
                         @foreach( $data as $item )
                             <tr class="odd gradeA">
-                                <td>{{ $loop->index+1 }}</td>
-                                <td>{{ getCategorieName($item->id_categorie) }}</td>
-                                <td>{{ getFournisseurName($item->id_fournisseur) }}</td>
-                                <td>{{ $item->designation_c }}</td>
-                                <td>{{ $item->libelle }}</td>
-                                <td align="right">{{ $item->taux }} %</td>
-                                <td align="center">{{ getSimpleDateHelper($item->date_debut) }}</td>
-                                <td align="center">{{ getSimpleDateHelper($item->date_fin) }}</td>
-                                <td>
-                                    <a href="{{ Route('direct.info',['p_table'=> 'promotions' , 'p_id' => $item->id_promotion  ]) }}"
-                                            {!!  setPopOver("","Afficher plus de detail") !!} ><i
-                                                class="glyphicon glyphicon-eye-open"></i></a>
-                                    <a href="{{ Route('direct.update',['p_table'=> 'promotions' , 'p_id' => $item->id_promotion  ]) }}"
-                                            {!!  setPopOver("","Modifier la promotion") !!}><i
-                                                class="glyphicon glyphicon-pencil"></i></a>
-                                    <a onclick="return confirm('Êtes-vous sure de vouloir effacer la promotion numero {{ $loop->index+1 }}?')"
-                                       href="{{ Route('direct.delete',[ 'p_table' => 'magasins' , 'p_id' => $item->id_magasin ]) }}"
-                                            {!!  setPopOver("","Supprimer la promotion") !!}><i
-                                                class="glyphicon glyphicon-trash"></i></a>
-
-                                    <button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-target="#myModal{{ $loop->index+1 }}"
-                                            title="cliquez ici pour afficher plus de detail">Detail
-                                    </button>
+                                <td></td>
+                                <td>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}
+                                    <small>({{ \App\Models\Magasin::getVille($item->id_magasin) }})</small>
                                 </td>
-                            </tr>
+                                <td>{{ \App\Models\Article::getDesignation($item->id_article) }}</td>
+                                <td align="right">{{ $item->taux }} %</td>
+                                <td align="middle">{{ (new DateTime($item->date_debut))->format('d-m-Y') }} - {{ (new DateTime($item->date_fin))->format('d-m-Y') }}</td>
+                                <td align="middle">
+                                    @if($item->active == false)
+                                        <div id="circle"
+                                             style="background: darkred;" {!! setPopOver(""," inactive") !!}></div>
+                                    @else
+                                        <div id="circle"
+                                             style="background: greenyellow;" {!! setPopOver("","active") !!}></div>
+                                    @endif
+                                </td>
+                                <td align="middle">
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
+                                                class="glyphicon glyphicon-info-sign"
+                                                aria-hidden="false"></i></a>
 
-                            {{-- Modal (pour afficher les details de chaque article) --}}
-                            <div class="modal fade" id="myModal{{ $loop->index+1 }}" role="dialog">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                &times;
-                                            </button>
-                                            <h4 class="modal-title">{{ $item->designation_c }}</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p><b>Taux</b> {{ $item->taux }}%</p>
 
-                                            <p><b>Date de
-                                                    debut</b> {{ getSimpleDateHelper($item->date_debut) }}
-                                            </p>
+                                    {{-- Modal (pour afficher les details de chaque article) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog"
+                                         tabindex="-1" aria-labelledby="gridSystemModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close"><span
+                                                                aria-hidden="true">&times;</span></button>
+                                                    <h3 class="modal-title" id="gridSystemModalLabel">
+                                                        <b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b>
+                                                    </h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Code</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Reference</td>
+                                                            <th colspan="2">
+                                                                {{ \App\Models\Article::getRef($item->id_article) }}
+                                                                {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Marque</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getMarque($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Categorie</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
+                                                        </tr>
 
-                                            <p><b>Date de fin</b> {{ getSimpleDateHelper($item->date_fin) }}
-                                            </p>
-                                            <hr>
-                                            <p><b>numero</b> {{ $item->num_article }}</p>
-
-                                            <p><b>code a barres</b> {{ $item->code_barre }}</p>
-
-                                            <p><b>Taille</b> {{ $item->taille }}</p>
-
-                                            <p><b>Couleur</b> {{ $item->couleur or '<i>notSet</i>' }}</p>
-
-                                            <p><b>sexe</b> {{ getSexeName($item->sexe) }}</p>
-
-                                            <p><b>Prix d'achat </b></p>
-
-                                            <p> {{  number_format($item->prix_achat, 2) }} Dhs
-                                                HT, {{  number_format($item->prix_achat+$item->prix_achat*0.2, 2) }}
-                                                Dhs TTC</p>
-
-                                            <p><b>Prix de vente </b></p>
-
-                                            <p> {{  number_format($item->prix_vente, 2) }} Dhs
-                                                HT, {{  number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
-                                                Dhs TTC</p>
-
-                                            <p>{{ $item->designation_l }}</p>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default"
-                                                    data-dismiss="modal">Fermer
-                                            </button>
+                                                        <td>Fournisseur</td>
+                                                        <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Code</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Code</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Couleur</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getCouleur($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Sexe</td>
+                                                            <th colspan="2">{{ \App\Models\Article::getSexe($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Prix d'achat</td>
+                                                            <th>{{ \App\Models\Article::getPrixAchatHT($item->id_article) }}
+                                                                Dhs HT
+                                                            </th>
+                                                            <th>
+                                                                {{ \App\Models\Article::getPrixAchatTTC($item->id_article) }}
+                                                                Dhs TTC
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Prix de vente</td>
+                                                            <th>{{ \App\Models\Article::getPrixHT($item->id_article) }}
+                                                                Dhs HT
+                                                            </th>
+                                                            <th>
+                                                                {{ \App\Models\Article::getPrixTTC($item->id_article) }}
+                                                                Dhs TTC
+                                                            </th>
+                                                        </tr>
+                                                    </table>
+                                                    @if(\App\Models\Article::getImage($item->id_article)!=null)
+                                                        <img src="{{ \App\Models\Article::getImage($item->id_article) }}" width="200" hight="200">
+                                                    @endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-lg-6">
+                                                        <a class="btn btn-info"
+                                                           href="{{ route('admin.promotion',['id_promotion'=>$item->id_promotion]) }}">
+                                                            Modifier
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            {{-- fin Modal (pour afficher les details de chaque article) --}}
-
+                                    {{-- fin Modal (pour afficher les details de chaque article) --}}
+                                </td>
+                            </tr>
                         @endforeach
-                        </tbody>
                     @endif
+                    </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 
 
-    <div class="row" align="center">
-        <a href="{{ Route('direct.add',[ 'p_table' => 'promotions' ]) }}" type="button"
-           class="btn btn-outline btn-default"
-                {!!  setPopOver("","creer de nouvelles promotions") !!}><i
-                    class="glyphicon glyphicon-plus "></i> Ajouter des promotions </a>
-    </div>
 
 
 @endsection
 
 @section('scripts')
-    <script src="{{  asset('table2/datatables.min.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#example tfoot th').each(function () {
-                var title = $(this).text();
-                if (title != "") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                if (title == "numero" || title == "code") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                if (title == "Designation") {
-                    $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                if (title == "Taille" || title == "Sexe" || title == "Prix d'achat" || title == "Prix de vente") {
-                    $(this).html('<input type="text" size="3" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                if (title == "Couleur") {
-                    $(this).html('<input type="text" size="5" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-            });
+    @if( !$data->isEmpty() )
+        <script>
 
-            var table = $('#example').DataTable({
-                //"scrollY": "50px",
-                //"scrollX": true,
-                "searching": true,
-                "paging": true,
-                //"autoWidth": true,
-                "info": true,
-                stateSave: false,
-                "columnDefs": [
-                    {"width": "02%", "targets": 0},//#
-                    {"width": "05%", "targets": 1},//categorie
-                    {"width": "07%", "targets": 2},//fournisseur
-                    {"width": "03%", "targets": 3},//numero
-                    {"width": "06%", "targets": 4}//code
-                ]
-            });
 
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-                var column = table.column($(this).attr('data-column'));
-                column.visible(!column.visible());
-            });
+            $(document).ready(function () {
 
-            table.columns().every(function () {
-                var that = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (that.search() !== this.value) {
-                        that.search(this.value).draw();
+                // DataTable
+                var table = $('#example').DataTable({
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
+                    "searching": true,
+                    "paging": true,
+                    "info": true,
+                    stateSave: false,
+                    "columnDefs": [
+                        {"visible": true, "targets": -1},
+                        {"width": "04%", "targets": 0, "searchable": false, "orderable": true,}, //#
+                        {"width": "05%", "targets": 1, "type": "string", "visible": true},  //magas
+                        //{"width": "05%", "targets": 2, "type": "string", "visible": true},  //article
+
+                        {"width": "05%", "targets": 3, "type": "string", "visible": true},    //taux
+                        //{"width": "10%", "targets": 4, "type": "string", "visible": true},     //date
+                        {"width": "08%", "targets": 5, "type": "string", "visible": true},     //etat
+
+                        {"width": "04%", "targets": 6, "type": "num-fmt", "visible": true, "searchable": false}
+                    ],
+                    "order": [[1, 'asc']],
+                    "select": {
+                        items: 'column'
                     }
                 });
-            });
-        });
 
-        //script pour le popover detail
-        $(document).ready(function () {
-            $('[data-toggle="popover"]').popover();
-        });
-    </script>
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
+                // Setup - add a text input to each footer cell
+                $('#example tfoot th').each(function () {
+                    var title = $(this).text();
+                    if (title == "Magasin") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Article") {
+                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Taux") {
+                        $(this).html('<input type="text" size="1" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "dates") {
+                        $(this).html('<input type="text" size="7" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title != "") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                });
+
+
+                $('a.toggle-vis').on('click', function (e) {
+                    e.preventDefault();
+                    var column = table.column($(this).attr('data-column'));
+                    column.visible(!column.visible());
+                });
+
+
+                table.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+
+
+            })
+            ;
+        </script>
+    @endif
 @endsection
 
-@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
+@section('styles')
+    <style>
+        #circle {
+            width: 15px;
+            height: 15px;
+            -webkit-border-radius: 25px;
+            -moz-border-radius: 25px;
+            border-radius: 25px;
+        }
+
+        #example {
+            width: 100%;
+            border: 0px solid #D9D5BE;
+            border-collapse: collapse;
+            margin: 0px;
+            background: white;
+            font-size: 1em;
+        }
+
+        #example td {
+            padding: 2px;
+        }
+
+
+    </style>
+@endsection
+
+@section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection
+@section('menu_2') @include('Espace_Magas._nav_menu_2') @endsection

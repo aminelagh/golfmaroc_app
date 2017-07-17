@@ -75,9 +75,15 @@
                         <tbody>
                         @foreach( $data as $item )
 
-                            <tr {{--ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');" --}}>
+                            {{--<tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');" >--}}
+                            <tr
+                                    @if( \App\Models\Promotion::hasPromotion($item->id_article))
+                                    class="success"
+                                    @endif
+                                    >
 
-                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
+                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
+                                       value="{{ $item->id_stock }}"/>
 
                                 <td>{{ $loop->index+1 }}</td>
                                 <td>
@@ -97,10 +103,20 @@
                                 <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
                                 <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                                <td align="right">
-                                    <div id="prix_{{ $loop->iteration }}"
-                                         title="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</div>
-                                </td>
+
+                                @if( \App\Models\Promotion::hasPromotion($item->id_article))
+                                    <td align="right">
+                                        <div id="prix_{{ $loop->iteration }}"
+                                             title="{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}">{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }} (avec Promotion)</div>
+                                    </td>
+
+                                @else
+                                    <td align="right">
+                                        <div id="prix_{{ $loop->iteration }}"
+                                             title="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</div>
+                                    </td>
+                                @endif
+
                                 <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
                                 <td align="center">
@@ -160,17 +176,9 @@
                                                                     <td>Categorie</td>
                                                                     <th colspan="2">{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
                                                                 </tr>
-
-                                                                <td>Fournisseur</td>
-                                                                <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
-                                                                </tr>
                                                                 <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                                    <td>Fournisseur</td>
+                                                                    <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Couleur</td>
@@ -189,10 +197,6 @@
                                                                         {{ \App\Models\Article::getPrixTTC($item->id_article) }}
                                                                         Dhs TTC
                                                                     </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
                                                                 </tr>
                                                             </table>
                                                         </div>

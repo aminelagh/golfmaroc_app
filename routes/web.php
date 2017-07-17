@@ -43,6 +43,19 @@ Route::get('/session', function () {
 Route::get('/s', function () {
 
 
+    for ($i = 0; $i < 10; $i++)
+        if (\App\Models\Promotion::hasPromotion($i)) {
+            echo "$i ==> hasPromo<br>";
+            echo "Article: ".\App\Models\Article::getDesignation($i)."<br>";
+            echo "Prix .....: ".\App\Models\Article::getPrixTTC($i)."<br>";
+            echo "taux Promo: ".\App\Models\Promotion::getTauxPromo($i)."<br>";
+            echo "prix Promo: ".\App\Models\Article::getPrixPromoSimple($i)."<br>";
+
+            echo "<hr>";
+
+        } else echo "$i ==> .....<hr>";
+
+    //echo \App\Models\Article::getPrixPromoSimple(1);
 });
 
 
@@ -103,6 +116,10 @@ Route::group(['middleware' => 'magas'], function () {
     //..................................................................................................................
     //------------------------------------------------------------------------------------------------------------------
 
+    //Promotions -------------------------------------------------------------------------------------------------------
+    Route::get('/magas/promotions', 'MagasController@promotions')->name('magas.promotions');
+    Route::get('/magas/promotion', 'MagasController@promotion')->name('magas.promotion');
+    //------------------------------------------------------------------------------------------------------------------
 
     //Vente ------------------------------------------------------------------------------------------------------------
     Route::get('/magas/ventes', 'VenteController@ventes')->name('magas.ventes');

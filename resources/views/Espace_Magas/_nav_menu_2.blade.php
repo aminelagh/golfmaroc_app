@@ -7,6 +7,10 @@
             </li>
 
             <li>
+                <a href="{{ Route('magas.promotions') }}"><i class="fa fa-dashboard fa-fw"></i> Promotions</a>
+            </li>
+
+            <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des magasins <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>

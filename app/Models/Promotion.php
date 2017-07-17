@@ -22,7 +22,7 @@ class Promotion extends Model
     public static function hasPromotion($p_id_article)
     {
         $p_id_magasin = Session::get('id_magasin');
-        $promo = collect(Promotion::where('id_article', $p_id_article)->where('id_magasin', $p_id_magasin)->where('active', true)->get());
+        $promo = collect(Promotion::where('id_article', $p_id_article)->where('id_magasin', $p_id_magasin)->where('active', true)->where('deleted', false)->get());
         $now = new Carbon();
 
         if (!$promo->isEmpty()) {

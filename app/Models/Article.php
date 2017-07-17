@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Session;
 
 class Article extends Model
 {
@@ -18,8 +19,39 @@ class Article extends Model
         'deleted', 'image', 'valide'
     ];
 
-    public static function getPrixPromo($p_id_article, $p_id_magasin)
+    public static function getPrixPromo($p_id_article)
     {
+        $p_id_magasin = Session::get('id_magasin');
+        $prixHT = Article::where('id_article', $p_id_article)->first()->prix_vente;
+        $prixTTC = $prixHT * 1.2;
+
+        if (Promotion::hasPromotion($p_id_article, $p_id_magasin)) {
+            $taux = Promotion::getTauxPromo($p_id_article, $p_id_magasin);
+            $prix = $prixTTC * (1 - $taux / 100);
+            return $prix;
+        } else {
+            return $prixTTC;
+        }
+    }
+
+    public static function getPrixPromoSimple($p_id_article)
+    {
+        $p_id_magasin = Session::get('id_article');
+        $prixHT = Article::where('id_article', $p_id_article)->first()->prix_v;
+        $prixTTC = $prixHT * 1.2;
+
+        if (Promotion::hasPromotion($p_id_article)) {
+            $taux = Promotion::getTauxPromo($p_id_article);
+            $prix = $prixTTC * (1 - $taux / 100);
+            return $prix;
+        } else {
+            return $prixTTC;
+        }
+    }
+
+    public static function getPrixPromoGros($p_id_article)
+    {
+        $p_id_magasin = Session::get('id_article');
         $prixHT = Article::where('id_article', $p_id_article)->first()->prix_vente;
         $prixTTC = $prixHT * 1.2;
 
@@ -71,7 +103,7 @@ class Article extends Model
             return true;
     }
 
-
+    //Getters
     public static function getMarque($p_id)
     {
         $data = self::where('id_article', $p_id)->get()->first();
@@ -199,6 +231,4 @@ class Article extends Model
             return $data->image;
         else return null;
     }
-
-
 }
