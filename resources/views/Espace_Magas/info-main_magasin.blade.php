@@ -9,9 +9,8 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item active">{{ $data->libelle  }}</li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.magasin') }}">{{ $data->libelle }}</a></li>
     </ol>
-
 
     <div class="row">
         <div class="col-lg-1"></div>

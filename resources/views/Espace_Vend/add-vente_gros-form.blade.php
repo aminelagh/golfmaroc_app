@@ -24,6 +24,56 @@
         @endif
     </div>
 
+    <script>
+        function calcQ(groupe, cpt) {
+            var total = 0;
+            var prix = document.getElementById("prix_" + groupe).title;
+            //var prix = document.getElementById("prix_" +groupe);
+            //alert("Prix = "+prix);
+            for (i = 1; i <= cpt; i++) {
+                var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
+                //alert("QI = "+qi);
+                if (qi == "") {
+                    qi = 0;
+                } else if (qi < 0) {
+                    //alert("Erreur, q<0");
+                    break;
+                }
+                total += parseInt(qi);
+            }
+            //alert("total = "+total);
+            document.getElementById("sommeQ_" + groupe).value = total;
+            document.getElementById("total_" + groupe).value = total * parseFloat(prix);
+        }
+
+        function calcTotal(counter) {
+            var total = 0;
+            for (i = 1; i < counter; i++) {
+                var totali = document.getElementById("total_" + i).value;
+
+                if (totali == "") {
+                    totali = 0;
+                } else if (totali < 0) {
+                    alert("Erreur, totali<0");
+                    break;
+                }
+
+
+                total += parseFloat(totali);
+
+            }
+            document.getElementById("total_prix").value = total;
+        }
+
+        function appliquerRemise() {
+            var taux = document.getElementById("taux_remise").value;
+            var total = document.getElementById("total_prix").value;
+
+            document.getElementById("montant").value = total - total * taux / 100;
+
+        }
+    </script>
+
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
@@ -32,7 +82,7 @@
                       action="{{ Route('magas.submitAddVente') }}">
                     {{ csrf_field() }}
                     <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
-                    <input type="hidden" name="type_vente" value="gros"/>
+                    <input type="hidden" name="type_vente" value="simple"/>
 
                     <table id="myTable" class="table table-striped table-bordered table-hover">
                         <thead>
@@ -44,14 +94,13 @@
                             <th rowspan="2">Marque</th>
                             <th rowspan="2">Categorie</th>
                             <th colspan="2">Prix de gros</th>
-                            <th colspan="2">Prix</th>
+
                             <th rowspan="2">Etat</th>
                             <th rowspan="2">Actions</th>
 
                         </tr>
                         <tr>
-                            <th>HT</th>
-                            <th>TTC</th>
+
                             <th>HT</th>
                             <th>TTC</th>
                         </tr>
@@ -64,8 +113,7 @@
                             <th>Designation</th>
                             <th>Marque</th>
                             <th>Categorie</th>
-                            <th>HT</th>
-                            <th>TTC</th>
+
                             <th>HT</th>
                             <th>TTC</th>
                             <th></th>
@@ -75,12 +123,7 @@
                         <tbody>
                         @foreach( $data as $item )
 
-                            {{--<tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');" >--}}
-                            <tr @if( \App\Models\Promotion::hasPromotion($item->id_article))
-                                class="success" {!! setPopOver("","en promotion") !!} @endif >
-
-                                <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
-                                       value="{{ $item->id_stock }}"/>
+                            <tr {{--ondblclick="window.open('{{ Route('vend.stock',[ 'p_id' => $item->id_stock ]) }}');" --}}>
 
                                 <td>{{ $loop->index+1 }}</td>
                                 <td>
@@ -100,23 +143,11 @@
                                 <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
                                 <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
+                                <td align="right">
+                                    <div id="prix_{{ $loop->iteration }}"
+                                         title="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</div>
+                                </td>
 
-                                @if( \App\Models\Promotion::hasPromotion($item->id_article))
-                                    <td align="right">
-                                        <div id="prix_{{ $loop->iteration }}"
-                                             title="{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}">{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}
-                                        </div>
-                                    </td>
-
-                                @else
-                                    <td align="right">
-                                        <div id="prix_{{ $loop->iteration }}"
-                                             title="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</div>
-                                    </td>
-                                @endif
-
-                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
                                 <td align="center">
                                     @if(\App\Models\Stock::getState($item->id_stock) == 0)
                                         <div id="circle"
@@ -174,9 +205,17 @@
                                                                     <td>Categorie</td>
                                                                     <th colspan="2">{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
                                                                 </tr>
+
+                                                                <td>Fournisseur</td>
+                                                                <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                                </tr>
                                                                 <tr>
-                                                                    <td>Fournisseur</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                                    <td>Code</td>
+                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Code</td>
+                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Couleur</td>
@@ -196,6 +235,10 @@
                                                                         Dhs TTC
                                                                     </th>
                                                                 </tr>
+                                                                <tr>
+                                                                    <td>Code</td>
+                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                                </tr>
                                                             </table>
                                                         </div>
 
@@ -212,10 +255,6 @@
                                                                     </thead>
                                                                     @foreach( \App\Models\Stock_taille::getTailles($item->id_stock) as $taille )
                                                                         <tr>
-                                                                            <input type="hidden"
-                                                                                   name="id_taille_article[{{ $item->id_stock }}][{{ $loop->index+1 }}]"
-                                                                                   value="{{ $taille->id_taille_article }}"/>
-
                                                                             <input type="hidden"
                                                                                    name="quantite[{{ $item->id_stock }}][{{ $loop->iteration }}]"
                                                                                    value="{{ $taille->quantite }}"/>
@@ -365,11 +404,12 @@
                                                     <td>
                                                         <select class="form-control" name="id_mode_paiement">
                                                             @foreach( $modes_paiement as $mode )
-                                                                <option value="{{$mode->id_mode_paiement }}" {{$mode->id_mode==old('id_mode_paiement') ? 'selected' : '' }}>{{$mode->libelle }}</option>
+                                                                <option value="{{$mode->id_mode_paiement }}" {{$mode->id_mode=="2" ? 'selected' : '' }}>{{$mode->libelle }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                 </tr>
+
                                                 <tr>
                                                     <th>
                                                         <label {!! setPopOver("","saisissez la reference du cheque. (si paiement est effectué par par cheque") !!}>Reference
@@ -379,18 +419,6 @@
                                                         <input class="form-control" type="text" placeholder="ref"
                                                                name="ref"
                                                                value="{{ old('ref') }}">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>
-                                                        <label>Client</label>
-                                                    </th>
-                                                    <td>
-                                                        <select class="form-control" name="id_client">
-                                                            @foreach( $clients as $client )
-                                                                <option value="{{$client->id_client }}" {{$client->id_client==old('id_client') ? 'selected' : '' }}>{{ $client->nom }} {{ $client->prenom }}</option>
-                                                            @endforeach
-                                                        </select>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -431,55 +459,6 @@
 
 @section('scripts')
     @if(!$data->isEmpty())
-        <script>
-            function calcQ(groupe, cpt) {
-                var total = 0;
-                var prix = document.getElementById("prix_" + groupe).title;
-                //var prix = document.getElementById("prix_" +groupe);
-                //alert("Prix = "+prix);
-                for (i = 1; i <= cpt; i++) {
-                    var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
-                    //alert("QI = "+qi);
-                    if (qi == "") {
-                        qi = 0;
-                    } else if (qi < 0) {
-                        //alert("Erreur, q<0");
-                        break;
-                    }
-                    total += parseInt(qi);
-                }
-                //alert("total = "+total);
-                document.getElementById("sommeQ_" + groupe).value = total;
-                document.getElementById("total_" + groupe).value = total * parseFloat(prix);
-            }
-
-            function calcTotal(counter) {
-                var total = 0;
-                for (i = 1; i < counter; i++) {
-                    var totali = document.getElementById("total_" + i).value;
-
-                    if (totali == "") {
-                        totali = 0;
-                    } else if (totali < 0) {
-                        alert("Erreur, totali<0");
-                        break;
-                    }
-
-
-                    total += parseFloat(totali);
-
-                }
-                document.getElementById("total_prix").value = total;
-            }
-
-            function appliquerRemise() {
-                var taux = document.getElementById("taux_remise").value;
-                var total = document.getElementById("total_prix").value;
-
-                document.getElementById("montant").value = total - total * taux / 100;
-
-            }
-        </script>
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell
@@ -518,18 +497,18 @@
                         {"width": "05%", "targets": 1, "type": "string", "visible": true},  //ref
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
 
-                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
+                        {"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
                         {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
                         {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
 
+                        //{"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
+                        //{"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
                         {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
                         {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "05%", "targets": 8, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 9, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'
@@ -555,8 +534,8 @@
     @endif
 @endsection
 
-@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
+@section('menu_1')@include('Espace_Vend._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Vend._nav_menu_2')@endsection
 
 @section('styles')
     <style>

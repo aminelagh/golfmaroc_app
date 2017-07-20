@@ -62,6 +62,6 @@ if( !function_exists('getTimeHelper') )
 	function getTimeHelper($value)
 	{
         $date = Carbon::createFromFormat('H:m:s', date('H:m:s', strtotime($value)));
-		return $date->hour.":".$date->minute.":".$date->second;
+		return $date->hour.":".$date->minute;//.":".$date->second;
 	}
 }

@@ -76,11 +76,8 @@
                         @foreach( $data as $item )
 
                             {{--<tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');" >--}}
-                            <tr
-                                    @if( \App\Models\Promotion::hasPromotion($item->id_article))
-                                    class="success"
-                                    @endif
-                                    >
+                            <tr @if( \App\Models\Promotion::hasPromotion($item->id_article))
+                                class="warning" @endif >
 
                                 <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
                                        value="{{ $item->id_stock }}"/>
@@ -107,7 +104,8 @@
                                 @if( \App\Models\Promotion::hasPromotion($item->id_article))
                                     <td align="right">
                                         <div id="prix_{{ $loop->iteration }}"
-                                             title="{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}">{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }} (avec Promotion)</div>
+                                             title="{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}">{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}
+                                        </div>
                                     </td>
 
                                 @else
@@ -282,13 +280,13 @@
                     </table>
 
                     <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div data-toggle="modal" data-target="#squarespaceModal"
-                                     class="btn btn-primary center-block">Paiement
-                                </div>
+                        <div class="col-lg-10"></div>
+                        <div class="col-lg-2">
+                            <div data-toggle="modal" data-target="#squarespaceModal"
+                                 class="btn btn-primary center-block">Paiement
                             </div>
                         </div>
+
                     </div>
                     <div class="modal fade" id="squarespaceModal" tabindex="-1" role="dialog"
                          aria-labelledby="modalLabel" aria-hidden="true">
@@ -338,10 +336,13 @@
                                                         <label>Montant sans remise</label>
                                                     </th>
                                                     <td>
-                                                        <input type="number" name="result" pattern=".##"
-                                                               disabled onchange=""
-                                                               id="total_prix"
-                                                               class="form-control"/>
+                                                        <div class="input-group">
+                                                            <input type="number" name="result" pattern=".##"
+                                                                   disabled onchange=""
+                                                                   id="total_prix"
+                                                                   class="form-control"/>
+                                                            <span class="input-group-addon" id="basic-addon1">Dhs</span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -353,6 +354,13 @@
                                                                    aria-describedby="basic-addon1" disabled>
                                                             <span class="input-group-addon" id="basic-addon1">Dhs</span>
                                                         </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th><label>Nombre d'articles</label></th>
+                                                    <td>
+                                                        <input type="number" class="form-control"
+                                                               placeholder="Total" id="nombre_articles" disabled>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -433,30 +441,41 @@
 
 @section('scripts')
     @if(!$data->isEmpty())
-
         <script>
             function calcQ(groupe, cpt) {
                 var total = 0;
                 var prix = document.getElementById("prix_" + groupe).title;
                 //var prix = document.getElementById("prix_" +groupe);
                 //alert("Prix = "+prix);
+
                 for (i = 1; i <= cpt; i++) {
                     var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
                     //alert("QI = "+qi);
                     if (qi == "") {
                         qi = 0;
                     } else if (qi < 0) {
-                        //alert("Erreur, q<0");
                         break;
                     }
                     total += parseInt(qi);
                 }
-                //alert("total = "+total);
                 document.getElementById("sommeQ_" + groupe).value = total;
                 document.getElementById("total_" + groupe).value = total * parseFloat(prix);
+                //alert("total = "+total);
+
+                //nombre total d 'articles
+                /*if (nombre_articles == "") {
+                    nombre_articles = 0;
+                }
+
+                document.getElementById("nombre_articles").value = total;
+                //alert('total: ' + document.getElementById("nombre_articles").value);
+                alert("total: " + document.getElementById("nombre_articles").value);*/
             }
 
             function calcTotal(counter) {
+
+                var nombre_articles = document.getElementById("nombre_articles").value;
+
                 var total = 0;
                 for (i = 1; i < counter; i++) {
                     var totali = document.getElementById("total_" + i).value;
@@ -467,12 +486,11 @@
                         alert("Erreur, totali<0");
                         break;
                     }
-
-
                     total += parseFloat(totali);
 
                 }
                 document.getElementById("total_prix").value = total;
+                document.getElementById("nombre_articles").value = total;
             }
 
             function appliquerRemise() {

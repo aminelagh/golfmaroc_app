@@ -8,69 +8,121 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des transactions</li>
-        <li class="breadcrumb-item active">Liste des entrees de stock</li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.entrees') }}">Liste des entrees de stock</a></li>
     </ol>
-
 
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
-                <table id="example" class="table table-striped table-bordered table-hover">
-                    <thead bgcolor="#DBDAD8">
-                    <tr>
-                        <th> #</th>
-                        <th>Categorie</th>
-                        <th>Autres</th>
-                    </tr>
-                    </thead>
-                    <tfoot bgcolor="#DBDAD8">
+                <table id="myTable" class="table table-striped table-bordered table-hover">
+                    <thead>
                     <tr>
                         <th></th>
                         <th>Date</th>
-                        <th></th>
+                        <th>Articles</th>
+                        <th>Total</th>
+                        <th>Actions</th>
                     </tr>
-                    </tfoot>
+                    </thead>
+                    @if( !$data->isEmpty() )
+                        <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>Date</th>
+                            <th>Articles</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                    @endif
 
                     <tbody>
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td></td>
-                            <td align="center"><i>Aucune entrees de stock</i></td>
-                            <td></td>
+                            <td colspan="4" align="center"><i>Aucune entree de stock</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
-                            <tr class="odd gradeA">
-                                <td>{{ $loop->index+1 }}</td>
-                                <td>{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
-                                <td align="center">
-                                    <div class="btn-group pull-right">
-                                        <button type="button"
-                                                class="btn green btn-sm btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-
-                                        <ul class="dropdown-menu pull-left" role="menu">
-                                            <li>
-                                                <a href="{{ Route('magas.entree',['p_id' => $item->id_transaction ]) }}"
-                                                        {!! setPopOver("","Afficher plus de detail") !!} ><i
-                                                            class="glyphicon glyphicon-eye-open"></i>
-                                                    Plus de detail
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a onclick="return confirm('Êtes-vous sure de vouloir annuler la transaction: {{ getDateHelper($item->date).' a '.getTime($item->date) }} ?')"
-                                                   href="#"
-                                                   title="effacer"><i class="glyphicon glyphicon-trash"></i>
-                                                    Effacer</a>
-                                            </li>
-                                        </ul>
-
-                                    </div>
+                            <tr>
+                                <td></td>
+                                <td onclick="window.location.href='{{ route('magas.entree',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
+                                <td align="right">{{ \App\Models\Transaction::getNombreArticles($item->id_transaction) }}
+                                    Articles
                                 </td>
+                                <td align="right">({{ \App\Models\Transaction::getNombrePieces($item->id_transaction) }}
+                                    pieces)
+                                </td>
+                                <td align="center">
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
+                                                class="glyphicon glyphicon-info-sign"
+                                                aria-hidden="false"></i></a>
+
+                                    <a href="{{ Route('magas.entree',['p_id' => $item->id_transaction ]) }}"
+                                            {!! setPopOver("","Details") !!} ><i
+                                                class="glyphicon glyphicon-eye-open"></i>
+                                    </a>
+
+                                    <a onclick="return confirm('Êtes-vous sure de vouloir annuler la transaction: {{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }} ?')"
+                                       href="#"
+                                       title="effacer"><i class="glyphicon glyphicon-trash"></i></a>
+
+
+                                    {{-- Modal (pour afficher les details de chaque transaction) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog"
+                                         tabindex="-1" aria-labelledby="gridSystemModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close"><span
+                                                                aria-hidden="true">&times;</span></button>
+                                                    <h3 class="modal-title" id="gridSystemModalLabel">
+                                                        <b>{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</b>
+                                                    </h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+
+                                                            @if( \App\Models\Transaction::getTrans_articles($item->id_transaction)->isEmpty())
+                                                                <h3><i>Aucun article</i></h3>
+                                                            @else
+                                                                <table class="table table-striped table-bordered table-hover">
+                                                                    <tr>
+                                                                        <th>#</th>
+                                                                        <th>Article</th>
+                                                                        <th>Taille</th>
+                                                                        <th>Quantite</th>
+                                                                    </tr>
+
+                                                                    @foreach(\App\Models\Transaction::getTrans_articles($item->id_transaction) as $trans_article)
+                                                                        <tr>
+                                                                            <td align="right">{{ $loop->iteration }}</td>
+                                                                            <td align="center">{{ \App\Models\Article::getDesignation($trans_article->id_article) }}</td>
+                                                                            <td align="right">{{ \App\Models\Taille_article::getTaille($trans_article->id_taille_article) }}</td>
+                                                                            <td align="right">{{ $trans_article->quantite }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </table>
+                                                            @endif
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- fin Modal (pour afficher les details de chaque transaction) --}}
+                                </td>
+
+
                             </tr>
                         @endforeach
                     @endif
@@ -80,52 +132,86 @@
         </div>
 
     </div>
-
-
-
-
-
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#example tfoot th').each(function () {
-                var title = $(this).text();
-                if (title == "Marque") {
-                    $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                else if (title != "") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-            });
-            // DataTable
-            var table = $('#example').DataTable({
-                //"scrollY": "50px",
-                //"scrollX": true,
-                "searching": true,
-                "paging": true,
-                //"autoWidth": true,
-                "info": true,
-                stateSave: false,
-                "columnDefs": [
-                    {"width": "10%", "targets": 0},
-                    //{"width": "30%", "targets": 1},
-                    {"width": "05%", "targets": 2},
-                ]
-            });
-            // Apply the search
-            table.columns().every(function () {
-                var that = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (that.search() !== this.value) {
-                        that.search(this.value).draw();
+    @if( !$data->isEmpty() )
+        <script>
+            $(document).ready(function () {
+                var table = $('#myTable').DataTable({
+                    //"scrollY": "50px",
+                    //"scrollX": true,
+                    "searching": true,
+                    "paging": true,
+                    //"autoWidth": true,
+                    "info": true,
+                    stateSave: false,
+                    "columnDefs": [
+                        {"width": "5%", "targets": 0},
+                        //{"width": "30%", "targets": 1},
+                        {"width": "05%", "targets": 2},
+                        {"width": "05%", "targets": 3},
+                        {"width": "05%", "targets": 4},
+                    ]
+                });
+
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
+                // Setup - add a text input to each footer cell
+                $('#myTable tfoot th').each(function () {
+                    var title = $(this).text();
+                    if (title == "Date") {
+                        $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Articles" || title == "Total") {
+                        $(this).html('<input type="text" size="5" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title != "") {
+                        $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                 });
+
+                $('a.toggle-vis').on('click', function (e) {
+                    e.preventDefault();
+                    var column = table.column($(this).attr('data-column'));
+                    column.visible(!column.visible());
+                });
+
+                // Apply the search
+                table.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
             });
-        });
-    </script>
+        </script>
+    @endif
+@endsection
+
+@section('styles')
+    <style>
+        #myTable {
+            width: 100%;
+            border: 0px solid #D9D5BE;
+            border-collapse: collapse;
+            margin: 0px;
+            background: white;
+            font-size: 1em;
+        }
+
+        #myTable td {
+            padding: 5px;
+        }
+
+
+    </style>
 @endsection
 
 @section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection

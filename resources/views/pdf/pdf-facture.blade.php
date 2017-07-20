@@ -1,9 +1,10 @@
-<!doctype html>
 <html>
 <head>
+
     <meta charset="utf-8">
     <title>Ticket de vente</title>
-    <link rel="stylesheet" href="{{ asset('pdf/style.css') }}">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="{{ asset('css/style-facture.css') }}" rel="stylesheet">
 
 </head>
 <body>
@@ -18,18 +19,17 @@
 
         <p>+212 5 28 84 47 27</p>
     </address>
-    <span><img alt="" src="{{ asset('pdf/logo1.png') }}"><input type="file" accept="image/*"></span>
+    <span><img src="{{ asset('pdf/logo1.png') }}"></span>
 </header>
-
 <article>
-    <h1>Recipient</h1>
+
     <address>
-        <p>Client : <br>Nom client </p>
+        <p>Client : Nom client </p>
     </address>
     <table class="meta">
         <tr>
             <th><span>Facture N°</span></th>
-            <td><span>101138</span></td>
+            <td><span></span></td>
         </tr>
         <tr>
             <th><span>Date</span></th>
@@ -37,7 +37,7 @@
         </tr>
         <tr>
             <th><span>Total HT</span></th>
-            <td><span id="prefix">  </span><span>600.00</span></td>
+            <td><span id="prefix">  </span><span></span></td>
         </tr>
     </table>
     <table class="inventory">

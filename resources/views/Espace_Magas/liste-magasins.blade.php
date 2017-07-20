@@ -8,10 +8,8 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item active">Liste des magasins</li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.magasins') }}">Liste des magasins</a></li>
     </ol>
-
-
 
     <div class="row">
         <div class="table-responsive">

@@ -2,6 +2,15 @@
 
 @section('title') Ajouter une vente @endsection
 
+@section('styles')
+    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
+    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
+    .tab {
+    text-indent: 20px;
+    }
+@endsection
+
 @section('scripts')
     <script src="{{  asset('table2/datatables.min.js') }}"></script>
     <script type="text/javascript" charset="utf-8">

@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use DB;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 
 class Transaction extends Model
@@ -54,7 +53,7 @@ class Transaction extends Model
         }
     }
 
-    public static function createTransactionTransfertOUT($id_transaction,$id_magasin_destination)
+    public static function createTransactionTransfertOUT($id_transaction, $id_magasin_destination)
     {
         $item = new Transaction();
         $item->id_transaction = $id_transaction;
@@ -69,7 +68,7 @@ class Transaction extends Model
         }
     }
 
-    public static function createTransactionTransfertIN($id_transaction,$id_magasin_source)
+    public static function createTransactionTransfertIN($id_transaction, $id_magasin_source)
     {
         $item = new Transaction();
         $item->id_transaction = $id_transaction;
@@ -82,6 +81,21 @@ class Transaction extends Model
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withAlertDanger("Erreur de creation de la transaction.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+    }
+
+    public static function getNombreArticles($id_transaction)
+    {
+        return collect(DB::select("select count(distinct(id_article)) as nbre from trans_articles where id_transaction=" . $id_transaction . " "))->first()->nbre;
+    }
+
+    public static function getNombrePieces($id_transaction)
+    {
+        return collect(DB::select("select count(id_article) as nbre from trans_articles where id_transaction=" . $id_transaction . " "))->first()->nbre;
+    }
+
+    public static function getTrans_articles($id_transaction)
+    {
+        return Trans_article::where('id_transaction',$id_transaction)->get();
     }
 
 }

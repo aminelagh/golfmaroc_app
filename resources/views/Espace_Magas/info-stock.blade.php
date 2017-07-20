@@ -9,9 +9,9 @@
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-        <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item "><a href="{{ route('magas.magasins') }}">Liste des magasins</a></li>
-        <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
+        <li class="breadcrumb-item">Gestion des magasins</li>
+        <li class="breadcrumb-item"><a href="{{ route('magas.magasins') }}">Liste des magasins</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
         <li class="breadcrumb-item">Stock</li>
         <li class="breadcrumb-item active">{{ $article->designation  }}</li>
     </ol>

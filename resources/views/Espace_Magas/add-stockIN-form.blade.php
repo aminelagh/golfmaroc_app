@@ -10,9 +10,9 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item">Gestion des magasins</li>
-        <li class="breadcrumb-item">{{ $magasin->libelle  }}</li>
-        <li class="breadcrumb-item">Stock du magasin: {{ $magasin->libelle  }}</li>
-        <li class="breadcrumb-item active">entrée de stock</li>
+        <li class="breadcrumb-item"><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.stocks') }}">Stock</a></li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.addStockIN') }}">entree de stock</a></li>
     </ol>
 
     <div class="row">

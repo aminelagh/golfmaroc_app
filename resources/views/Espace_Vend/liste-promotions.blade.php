@@ -1,227 +1,327 @@
 @extends('layouts.main_master')
 
-@section('title') Liste des promotions du magasin  @endsection
-
-@section('styles')
-    <link href="{{  asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{  asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link href="{{  asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
-@endsection
-
-@section('scripts')
-    <script src="{{  asset('table2/datatables.min.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#example tfoot th').each(function () {
-                var title = $(this).text();
-                if (title == "Prix en Promotion") {
-                    $(this).html('<input type="text" size="12" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-                if (title != "") {
-                    $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                }
-            });
-
-            var table = $('#example').DataTable({
-                //"scrollY": "50px",
-                //"scrollX": true,
-                "searching": true,
-                "paging": true,
-                //"autoWidth": true,
-                "info": true,
-                stateSave: false,
-                "columnDefs": [
-                    {"width": "02%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
-                    {"width": "09%", "targets": 1, "type": "string", "visible": true},
-                    //{"width": "07%", "targets": 2, "type": "string", "visible": true},
-                    //{"width": "03%", "targets": 4, "type": "string", "visible": true},
-                    //{"width": "06%", "targets": 5, "type": "string", "visible": true}
-                ]
-            });
-
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-                var column = table.column($(this).attr('data-column'));
-                column.visible(!column.visible());
-            });
-
-            table.columns().every(function () {
-                var that = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (that.search() !== this.value) {
-                        that.search(this.value).draw();
-                    }
-                });
-            });
-        });
-    </script>
-@endsection
+@section('title') Liste promotions  @endsection
 
 @section('main_content')
-    <div class="container-fluid">
-        <div class="col-lg-12">
-            <div class="row">
-                <h2 class="page-header">Liste des Promotions disponibles</h2>
 
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('vend.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Liste des promotions</li>
-                </ol>
+    <h3 class="page-header">Promotions du magasin
+        <strong></strong></h3>
 
-                {{-- **************Alerts**************  --}}
-                <div class="row">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-8">
-                        {{-- Debut Alerts --}}
-                        @if (session('alert_success'))
-                            <div class="alert alert-success alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_success') !!}
-                            </div>
-                        @endif
-
-                        @if (session('alert_info'))
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_info') !!}
-                            </div>
-                        @endif
-
-                        @if (session('alert_warning'))
-                            <div class="alert alert-warning alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_warning') !!}
-                            </div>
-                        @endif
-
-                        @if (session('alert_danger'))
-                            <div class="alert alert-danger alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-                                </button> {!! session('alert_danger') !!}
-                            </div>
-                        @endif
-                        {{-- Fin Alerts --}}
-                    </div>
-                    <div class="col-lg-2"></div>
-                </div>
-                {{-- **************endAlerts**************  --}}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('vend.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Liste des promotions</li>
+    </ol>
 
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="breadcrumb">
-                            Afficher/Masquer:
-                            <a class="toggle-vis" data-column="1">Designation</a> -
-                            <a class="toggle-vis" data-column="2">Prix</a> -
-                            <a class="toggle-vis" data-column="3">Taux</a> -
-                            <a class="toggle-vis" data-column="4">Prix en promotion</a> -
-                            <a class="toggle-vis" data-column="5">Date debut</a> -
-                            <a class="toggle-vis" data-column="6">Date fin</a>
-                        </div>
-                        <table class="table table-striped table-bordered table-hover" id="example">
-                            <thead bgcolor="#DBDAD8">
-                            <tr>
-                                <th>#</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Article</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Prix</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Taux</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Prix en Promotion</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Date debut</th>
-                                <th><i class="fa fa-fw fa-sort"></i> Date fin</th>
-                                <th>Autre</th>
-                            </tr>
-                            </thead>
-                            <tfoot bgcolor="#DBDAD8">
-                            <tr>
-                                <th></th>
-                                <th>Article</th>
-                                <th>Prix</th>
-                                <th>Taux</th>
-                                <th>Prix en Promotion</th>
-                                <th>Date debut</th>
-                                <th>Date fin</th>
-                                <th></th>
-                            </tr>
-                            </tfoot>
 
-                            <tbody>
-                            @if( $data->isEmpty() )
-                                <tr>
-                                    <td colspan="8" align="center"><i>Aucune promotion</i></td>
-                                </tr>
-                            @else
-                                @foreach( $data as $item )
-                                    <tr>
-                                        <td align="right">{{ $loop->index+1 }}</td>
-                                        <td>{{ $item->designation_c }}</td>
-                                        <td align="right">{{ number_format(getTTC($item->prix_vente),2) }} DH TTC</td>
-                                        <td align="right">{{ $item->taux }} %</td>
-                                        <td align="right">{{ number_format(getPrixTaux(getTTC($item->prix_vente), $item->taux),2) }} Dhs</td>
-                                        <td>{{ getDateHelper($item->date_debut) }} </td>
-                                        <td>{{ getDateHelper($item->date_fin) }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-info" data-toggle="modal"
-                                                    data-target="#modal{{ $loop->index+1 }}" title="Detail article">
-                                                Detail
-                                            </button>
-                                        </td>
-                                    </tr>
+    <div class="row">
+        @if( !$data->isEmpty() )
+            <div class="breadcrumb">
+                Afficher/Masquer:
+                <a class="toggle-vis" data-column="1">Reference</a> -
+                <a class="toggle-vis" data-column="2">Code</a> -
+                <a class="toggle-vis" data-column="3">Article</a> -
+                <a class="toggle-vis" data-column="4">Marque</a> -
+                <a class="toggle-vis" data-column="5">Categorie</a> -
+            </div>
+        @endif
+    </div>
 
-                                    {{-- Modal (pour afficher les details de chaque article) --}}
-                                    <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog">
-                                        <div class="modal-dialog modal-sm">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">
-                                                        &times;
-                                                    </button>
-                                                    <h4 class="modal-title">{{ $item->designation_c }}</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p><b>numero</b> {{ $item->num_article }}</p>
-                                                    <p><b>code a barres</b> {{ $item->code_barre }}</p>
-                                                    <p><b>Taille</b> {{ $item->taille }}</p>
-                                                    <p><b>Couleur</b> {{ $item->couleur }}</p>
-                                                    <p><b>sexe</b> {{ getSexeName($item->sexe) }}</p>
-                                                    <p><b>Prix</b>
-                                                        {{ number_format($item->prix_vente, 2) }} Dhs
-                                                        HT, {{ number_format(getTTC($item->prix_vente), 2) }}
-                                                        Dhs TTC </p>
-                                                    <p>{{ $item->designation_l }}</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default"
-                                                            data-dismiss="modal">Fermer
-                                                    </button>
-                                                </div>
+    <div class="row">
+        <div class="table-responsive">
+            <div class="col-lg-12">
+                <table id="myTable" class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th  >#</th>
+                        <th  >Reference</th>
+                        <th  >Code</th>
+                        <th  >Article</th>
+                        <th  >Marque</th>
+                        <th  >Categorie</th>
+                        <th >Taux de promotion</th>
+
+                        <th  >Etat de promotion</th>
+                        <th  >Detais</th>
+
+                    </tr>
+
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Reference</th>
+                        <th>Code</th>
+                        <th>Article</th>
+                        <th>Marque</th>
+                        <th>Categorie</th>
+                        <th>Taux</th>
+                        <th>Etat promo</th>
+                        <th></th>
+
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    @foreach( $data as $item )
+                        <tr >
+
+                            <td>{{ $loop->index+1 }}</td>
+                            <td>
+                                {{ \App\Models\Article::getRef($item->id_article) }}
+                                {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
+                            </td>
+                            <td>{{ \App\Models\Article::getCode($item->id_article) }}</td>
+                            <td>
+                                @if( App\Models\Article::getImage($item->id_article) != null) <img
+                                        src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
+                                        width="40px">@endif
+                                {{ \App\Models\Article::getDesignation($item->id_article) }}
+                            </td>
+                            <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
+                            <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
+                            <td align="left">{{ \App\Models\Promotion::getTaux($item->id_promotion) }} %</td>
+
+                            <td align="center">
+                                @if(\App\Models\Promotion::hasPromotion($item->id_article) == false)
+                                    <div id="circle" style="background: darkred;" {!! setPopOver("Promotion","Indisponible") !!}></div>
+                                @elseif(\App\Models\Promotion::hasPromotion($item->id_article) == true)
+                                    <div id="circle"
+                                         style="background: green;" {!! setPopOver("Promotion","Disponible") !!}></div>
+                                @endif
+                            </td>
+                            <td align="center">
+                                <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
+                                            class="glyphicon glyphicon-info-sign"
+                                            aria-hidden="false"></i></a>
+                            </td>
+                        </tr>
+
+                        {{-- Modal (pour afficher les details de chaque article) --}}
+                        <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog"
+                             tabindex="-1" aria-labelledby="gridSystemModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                        <h3 class="modal-title" id="gridSystemModalLabel">
+                                            <b>Detail de la promotion</b></h3>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        {{-- Date debut --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Date de debut</li>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <b>{{getDateHelper( \App\Models\Promotion::getDateDebut($item->id_promotion)) }}</b>
                                             </div>
                                         </div>
+                                        {{-- Date Fin --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Date de Fin</li>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <b>{{getDateHelper( \App\Models\Promotion::getDateFin($item->id_promotion)) }}</b>
+                                            </div>
+                                        </div>
+
+                                        {{-- Prix HT --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Prix de vente HT  :    </li>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <b>{{ \App\Models\Article::getPrixHT($item->id_article) }} DH</b>
+                                            </div>
+                                        </div>
+                                        {{-- Prix TTC --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Prix de vente TTC  :    </li>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <b>{{ \App\Models\Article::getPrixTTC($item->id_article) }} DH</b>
+                                            </div>
+                                        </div>
+
+                                        {{-- Taux de promotion --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Taux de promotion : </li>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <b> {{ \App\Models\Promotion::getTaux($item->id_promotion) }} %</b>
+                                            </div>
+                                        </div>
+
+
+                                        {{-- Prix de promotion --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Prix de promotion : </li>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <b>{{ \App\Models\Article::getPrixTTC($item->id_article)- (\App\Models\Article::getPrixTTC($item->id_article)*(\App\Models\Promotion::getTaux($item->id_promotion)/100)) }} DH</b>
+                                            </div>
+                                        </div>
+                                        {{-- Etat de promotion --}}
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-4">
+                                                <li>Etat de promotion : </li>
+                                            </div>
+                                            <div class="col-md-6">
+                                              @if(\App\Models\Promotion::hasPromotion($item->id_article) == false)
+                                                  <b>Indisponible</b>
+                                              @elseif(\App\Models\Promotion::hasPromotion($item->id_article) == true)
+                                                <b>Disponible</b>
+                                              @endif
+                                            </div>
+                                        </div>
+
+
                                     </div>
-                                    {{-- fin Modal (pour afficher les details de chaque article) --}}
-                                @endforeach
-                            @endif
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- fin Modal (pour afficher les details de chaque article) --}}
+                    @endforeach
 
-                <div class="row" align="center">
-                    <a onclick="return alert('Impression en cours ....')" type="button"
-                       class="btn btn-outline btn-default"><i class="fa fa-file-pdf-o" aria-hidden="true">
-                            Imprimer </i></a>
-                </div>
-
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+
+    <br/>
+
+    <hr/>
+    <br/>
 @endsection
 
+@section('scripts')
+    @if(!$data->isEmpty())
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function () {
+                var table = $('#myTable').DataTable({
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
+                    "searching": true,
+                    "paging": true,
+                    //"autoWidth": true,
+                    "info": false,
+                    stateSave: false,
+                    "columnDefs": [
+                        {"visible": true, "targets": -1},
 
-@section('menu_1')
-    @include('Espace_Vend._nav_menu_1')
+                        {"searchable": false, "orderable": false, "targets": 0},
+                        //{"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
+                        {"width": "03%", "targets": 1, "type": "string", "visible": true},  //ref
+                        {"width": "03%", "targets": 2, "type": "string", "visible": false},  //code
+
+                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
+                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
+                        {"width": "08%", "targets": 5, "type": "string", "visible": true},     //caegorie
+
+                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
+
+
+                        {"width": "05%", "targets": 7, "type": "num-fmt", "visible": true},     //etat
+
+                        {"width": "04%", "targets": 8, "type": "num-fmt", "visible": true, "searchable": false}
+                    ],
+                    "select": {
+                        items: 'column'
+                    }
+                });
+
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
+                // Setup - add a text input to each footer cell
+                $('#myTable tfoot th').each(function () {
+                    var title = $(this).text();
+                    if (title == "Reference" || title == "Code") {
+                        $(this).html('<input type="text" size="6" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Categorie" || title == "Marque") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Article") {
+                        $(this).html('<input type="text" size="40" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Taux") {
+                        $(this).html('<input type="text" size="6" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+
+                    else if (title != "") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                });
+
+                //footer input: hide text
+                $('a.toggle-vis').on('click', function (e) {
+                    e.preventDefault();
+                    var column = table.column($(this).attr('data-column'));
+                    column.visible(!column.visible());
+                });
+
+                //footer search
+                table.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            });
+        </script>
+    @endif
 @endsection
 
-@section('menu_2')
-    @include('Espace_Vend._nav_menu_2')
+@section('menu_1')@include('Espace_Vend._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Vend._nav_menu_2')@endsection
+
+@section('styles')
+    <style>
+        #circle {
+            width: 15px;
+            height: 15px;
+            -webkit-border-radius: 25px;
+            -moz-border-radius: 25px;
+            border-radius: 25px;
+        }
+
+        #myTable {
+            width: 100%;
+            border: 0px solid #D9D5BE;
+            border-collapse: collapse;
+            margin: 0px;
+            background: white;
+            font-size: 1em;
+        }
+
+        #myTable td {
+            padding: 5px;
+        }
+
+
+    </style>
 @endsection

@@ -9,19 +9,10 @@
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-        <li class="breadcrumb-item">Gestion des magasins</li>
-        <li class="breadcrumb-item"><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
-        <li class="breadcrumb-item active"><a href="{{ route('magas.stocks') }}">Stock</a></li>
+        <li class="breadcrumb-item ">Gestion des magasins</li>
+        <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
+        <li class="breadcrumb-item active">Stock</li>
     </ol>
-
-    <div class="row" align="center">
-        <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockIN') }}">
-            <i class="glyphicon glyphicon-arrow-down"></i> Entrée de stock</a>
-        <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockTransfertOUT') }}">
-            Transfert</a>
-        <a type="button" class="btn btn-outline btn-primary" href="{{ Route('magas.addStockOUT') }}">
-            Sortie de stock <i class="glyphicon glyphicon-arrow-up"></i> </a>
-    </div>
 
     <div class="row">
         @if( !$data->isEmpty() )
@@ -42,7 +33,7 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th rowspan="2"></th>
+                        <th rowspan="2"> #</th>
                         <th rowspan="2">Reference</th>
                         <th rowspan="2">Code</th>
                         <th rowspan="2">Designation</th>
@@ -81,7 +72,7 @@
                     @foreach( $data as $item )
                         <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
 
-                            <td></td>
+                            <td>{{ $loop->index+1 }}</td>
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}
                                 {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
@@ -294,6 +285,30 @@
     @if(!$data->isEmpty())
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
+                // Setup - add a text input to each footer cell
+                $('#myTable tfoot th').each(function () {
+                    var title = $(this).text();
+                    if (title == "Reference" || title == "Code") {
+                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Categorie" || title == "Marque") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Designation") {
+                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "HT" || title == "TTC") {
+                        $(this).html('<input type="text" size="2" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                    else if (title == "Prix d'achat" || title == "Prix de vente") {
+                        $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
+                    }
+                    else if (title != "") {
+                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    }
+                });
+
+
                 var table = $('#myTable').DataTable({
                     "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
                     "searching": true,
@@ -324,37 +339,6 @@
                     }
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
-
-
-
-                // Setup - add a text input to each footer cell
-                $('#myTable tfoot th').each(function () {
-                    var title = $(this).text();
-                    if (title == "Reference" || title == "Code") {
-                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                    }
-                    else if (title == "Categorie" || title == "Marque") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                    }
-                    else if (title == "Designation") {
-                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                    }
-                    else if (title == "HT" || title == "TTC") {
-                        $(this).html('<input type="text" size="2" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                    }
-                    else if (title == "Prix d'achat" || title == "Prix de vente") {
-                        $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
-                    }
-                    else if (title != "") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
-                    }
-                });
-
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
@@ -374,8 +358,8 @@
     @endif
 @endsection
 
-@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
+@section('menu_1')@include('Espace_vend._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_vend._nav_menu_2')@endsection
 
 @section('styles')
     <style>

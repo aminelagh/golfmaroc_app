@@ -38,4 +38,42 @@ class Vente_article extends Model
         }
 
     }
+
+    public static function getNombreArticles($id_vente)
+    {
+        if (!Vente_article::hasTailles($id_vente))
+            return 0;
+        else {
+            $tailles = Vente_article::getTailles($id_vente);
+            $nbreArticles = 0;
+            foreach ($tailles as $item) {
+                $nbreArticles += $item->quantite;
+            }
+        }
+        return $nbreArticles;
+    }
+
+    public static function getTaille($p_id)
+    {
+        $data = self::where('id_taille_article', $p_id)->get()->first();
+        if ($data != null)
+            return Taille_article::getTaille($data->id_taille_article);
+        else return null;
+    }
+
+    public static function getQuantite($p_id)
+    {
+        $data = self::where('id_vente_article', $p_id)->get()->first();
+        if ($data != null)
+            return $data->quantite;
+        else return null;
+    }
+
+    public static function hasTailles($id_vente_article)
+    {
+        $x = self::where('id_vente_article', $id_vente_article)->get();
+        if ($x->isEmpty())
+            return false;
+        else return true;
+    }
 }

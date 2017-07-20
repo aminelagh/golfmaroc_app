@@ -64,6 +64,7 @@ class MagasController extends Controller
         $data = Magasin::where('deleted', false)->where('id_magasin', '!=', 1)->get();
         return view('Espace_Magas.liste-magasins')->withData($data);
     }
+
     public function clients()
     {
         $data = Client::where('deleted', false)->where('id_magasin', Session::get('id_magasin'))->get();

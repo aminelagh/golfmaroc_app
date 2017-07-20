@@ -76,4 +76,5 @@ class Vente extends Model
             return redirect()->back()->withInput()->withAlertDanger("Erreur de creation de la transaction.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
     }
+
 }

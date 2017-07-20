@@ -10,29 +10,11 @@ Route::get('/home', function () {
 
 Route::get('/facture', function () {
 
-    $view = "pdf.pdf-facture";
-    $pdf = PDF::loadView($view);
+    //return view('pdf.pdf-facture');
+
+
+    $pdf = PDF::loadView('pdf.pdf-facture');
     return $pdf->stream('facture.pdf');
-
-    $data = null;
-    $mergeData = null;
-    $encoding = "UTF-8";
-
-    $pdf = PDF::loadView($view);
-    //$pdf = PDF::loadView($view, $data, $mergeData, $encoding);
-    //$pdf->setPaper("A4", 'portrait');
-    return $pdf->stream('facture.pdf');
-
-
-    //$vente = \App\Models\Vente::where('id_vente', 1)->get()->first();
-    //$vente_articles = \App\Models\Vente_article::where('id_vente', 1)->get();
-
-    return $pdf->stream('Facture ' . date('d-M-Y') . '.pdf');
-
-
-    $pdf = App::make('dompdf.wrapper');
-    $pdf->loadHTML('<h1>Test</h1>');
-    return $pdf->stream();
 
 });
 
@@ -42,27 +24,12 @@ Route::get('/session', function () {
 
 Route::get('/s', function () {
 
-
-    for ($i = 0; $i < 10; $i++)
-        if (\App\Models\Promotion::hasPromotion($i)) {
-            echo "$i ==> hasPromo<br>";
-            echo "Article: ".\App\Models\Article::getDesignation($i)."<br>";
-            echo "Prix .....: ".\App\Models\Article::getPrixTTC($i)."<br>";
-            echo "taux Promo: ".\App\Models\Promotion::getTauxPromo($i)."<br>";
-            echo "prix Promo: ".\App\Models\Article::getPrixPromoSimple($i)."<br>";
-
-            echo "<hr>";
-
-        } else echo "$i ==> .....<hr>";
-
-    //echo \App\Models\Article::getPrixPromoSimple(1);
+    \App\Models\Transaction::getNombreArticles(1);
 });
 
 
 Route::get('/a', function () {
-
     return view('a');
-
 });
 
 
@@ -113,6 +80,7 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/entrees', 'TransactionController@entrees')->name('magas.entrees');
     Route::get('/magas/entree/{p_id}', 'TransactionController@entree')->name('magas.entree');
     Route::get('/magas/sorties', 'TransactionController@sorties')->name('magas.sorties');
+    Route::get('/magas/sortie/{p_is}', 'TransactionController@sortie')->name('magas.sortie');
     //..................................................................................................................
     //------------------------------------------------------------------------------------------------------------------
 
@@ -243,6 +211,26 @@ Route::group(['middleware' => 'admin'], function () {
  ****************************************/
 Route::group(['middleware' => 'vend'], function () {
     Route::get('/vend', 'VendeurController@home')->name('vend.home');
+
+    //afficher le stock du magasin principal
+    Route::get('/vend/stocks', 'StockController@main_stocks_V')->name('vend.main_stocks');
+    Route::get('/vend/stocks/{p_id?}', 'StockController@stocks_V')->name('vend.stocks');
+
+    //afficher un article du stock en detail
+    Route::get('/vend/stock/{p_id}', 'StockController@stock')->name('vend.stock');
+    //Vente
+    Route::get('/vend/ventes', 'VenteController@ventes')->name('vend.ventes');
+    Route::get('/vend/vente/{p_id}', 'VenteController@vente')->name('vend.vente');
+    Route::get('/vend/addVenteSimple', 'VenteController@addVenteSimpleV')->name('vend.addVenteSimple');
+    Route::get('/vend/addVenteGros', 'VenteController@addVenteGrosV')->name('vend.addVenteGros');
+    Route::post('/vend/submitAddVente', 'VenteController@submitAddVente')->name('vend.submitAddVente');
+
+    //Clients
+    Route::get('/vend/clients', 'VendeurController@clients')->name('vend.clients');
+    Route::get('/vend/client/{p_id}', 'VendeurController@client')->name('vend.client');
+    //Promotions
+    Route::get('/vend/promotions', 'VendeurController@promotions')->name('vend.promotions');
+    Route::get('/vend/promotion/{p_id}', 'VendeurController@promotion')->name('vend.promotion');
 });
 
 /***************************************
@@ -252,25 +240,25 @@ Route::group(['middleware' => 'direct'], function () {
     Route::get('/direct', 'DirectController@home')->name('direct.home');
 });
 
-/***************************************
+/**
  * Authentification
- ****************************************/
+ **/
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@submitLogin')->name('submitLogin');
 Route::get('/logout', 'AuthController@logout')->name('logout');
 /*********************************************************************************/
 
 
-/**************************************
+/**
  * Routes Delete
- ***************************************/
+ **/
 Route::get('/direct/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('direct.delete');
 Route::get('/magas/delete/{p_table}/{p_id}', 'DeleteController@delete')->name('magas.delete');
 /******************************************************************************/
 
-/***************************************
+/**
  * Routes Excel:
- ****************************************/
+ **/
 Route::get('/export/{p_table}', 'ExcelController@export')->name('export');
 /*********************************************************************************/
 

@@ -25,15 +25,35 @@ use Illuminate\Support\Facades\Session;
 use \Exception;
 
 class VendeurController extends Controller
-
-//Afficher la page d'acceuil de l'Espace Vendeur
 {
     public function home()
     {
-        Session::put('id_magasin', 1);
-        Session::put('id_user', 1);
-
         return view('Espace_Vend.dashboard');
+    }
+
+    public function promotions()
+    {
+        $data = Promotion::where('deleted', false)->where('id_magasin', Session::get('id_magasin'))->get();        
+        return view('Espace_Vend.liste-promotions')->withData($data);
+    }
+
+    public function promotion($p_id)
+    {
+        $data = Promotion::find($p_id);
+        $marques = Marque::all();
+        $fournisseurs = Fournisseur::all();
+        $categories = Categorie::all();
+
+        if ($data == null)
+            return redirect()->back()->with('alert_warning', "L'article choisi n'existe pas.");
+
+        return view('Espace_Magas.info-article')->withData($data)->withMarques($marques)->withFournisseurs($fournisseurs)->withCategories($categories);
+    }
+
+    public function ventes()
+    {
+        $data = Vente::where('deleted', false)->where('id_magasin', Session::get('id_magasin'))->get();
+        return view('Espace_Vend.liste-promotions')->withData($data);
     }
 
     //Lister les ventes,les promotions et le stock du magasin
@@ -78,9 +98,6 @@ class VendeurController extends Controller
         }
     }
 
-
-
-
     // afficher le formulaire de creation de vente
     public function addFormVente()
     {
@@ -95,7 +112,6 @@ class VendeurController extends Controller
         else
             return view('Espace_Vend.add-vente-form')->with(['data' => $data, 'modes_paiement' => $modes_paiement]);
     }
-
 
     // Valider l'ajout des ventes
     public function submitAddVente()
@@ -226,5 +242,4 @@ class VendeurController extends Controller
             return redirect()->back()->with('alert_success', 'Vente de ' . $nbre_articles . ' articles.');
 
     }
-
 }
