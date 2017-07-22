@@ -80,7 +80,13 @@ Route::group(['middleware' => 'magas'], function () {
     Route::get('/magas/entrees', 'TransactionController@entrees')->name('magas.entrees');
     Route::get('/magas/entree/{p_id}', 'TransactionController@entree')->name('magas.entree');
     Route::get('/magas/sorties', 'TransactionController@sorties')->name('magas.sorties');
-    Route::get('/magas/sortie/{p_is}', 'TransactionController@sortie')->name('magas.sortie');
+    Route::get('/magas/sortie/{p_id}', 'TransactionController@sortie')->name('magas.sortie');
+
+    Route::get('/magas/transfertINs', 'TransactionController@transfertINs')->name('magas.transfertINs');
+    Route::get('/magas/transfertIN/{p_id}', 'TransactionController@transfertIN')->name('magas.transfertIN');
+
+    Route::get('/magas/transfertOUTs', 'TransactionController@transfertOUTs')->name('magas.transfertOUTs');
+    Route::get('/magas/transfertOUT/{p_id}', 'TransactionController@transfertOUT')->name('magas.transfertOUT');
     //..................................................................................................................
     //------------------------------------------------------------------------------------------------------------------
 

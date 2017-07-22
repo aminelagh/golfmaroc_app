@@ -1,14 +1,14 @@
 @extends('layouts.main_master')
 
-@section('title') Entrees de stock @endsection
+@section('title') Sorties de stock @endsection
 
 @section('main_content')
-    <h3 class="page-header">Entrees de stock</h3>
+    <h3 class="page-header">Sorties de stock</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des transactions</li>
-        <li class="breadcrumb-item active"><a href="{{ route('magas.entrees') }}">Liste des entrees de stock</a></li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.sorties') }}">Liste des sorites de stock</a></li>
     </ol>
 
     <div class="row">
@@ -40,13 +40,13 @@
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td colspan="4" align="center"><i>Aucune entree de stock</i></td>
+                            <td colspan="4" align="center"><i>Aucune sortie de stock</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
                             <tr>
                                 <td></td>
-                                <td onclick="window.location.href='{{ route('magas.entree',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
+                                <td onclick="window.location.href='{{ route('magas.sortie',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
                                 <td align="right">{{ \App\Models\Transaction::getNombreArticles($item->id_transaction) }}
                                     Articles
                                 </td>
@@ -57,7 +57,7 @@
                                                 class="glyphicon glyphicon-info-sign"
                                                 aria-hidden="false"></i></a>
 
-                                    <a href="{{ Route('magas.entree',['p_id' => $item->id_transaction ]) }}"
+                                    <a href="{{ Route('magas.sortie',['p_id' => $item->id_transaction ]) }}"
                                             {!! setPopOver("","Details") !!} ><i
                                                 class="glyphicon glyphicon-eye-open"></i>
                                     </a>

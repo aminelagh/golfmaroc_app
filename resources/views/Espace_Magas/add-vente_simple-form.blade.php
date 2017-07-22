@@ -447,9 +447,9 @@
                 var prix = document.getElementById("prix_" + groupe).title;
                 //var prix = document.getElementById("prix_" +groupe);
                 //alert("Prix = "+prix);
-
+                var qi;
                 for (i = 1; i <= cpt; i++) {
-                    var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
+                    qi = document.getElementById("quantite_" + groupe + "_" + i).value;
                     //alert("QI = "+qi);
                     if (qi == "") {
                         qi = 0;
@@ -460,22 +460,21 @@
                 }
                 document.getElementById("sommeQ_" + groupe).value = total;
                 document.getElementById("total_" + groupe).value = total * parseFloat(prix);
-                //alert("total = "+total);
 
-                //nombre total d 'articles
-                /*if (nombre_articles == "") {
-                    nombre_articles = 0;
+                //alert('totla: '+total);
+                /*if (document.getElementById("nombre_articles").value == "")
+                 document.getElementById("nombre_articles").value = 0;*/
+                if (document.getElementById("nombre_articles").value == "") {
+                    var x = 0;
+                } else {
+                    var x = parseInt(document.getElementById("nombre_articles").value);
                 }
 
-                document.getElementById("nombre_articles").value = total;
-                //alert('total: ' + document.getElementById("nombre_articles").value);
-                alert("total: " + document.getElementById("nombre_articles").value);*/
+                document.getElementById("nombre_articles").value = parseInt(total + x);
+
             }
 
             function calcTotal(counter) {
-
-                var nombre_articles = document.getElementById("nombre_articles").value;
-
                 var total = 0;
                 for (i = 1; i < counter; i++) {
                     var totali = document.getElementById("total_" + i).value;
@@ -490,7 +489,6 @@
 
                 }
                 document.getElementById("total_prix").value = total;
-                document.getElementById("nombre_articles").value = total;
             }
 
             function appliquerRemise() {

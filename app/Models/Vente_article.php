@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use DB;
+use Illuminate\Database\Eloquent\Model;
 
 class Vente_article extends Model
 {
@@ -11,8 +11,8 @@ class Vente_article extends Model
     protected $primaryKey = 'id_vente_article';
 
     protected $fillable = [
-      'id_vente_article', 'id_vente','id_article' ,
-      'id_taille_article', 'quantite', 'prix', 'annulee',
+        'id_vente_article', 'id_vente', 'id_article',
+        'id_taille_article', 'quantite', 'prix', 'annulee',
     ];
 
     public static function getNextID()
@@ -22,13 +22,14 @@ class Vente_article extends Model
         return $result;
     }
 
-    public static function create($id_vente, $id_article,$id_taille_article,$quantite)
+    public static function create($id_vente, $id_article, $id_taille_article, $prix, $quantite)
     {
         $item = new Vente_article();
         $item->id_vente = $id_vente;
         $item->id_article = $id_article;
         $item->id_taille_article = $id_taille_article;
         $item->quantite = $quantite;
+        $item->prix = $prix;
         $item->annulee = false;
 
         try {

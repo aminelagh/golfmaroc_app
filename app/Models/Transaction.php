@@ -90,7 +90,7 @@ class Transaction extends Model
 
     public static function getNombrePieces($id_transaction)
     {
-        return collect(DB::select("select count(id_article) as nbre from trans_articles where id_transaction=" . $id_transaction . " "))->first()->nbre;
+        return collect(DB::select("select sum(quantite) as nbre from trans_articles where id_transaction=" . $id_transaction . " "))->first()->nbre;
     }
 
     public static function getTrans_articles($id_transaction)

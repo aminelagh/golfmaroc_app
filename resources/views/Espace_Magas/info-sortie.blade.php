@@ -1,15 +1,15 @@
 @extends('layouts.main_master')
 
-@section('title') Entree de stock: {{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }} @endsection
+@section('title') Sortie de stock: {{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }} @endsection
 
 @section('main_content')
 
-    <h3 class="page-header">Entree de stock</h3>
+    <h3 class="page-header">Sortie de stock</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item">Gestion des transactions</li>
-        <li class="breadcrumb-item"><a href="{{ route('magas.entrees') }}">Liste des entrees de stock</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('magas.sorties') }}">Liste des sorties de stock</a></li>
         <li class="breadcrumb-item active">{{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }}</li>
     </ol>
 
@@ -25,13 +25,15 @@
                     @if( $data->isEmpty())
                         <center><h3><i>Aucun article</i></h3></center>
                     @else
-                        <table class="table table-striped table-bordered table-hover">
+                        <table id="example" class="table table-striped table-bordered table-hover">
+                            <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Article</th>
                                 <th>Taille</th>
                                 <th>Quantite</th>
                             </tr>
+                            </thead>
 
                             @foreach($data as $trans_article)
                                 <tr>
@@ -58,7 +60,7 @@
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
-            $('#tableArticles tfoot th').each(function () {
+            $('#example tfoot th').each(function () {
                 var title = $(this).text();
                 if (title == "numero" || title == "code") {
                     $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
@@ -74,7 +76,7 @@
                 }
             });
 
-            var table = $('#tableArticles').DataTable({
+            var table = $('#example').DataTable({
                 //"scrollY": "50px",
                 //"scrollX": true,
                 "searching": true,
@@ -83,14 +85,10 @@
                 "info": true,
                 stateSave: false,
                 "columnDefs": [
-                    {"width": "02%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
-                    {"width": "05%", "targets": 1, "type": "string", "visible": false},
-                    {"width": "07%", "targets": 2, "type": "string", "visible": false},
-                    {"width": "03%", "targets": 4, "type": "string", "visible": false},
-                    {"width": "06%", "targets": 5, "type": "string", "visible": false},
-                    {"width": "05%", "targets": 6, "type": "num-fmt", "visible": true},
-                    {"width": "05%", "targets": 7, "type": "num-fmt", "visible": true},
-                    {"width": "10%", "targets": 8, "type": "string", "visible": true, "searchable": false}
+                    {"width": "10%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
+                    //{"width": "05%", "targets": 1, "type": "string", "visible": true},
+                    {"width": "12%", "targets": 2, "type": "string", "visible": true},
+                    {"width": "15%", "targets": 3, "type": "string", "visible": true, "searchable": false}
                 ]
             });
 

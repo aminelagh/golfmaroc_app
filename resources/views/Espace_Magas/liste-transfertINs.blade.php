@@ -1,14 +1,16 @@
 @extends('layouts.main_master')
 
-@section('title') Entrees de stock @endsection
+@section('title') Transfert de stock @endsection
 
 @section('main_content')
-    <h3 class="page-header">Entrees de stock</h3>
+    <h3 class="page-header">Transfert de stock</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des transactions</li>
-        <li class="breadcrumb-item active"><a href="{{ route('magas.entrees') }}">Liste des entrees de stock</a></li>
+        <li class="breadcrumb-item active">
+            <a href="{{ route('magas.transfertINs') }}">Liste des transferts de stock</a>
+        </li>
     </ol>
 
     <div class="row">
@@ -19,6 +21,7 @@
                     <tr>
                         <th></th>
                         <th>Date</th>
+                        <th>Magasin source</th>
                         <th>Articles</th>
                         <th>Total</th>
                         <th>Actions</th>
@@ -29,6 +32,7 @@
                         <tr>
                             <th></th>
                             <th>Date</th>
+                            <th>Magasin source</th>
                             <th>Articles</th>
                             <th>Total</th>
                             <th></th>
@@ -40,24 +44,28 @@
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td colspan="4" align="center"><i>Aucune entree de stock</i></td>
+                            <td colspan="5" align="center"><i>Aucune entree de stock</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
                             <tr>
                                 <td></td>
                                 <td onclick="window.location.href='{{ route('magas.entree',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
+                                <td>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}
+                                    ({{ \App\Models\Magasin::getVille($item->id_magasin) }})
+                                </td>
                                 <td align="right">{{ \App\Models\Transaction::getNombreArticles($item->id_transaction) }}
                                     Articles
                                 </td>
-                                <td align="right">{{ \App\Models\Transaction::getNombrePieces($item->id_transaction) }} pieces
+                                <td align="right">
+                                    {{ \App\Models\Transaction::getNombrePieces($item->id_transaction) }} pieces
                                 </td>
                                 <td align="center">
                                     <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
                                                 class="glyphicon glyphicon-info-sign"
                                                 aria-hidden="false"></i></a>
 
-                                    <a href="{{ Route('magas.entree',['p_id' => $item->id_transaction ]) }}"
+                                    <a href="{{ Route('magas.transfertIN',['p_id' => $item->id_transaction ]) }}"
                                             {!! setPopOver("","Details") !!} ><i
                                                 class="glyphicon glyphicon-eye-open"></i>
                                     </a>
@@ -148,9 +156,10 @@
                     "columnDefs": [
                         {"width": "5%", "targets": 0},
                         //{"width": "30%", "targets": 1},
-                        {"width": "05%", "targets": 2},
+                        {"width": "20%", "targets": 2},
                         {"width": "05%", "targets": 3},
                         {"width": "05%", "targets": 4},
+                        {"width": "05%", "targets": 5},
                     ]
                 });
 

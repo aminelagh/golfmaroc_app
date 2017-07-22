@@ -1,16 +1,18 @@
 @extends('layouts.main_master')
 
-@section('title') Entree de stock: {{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }} @endsection
+@section('title') Transfert de stock: {{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }} @endsection
 
 @section('main_content')
 
-    <h3 class="page-header">Entree de stock</h3>
+    <h3 class="page-header">Transfert de stock</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item">Gestion des transactions</li>
-        <li class="breadcrumb-item"><a href="{{ route('magas.entrees') }}">Liste des entrees de stock</a></li>
-        <li class="breadcrumb-item active">{{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }}</li>
+        <li class="breadcrumb-item"><a href="{{ route('magas.transfertINs') }}">Liste des transferts de stock</a></li>
+        <li class="breadcrumb-item active">
+            <a href="{{ route('magas.transfertIN',[ 'p_id'=>$transaction->id_transaction]) }}">{{ getDateHelper($transaction->date)." a ".getTimeHelper($transaction->date) }}</a>
+        </li>
     </ol>
 
     <div class="row">
@@ -20,6 +22,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading" align="center">
                     <h4><b>{{ getDateHelper($transaction->date).' a '.getTimeHelper($transaction->date) }}</b></h4>
+                    <h5>
+                        <a href="{{ route('magas.magasin',['p_id'=>$transaction->id_magasin]) }}"
+                           target="_blank">{{ \App\Models\Magasin::getLibelle($transaction->id_magasin) }}
+                            ({{ \App\Models\Magasin::getVille($transaction->id_magasin) }})</a></h5>
                 </div>
                 <div class="panel-body">
                     @if( $data->isEmpty())
@@ -37,7 +43,8 @@
                                 <tr>
                                     <td align="right">{{ $loop->iteration }}</td>
                                     <td align="center">
-                                        <a href="{{ route('magas.article',['p_id'=>$trans_article->id_article]) }}">{{ \App\Models\Article::getDesignation($trans_article->id_article) }}</a>
+                                        <a href="{{ route('magas.article',['p_id'=>$trans_article->id_article]) }}"
+                                           target="_blank">{{ \App\Models\Article::getDesignation($trans_article->id_article) }}</a>
                                     </td>
                                     <td align="right">{{ \App\Models\Taille_article::getTaille($trans_article->id_taille_article) }}</td>
                                     <td align="right">{{ $trans_article->quantite }}</td>

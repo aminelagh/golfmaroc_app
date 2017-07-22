@@ -1,6 +1,6 @@
 @extends('layouts.main_master')
 
-@section('title') Article: {{ $data->libelle }} @endsection
+@section('title') Article: {{ $data->designation }} @endsection
 
 @section('main_content')
 

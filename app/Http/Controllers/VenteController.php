@@ -50,16 +50,18 @@ class VenteController extends Controller
         return view('Espace_Magas.add-vente_gros-form')->withData($data)->withMagasin($magasin)->withModesPaiement($modes)->withClients($clients);
     }
 
+    public static function printfacture()
+    {
+        $pdf = PDF::loadHTML('<h1>Facture</h1>');
+        return $pdf->download('facture.pdf');
+    }
+
     public function submitAddVente()
     {
-        $articles = Article::where('deleted', false)->where('valide', true);
-        $pdf = PDF::loadView('pdf.pdf-facture', ['data' => $articles]);
-        return $pdf->stream('Facture ' . date('d-M-Y') . '.pdf');
+        //return public_path();
+        //return PDF::loadFile(public_path().'/myfile.html')->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
+        //dump(request()->all());
 
-        dump(request()->all());
-
-        //Delete Panier
-        //Panier::deletePanier();
 
         //variables du formulaires -------------------------------------------------------------------------------------
         $id_magasin = request()->get('id_magasin');
@@ -78,8 +80,8 @@ class VenteController extends Controller
         $raison = request()->get('raison');
         //--------------------------------------------------------------------------------------------------------------
 
-        dump("taux remise: " . $taux_remise);
-        dump("raison: " . $raison);
+        //dump("taux remise: " . $taux_remise);
+        //dump("raison: " . $raison);
 
         //verifier la validitee des donnees ----------------------------------------------------------------------------
         $hasData = false;
@@ -104,9 +106,9 @@ class VenteController extends Controller
             if (strlen($raison) <= 0)
                 return redirect()->back()->withInput()->withAlertWarning("Veuillez spécifier la raison de la remise.");
             else
-                ;//Vente::createVenteRemise($id_vente, $id_mode_paiement, $ref, $id_client, $taux_remise, $raison);
+                Vente::createVenteRemise($id_vente, $id_mode_paiement, $ref, $id_client, $taux_remise, $raison);
         } else
-            ;//Vente::createVente($id_vente, $id_mode_paiement, $ref, $id_client);
+            Vente::createVente($id_vente, $id_mode_paiement, $ref, $id_client);
         //--------------------------------------------------------------------------------------------------------------
 
         //Creation des trans_articles ----------------------------------------------------------------------------------
@@ -118,6 +120,7 @@ class VenteController extends Controller
                     if ($quantite != null && $quantite != 0) {
                         $id_taille_article = $id_taille_articles[$id_stock][$i];
                         $id_article = Stock::getIdArticle($id_stock);
+                        $prix_article = 0;//Article::getPrixPromoSimple($id_article);
 
                         //decrementer le stock -------------------------------------------------------------------------
                         Stock_taille::decrementer($id_stock, id_taille_article, $quantite);
@@ -125,7 +128,7 @@ class VenteController extends Controller
                         //----------------------------------------------------------------------------------------------
                         //Creer une nouvelle ligne dans: vente_article -------------------------------------------------
                         //echo "<li> vente_articles ==> $id_article - id_taille_article: $id_taille_article - quantite: $quantite <br>";
-                        Vente_article::create($id_vente, $id_article, $id_taille_article, $quantite);
+                        Vente_article::create($id_vente, $id_article, $id_taille_article, $prix_article, $quantite);
                         //----------------------------------------------------------------------------------------------
                     }
                     $i++;
@@ -135,8 +138,7 @@ class VenteController extends Controller
         //--------------------------------------------------------------------------------------------------------------
         //return redirect()->back()->withAlertSuccess("Sortie de stock effectuée avec succès");
         //return view('Espace_Magas.add-vente_2-form')->withAlertInfo("Un nouveau panier a ete cree.");
+        return $this->printfacture();
         return redirect()->route('magas.validerVente');
     }
-
-
 }

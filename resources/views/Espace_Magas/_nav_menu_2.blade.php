@@ -68,14 +68,13 @@
                         <a href="{{ Route('magas.sorties') }}">Sorties de stock</a>
                     </li>
                     <li>
-                        <a href="/home">Transfert IN</a>
+                        <a href="{{ Route('magas.transfertINs') }}">Transfert IN</a>
                     </li>
                     <li>
-                        <a href="/home">Transfert OUT</a>
+                        <a href="{{ Route('magas.transfertOUTs') }}">Transfert OUT</a>
                     </li>
-
                     <li>
-                        <a href="/home">Ventes</a>
+                        <a href="{{ Route('magas.ventes') }}">Ventes</a>
                     </li>
 
                 </ul>
