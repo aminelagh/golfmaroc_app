@@ -1,15 +1,15 @@
 @extends('layouts.main_master')
 
-@section('title') Article: {{ $data->designation }} @endsection
+@section('title') Article: {{ $data->libelle }} @endsection
 
 @section('main_content')
 
     <h3 class="page-header">Article</h3>
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des Articles</li>
-        <li class="breadcrumb-item"><a href="{{ route('admin.articles') }}">Liste
+        <li class="breadcrumb-item"><a href="{{ route('magas.articles') }}">Liste
                 des articles</a></li>
         <li class="breadcrumb-item active">{{ $data->designation  }}</li>
     </ol>
@@ -19,9 +19,12 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            <form method="POST" action="{{ route('admin.submitUpdateArticle') }}" enctype="multipart/form-data">
+            {!! setNavigation("magas","article",$data->id_article) !!}
+
+            <form method="POST" action="{{ route('magas.submitUpdateArticle') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_article" value="{{ $data->id_article }}">
+
 
                 <div class="panel panel-default">
                     <div class="panel-heading" align="center">
@@ -180,5 +183,5 @@
 @endsection
 
 
-@section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
+@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection

@@ -337,9 +337,8 @@
                                                     </th>
                                                     <td>
                                                         <div class="input-group">
-                                                            <input type="number" name="result" pattern=".##"
-                                                                   disabled onchange=""
-                                                                   id="total_prix"
+                                                            <input type="number" name="result" pattern=".##" step="0.01"
+                                                                   id="total_prix" name="total_prix" readonly
                                                                    class="form-control"/>
                                                             <span class="input-group-addon" id="basic-addon1">Dhs</span>
                                                         </div>
@@ -350,19 +349,19 @@
                                                     <td>
                                                         <div class="input-group">
                                                             <input type="number" pattern=".##" class="form-control"
-                                                                   placeholder="Montant total" id="montant"
-                                                                   aria-describedby="basic-addon1" disabled>
+                                                                   placeholder="Montant total" id="montant" name="montant"
+                                                                   aria-describedby="basic-addon1" readonly>
                                                             <span class="input-group-addon" id="basic-addon1">Dhs</span>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <!--tr>
                                                     <th><label>Nombre d'articles</label></th>
                                                     <td>
                                                         <input type="number" class="form-control"
                                                                placeholder="Total" id="nombre_articles" disabled>
                                                     </td>
-                                                </tr>
+                                                </tr-->
                                             </table>
                                         </div>
                                         <div class="col-lg-6">
@@ -397,6 +396,7 @@
                                                     </th>
                                                     <td>
                                                         <select class="form-control" name="id_client">
+                                                            <option value="0">Aucun</option>
                                                             @foreach( $clients as $client )
                                                                 <option value="{{$client->id_client }}" {{$client->id_client==old('id_client') ? 'selected' : '' }}>{{ $client->nom }} {{ $client->prenom }}</option>
                                                             @endforeach
@@ -461,16 +461,12 @@
                 document.getElementById("sommeQ_" + groupe).value = total;
                 document.getElementById("total_" + groupe).value = total * parseFloat(prix);
 
-                //alert('totla: '+total);
-                /*if (document.getElementById("nombre_articles").value == "")
-                 document.getElementById("nombre_articles").value = 0;*/
-                if (document.getElementById("nombre_articles").value == "") {
+                /*if (document.getElementById("nombre_articles").value == "") {
                     var x = 0;
                 } else {
                     var x = parseInt(document.getElementById("nombre_articles").value);
                 }
-
-                document.getElementById("nombre_articles").value = parseInt(total + x);
+                document.getElementById("nombre_articles").value = parseInt(total + x);*/
 
             }
 

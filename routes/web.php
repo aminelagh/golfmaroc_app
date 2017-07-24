@@ -40,6 +40,9 @@ Route::group(['middleware' => 'magas'], function () {
 
     Route::get('/magas', 'MagasController@home')->name('magas.home');
 
+    //Profil magasinier
+    Route::get('/magas/profile', 'MagasController@profile')->name('magas.profile');
+
     //Magasin ----------------------------------------------------------------------------------------------------------
     Route::get('/magas/magasins', 'MagasController@magasins')->name('magas.magasins');
     Route::get('/magas/magasin', 'MagasController@main_magasin')->name('magas.main_magasin');
@@ -194,7 +197,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::post('/admin/submitArticlesValide', 'AdminController@submitArticlesValide')->name('admin.submitArticlesValide');
 
-    Route::get('/admin/article/{p_id}', 'AdminController@article_nv')->name('admin.article');
+    //Route::get('/admin/article/{p_id}', 'AdminController@article_nv')->name('admin.article');
 
     Route::get('/admin/addArticle', 'AddController@addArticle')->name('admin.addArticle');
     Route::post('/admin/submitUpdateArticle', 'AdminController@submitUpdateArticle')->name('admin.submitUpdateArticle');
@@ -206,6 +209,19 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin/addPromotions', 'AddController@addPromotions')->name('admin.addPromotions');
     Route::post('/admin/submitAddPromotions', 'AddController@submitAddPromotions')->name('admin.submitAddPromotions');
     Route::post('/admin/submitUpdatePromotion', 'UpdateController@submitUpdatePromotion')->name('admin.submitUpdatePromotion');
+    //------------------------------------------------------------------------------------------------------------------
+    //magasin ----------------------------------------------------------------------------------------------------------
+    Route::get('/admin/magasins', 'AdminController@magasins')->name('admin.magasins');
+    Route::get('/admin/magasin/{id_magasin}', 'AdminController@magasin')->name('admin.magasin');
+    Route::post('/admin/submitUpdateMagasin', 'UpdateController@submitUpdateMagasin')->name('admin.submitUpdateMagasin');
+
+    //Stock
+    Route::get('/admin/stocks/{p_id}', 'AdminController@stocks')->name('admin.stocks');
+    Route::get('/admin/stock/{p_id}', 'AdminController@stock')->name('admin.stock');
+
+    //article
+    Route::get('/admin/article/{id_article}', 'AdminController@article')->name('admin.article');
+    Route::post('/admin/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('admin.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
 
 

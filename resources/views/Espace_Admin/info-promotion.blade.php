@@ -76,6 +76,14 @@
                                     </div>
                                 </th>
                             </tr>
+                            <tr>
+                                <td>Etat</td>
+                                <th>
+                                    <input type="checkbox" name="active" value="1" {{ $data->active==true ? 'checked' : '' }}>
+
+
+                                </th>
+                            </tr>
 
                             <tr>
                                 <td align="center" colspan="2"><b>Detail article</b></td>

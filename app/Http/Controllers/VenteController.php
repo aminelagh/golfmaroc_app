@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Magasin;
 use App\Models\Mode_paiement;
 use App\Models\Stock;
+use App\Models\Stock_taille;
 use App\Models\Vente;
 use App\Models\Vente_article;
 use Illuminate\Support\Facades\Session;
@@ -61,7 +62,7 @@ class VenteController extends Controller
         //return public_path();
         //return PDF::loadFile(public_path().'/myfile.html')->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
         //dump(request()->all());
-
+        //return 'a';
 
         //variables du formulaires -------------------------------------------------------------------------------------
         $id_magasin = request()->get('id_magasin');
@@ -78,6 +79,10 @@ class VenteController extends Controller
         //remise:
         $taux_remise = request()->get('taux_remise');
         $raison = request()->get('raison');
+
+        //montants
+        $total_sans_remise = request()->get('total_prix');
+        $total_avec_remise = request()->get('montant');
         //--------------------------------------------------------------------------------------------------------------
 
         //dump("taux remise: " . $taux_remise);
@@ -122,13 +127,15 @@ class VenteController extends Controller
                         $id_article = Stock::getIdArticle($id_stock);
                         $prix_article = 0;//Article::getPrixPromoSimple($id_article);
 
+                        if ($type_vente = "simple")
+                            $prix_article = Article::getPrixPromoSimple($id_article);
+                        else $prix_article = Article::getPrixPromoGros($id_article);
+
                         //decrementer le stock -------------------------------------------------------------------------
-                        Stock_taille::decrementer($id_stock, id_taille_article, $quantite);
-                        //echo "decrement Stock: id_stock: $id_stock, id_taille_article: $id_taille_article, Quantite -: $quantite <br>";
+                        Stock_taille::decrementer($id_stock, $id_taille_article, $quantite);
                         //----------------------------------------------------------------------------------------------
                         //Creer une nouvelle ligne dans: vente_article -------------------------------------------------
-                        //echo "<li> vente_articles ==> $id_article - id_taille_article: $id_taille_article - quantite: $quantite <br>";
-                        Vente_article::create($id_vente, $id_article, $id_taille_article, $prix_article, $quantite);
+                        Vente_article::create($id_vente, $id_article, $id_taille_article, $prix_article, 0, $quantite);
                         //----------------------------------------------------------------------------------------------
                     }
                     $i++;
@@ -138,7 +145,7 @@ class VenteController extends Controller
         //--------------------------------------------------------------------------------------------------------------
         //return redirect()->back()->withAlertSuccess("Sortie de stock effectuée avec succès");
         //return view('Espace_Magas.add-vente_2-form')->withAlertInfo("Un nouveau panier a ete cree.");
-        return $this->printfacture();
+        return $this->printfacture(5);
         return redirect()->route('magas.validerVente');
     }
 }

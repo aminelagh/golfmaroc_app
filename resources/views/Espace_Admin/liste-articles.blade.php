@@ -1,18 +1,15 @@
 @extends('layouts.main_master')
 
-@section('title')Nouveaux articles@endsection
+@section('title') Liste des articles @endsection
 
 @section('main_content')
 
-    <h1 class="page-header">Nouveaux articles</h1>
+    <h3 class="page-header">Liste des articles</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
-        <li class="breadcrumb-item active">Nouveaux articles</li>
+        <li class="breadcrumb-item active">Liste des articles</li>
     </ol>
-
-    @include('layouts.alerts')
-
 
     <div class="row">
         <div class="table-responsive">
@@ -38,39 +35,39 @@
                     <table class="table table-striped table-bordered table-hover" id="example">
                         <thead bgcolor="#DBDAD8">
                         <tr>
-                            <th> #</th>
-                            <th> Reference</th>
-                            <th> Code</th>
+                            <th></th>
+                            <th>Reference</th>
+                            <th>Code</th>
 
-                            <th> Designation</th>
+                            <th>Designation</th>
 
-                            <th> Categorie</th>
-                            <th> Fournisseur</th>
-                            <th> Marque</th>
+                            <th>Categorie</th>
+                            <th>Fournisseur</th>
+                            <th>Marque</th>
 
-                            <th> Couleur</th>
-                            <th> Sexe</th>
+                            <th>Couleur</th>
+                            <th>Sexe</th>
 
-                            <th> Prix d'achat (HT)</th>
-                            <th> Prix de vente (TTC)</th>
+                            <th>Prix d'achat (HT)</th>
+                            <th>Prix de vente (TTC)</th>
 
-                            <th> Valide</th>
-                            <th> Autres</th>
+                            <th>Valide</th>
+                            <th>Autres</th>
                         </tr>
                         </thead>
                         <tfoot bgcolor="#DBDAD8">
                         <tr>
                             <th></th>
-                            <th> Reference</th>
-                            <th> Code</th>
-                            <th> Designation</th>
-                            <th> Categorie</th>
-                            <th> Fournisseur</th>
-                            <th> Marque</th>
-                            <th> Couleur</th>
-                            <th> Sexe</th>
-                            <th> Prix d'achat</th>
-                            <th> Prix de vente</th>
+                            <th>Reference</th>
+                            <th>Code</th>
+                            <th>Designation</th>
+                            <th>Categorie</th>
+                            <th>Fournisseur</th>
+                            <th>Marque</th>
+                            <th>Couleur</th>
+                            <th>Sexe</th>
+                            <th>Prix d'achat</th>
+                            <th>Prix de vente</th>
                             <th></th>
                             <th></th>
                         </tfoot>
@@ -81,7 +78,7 @@
                                 <input type="hidden" name="id_article[{{ $loop->index+1 }}]"
                                        value="{{ $item->id_article }}">
 
-                                <td align="right">{{ $loop->index+1 }}</td>
+                                <td></td>
                                 <td>{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias : '' }}</td>
                                 <td>{{ $item->code }}</td>
                                 <td>{{ $item->designation }}</td>
@@ -91,7 +88,7 @@
                                 <td>{{ $item->couleur }}</td>
                                 <td>{{ $item->sexe }}</td>
                                 <td align="right">{{ $item->prix_a }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrix_TTC($item->prix_v) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
                                 <td align="right"><input type="checkbox" id="valide[{{ $loop->index+1 }}]"
                                                          name="valide[{{ $loop->index+1 }}]"
                                                          value="{{ $loop->index+1 }}"/></td>
@@ -143,11 +140,11 @@
                                             <p><b>sexe</b> {{ $item->sexe }}</p>
                                             <p><b>Prix d'achat</b></p>
                                             <p><b>{{ $item->prix_a }} DH
-                                                    HT</b>, {{ \App\Models\Article::getPrix_TTC($item->prix_a) }}
+                                                    HT</b>, {{ \App\Models\Article::getPrixTTC($item->prix_a) }}
                                                 Dhs TTC </p>
                                             <p><b>Prix de vente</b></p>
                                             <p>{{ $item->prix_v }} DH
-                                                HT, <b>{{ \App\Models\Article::getPrix_TTC($item->prix_v) }}
+                                                HT, <b>{{ \App\Models\Article::getPrixTTC($item->prix_v) }}
                                                     Dhs TTC </b></p>
                                             @if( $item->image != null) <img
                                                     src="{{ asset($item->image) }}"
@@ -189,6 +186,38 @@
     @if(!$data->isEmpty())
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
+
+                var table = $('#example').DataTable({
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
+                    "searching": true,
+                    "paging": true,
+                    //"autoWidth": true,
+                    "info": false,
+                    stateSave: false,
+                    "columnDefs": [
+                        {"visible": true, "targets": -1},
+                        {"searchable": false, "orderable": false, "targets": 0},
+
+                        {"width": "05%", "targets": 1, "type": "string", "visible": true},
+                        {"width": "05%", "targets": 2, "type": "string", "visible": true},
+
+                        //{"width": "08%", "targets": 3, "type": "string", "visible": false},
+
+                        {"width": "08%", "targets": 4, "type": "string", "visible": false},
+                        {"width": "08%", "targets": 5, "type": "string", "visible": false},
+                        {"width": "08%", "targets": 6, "type": "string", "visible": false},
+
+                        {"width": "02%", "targets": 7, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 8, "type": "num-fmt", "visible": false},
+
+                        {"width": "06%", "targets": 9, "type": "string", "visible": true},
+                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
+
+                        {"width": "07%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
+                        {"width": "05%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
+                    ]
+                });
+
                 // Setup - add a text input to each footer cell
                 $('#example tfoot th').each(function () {
                     var title = $(this).text();
@@ -212,43 +241,14 @@
                     }
                 });
 
-                var table = $('#example').DataTable({
-                    //"scrollY": "50px",
-                    //"scrollX": true,
-                    "searching": true,
-                    "paging": true,
-                    //"autoWidth": true,
-                    "info": true,
-                    stateSave: false,
-                    "columnDefs": [
-                        {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
-                        {"width": "05%", "targets": 1, "type": "string", "visible": true},
-                        {"width": "05%", "targets": 2, "type": "string", "visible": true},
-
-                        //{"width": "08%", "targets": 3, "type": "string", "visible": false},
-
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},
-                        {"width": "08%", "targets": 6, "type": "string", "visible": false},
-
-                        {"width": "02%", "targets": 7, "type": "string", "visible": false},
-                        {"width": "06%", "targets": 8, "type": "num-fmt", "visible": false},
-
-                        {"width": "06%", "targets": 9, "type": "string", "visible": true},
-                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
-
-                        {"width": "07%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
-                        {"width": "05%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
-                    ]
-                });
-
+                //footer input: hide text
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
                     column.visible(!column.visible());
                 });
 
-
+                //footer search
                 table.columns().every(function () {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
@@ -262,5 +262,32 @@
     @endif
 @endsection
 
-@section('menu_1')@include('Espace_Magas._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_Magas._nav_menu_2')@endsection
+@section('styles')
+    <style>
+        #circle {
+            width: 15px;
+            height: 15px;
+            -webkit-border-radius: 25px;
+            -moz-border-radius: 25px;
+            border-radius: 25px;
+        }
+
+        #example {
+            width: 100%;
+            border: 0px solid #D9D5BE;
+            border-collapse: collapse;
+            margin: 0px;
+            background: white;
+            font-size: 1em;
+        }
+
+        #example td {
+            padding: 5px;
+        }
+
+
+    </style>
+@endsection
+
+@section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection

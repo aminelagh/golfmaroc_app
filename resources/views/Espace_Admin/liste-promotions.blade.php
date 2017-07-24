@@ -50,25 +50,31 @@
                         @foreach( $data as $item )
                             <tr class="odd gradeA">
                                 <td></td>
-                                <td>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}
-                                    <small>({{ \App\Models\Magasin::getVille($item->id_magasin) }})</small>
+                                <td>
+                                    <a href="{{ route('admin.magasin',['p_id'=>$item->id_magasin]) }}" {!! setPopOver("","Details magasin") !!}>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}
+                                        <small>({{ \App\Models\Magasin::getVille($item->id_magasin) }})</small>
                                 </td>
                                 <td>{{ \App\Models\Article::getDesignation($item->id_article) }}</td>
                                 <td align="right">{{ $item->taux }} %</td>
-                                <td align="middle">{{ (new DateTime($item->date_debut))->format('d-m-Y') }} - {{ (new DateTime($item->date_fin))->format('d-m-Y') }}</td>
+                                <td align="middle">{{ getDateHelper($item->date_debut) }}
+                                    -- {{ getDateHelper($item->date_fin) }} </td>
                                 <td align="middle">
-                                    @if($item->active == false)
+                                    @if(\App\Models\Promotion::hasPromotion($item->id_article) == false)
                                         <div id="circle"
-                                             style="background: darkred;" {!! setPopOver(""," inactive") !!}></div>
-                                    @else
+                                             style="background: darkred;" {!! setPopOver(""," Indisponible") !!}></div>
+                                    @elseif(\App\Models\Promotion::hasPromotion($item->id_article) == true)
                                         <div id="circle"
-                                             style="background: greenyellow;" {!! setPopOver("","active") !!}></div>
+                                             style="background: greenyellow;" {!! setPopOver("","Disponible") !!}></div>
                                     @endif
                                 </td>
                                 <td align="middle">
-                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
-                                                class="glyphicon glyphicon-info-sign"
-                                                aria-hidden="false"></i></a>
+                                    <a data-toggle="modal"
+                                       data-target="#modal{{ $loop->iteration }}" {!! setPopOver("","Details") !!}><i
+                                                class="glyphicon glyphicon-eye-open"></i></a>
+
+                                    <a href="{{ route('admin.promotion',['id_promotion'=>$item->id_promotion]) }}" {!! setPopOver("","Details/Modifier") !!}>
+                                        <i class="glyphicon glyphicon-info-sign"></i>
+                                    </a>
 
 
                                     {{-- Modal (pour afficher les details de chaque article) --}}
@@ -147,7 +153,8 @@
                                                         </tr>
                                                     </table>
                                                     @if(\App\Models\Article::getImage($item->id_article)!=null)
-                                                        <img src="{{ \App\Models\Article::getImage($item->id_article) }}" width="200" hight="200">
+                                                        <img src="{{ \App\Models\Article::getImage($item->id_article) }}"
+                                                             width="200" hight="200">
                                                     @endif
                                                 </div>
                                                 <div class="modal-footer">
@@ -193,13 +200,11 @@
 @section('scripts')
     @if( !$data->isEmpty() )
         <script>
-
-
             $(document).ready(function () {
 
                 // DataTable
                 var table = $('#example').DataTable({
-                    "lengthMenu": [[5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, "Tout"]],
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
                     "info": true,
@@ -217,9 +222,7 @@
                         {"width": "04%", "targets": 6, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "order": [[1, 'asc']],
-                    "select": {
-                        items: 'column'
-                    }
+                    "select": {items: 'column'}
                 });
 
                 table.on('order.dt search.dt', function () {
@@ -232,29 +235,27 @@
                 $('#example tfoot th').each(function () {
                     var title = $(this).text();
                     if (title == "Magasin") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Article") {
-                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="10" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Taux") {
-                        $(this).html('<input type="text" size="1" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="1" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
-                    else if (title == "dates") {
-                        $(this).html('<input type="text" size="7" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    else if (title == "Periode") {
+                        $(this).html('<input type="text" size="20" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title != "") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                 });
-
 
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
                     column.visible(!column.visible());
                 });
-
 
                 table.columns().every(function () {
                     var that = this;

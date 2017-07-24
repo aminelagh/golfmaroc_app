@@ -152,7 +152,7 @@
                                                     <p><b>Couleur:</b> {{ $item->couleur }}</p>
                                                     <p><b>sexe:</b> {{$item->sexe }}</p>
                                                     <p><b>Prix de
-                                                            vente</b> {{ \App\Models\Article::getPrix_TTC($item->prix_v) }}
+                                                            vente</b> {{ \App\Models\Article::getPrixTTC($item->id_article) }}
                                                     </p>
 
                                                     @if($item->image!=null)

@@ -19,6 +19,11 @@ class Article extends Model
         'deleted', 'image', 'valide'
     ];
 
+    public static function applyTaux($prix, $taux)
+    {
+        return ($prix - ($prix * $taux / 100));
+    }
+
     public static function getPrixPromo($p_id_article)
     {
         $p_id_magasin = Session::get('id_magasin');
@@ -27,7 +32,7 @@ class Article extends Model
 
         if (Promotion::hasPromotion($p_id_article, $p_id_magasin)) {
             $taux = Promotion::getTauxPromo($p_id_article, $p_id_magasin);
-            $prix = $prixTTC * (1 - $taux / 100);
+            $prix = self::applyTaux($prixTTC,$taux); //$prixTTC * (1 - $taux / 100);
             return $prix;
         } else {
             return $prixTTC;
@@ -42,7 +47,7 @@ class Article extends Model
 
         if (Promotion::hasPromotion($p_id_article)) {
             $taux = Promotion::getTauxPromo($p_id_article);
-            $prix = $prixTTC * (1 - $taux / 100);
+            $prix = self::applyTaux($prixTTC,$taux);
             return $prix;
         } else {
             return $prixTTC;

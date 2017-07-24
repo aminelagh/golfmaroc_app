@@ -91,7 +91,7 @@
                                 <td>{{ $item->couleur }}</td>
                                 <td>{{ $item->sexe }}</td>
                                 <td align="right">{{ $item->prix_a }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrix_TTC($item->prix_v) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
                                 <td align="right"><input type="checkbox" id="valide"
                                                          name="valide[{{ $loop->index+1 }}]"
                                                          value="{{ $loop->index+1 }}"/></td>
@@ -143,11 +143,11 @@
                                             <p><b>sexe</b> {{ $item->sexe }}</p>
                                             <p><b>Prix d'achat</b></p>
                                             <p><b>{{ $item->prix_a }} DH
-                                                    HT</b>, {{ \App\Models\Article::getPrix_TTC($item->prix_a) }}
+                                                    HT</b>, {{ \App\Models\Article::getPrixTTC($item->id_article) }}
                                                 Dhs TTC </p>
                                             <p><b>Prix de vente</b></p>
                                             <p>{{ $item->prix_v }} DH
-                                                HT, <b>{{ \App\Models\Article::getPrix_TTC($item->prix_v) }}
+                                                HT, <b>{{ \App\Models\Article::getPrixTTC($item->id_article) }}
                                                     Dhs TTC </b></p>
                                             @if( $item->image != null) <img
                                                     src="{{ asset($item->image) }}"

@@ -17,6 +17,11 @@ class Promotion extends Model
         'deleted',
     ];
 
+    //getters:
+    public static function getTaux($id_promotion)
+    {
+        return self::find($id_promotion)->taux;
+    }
 
     //fonction static permet de verifier si un promotion d un article dans un magasin est disponible
     public static function hasPromotion($p_id_article)
@@ -72,6 +77,24 @@ class Promotion extends Model
             new \DateTime($value);
             return true;
         } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+
+    public static function promotionActive($p_id_article)
+    {
+        $p_id_magasin = Session::get('id_magasin');
+        $promo = collect(Promotion::where('id_article', $p_id_article)->where('id_magasin', $p_id_magasin)->where('active', true)->where('deleted', false)->get());
+        $now = new Carbon();
+
+        if (!$promo->isEmpty()) {
+            $d = Carbon::parse($promo->first()->date_debut);
+            $f = Carbon::parse($promo->first()->date_fin);
+            if ($now->greaterThanOrEqualTo($d) && $now->lessThanOrEqualTo($f)) {
+                return true;
+            } else return false;
+        } else {
             return false;
         }
     }

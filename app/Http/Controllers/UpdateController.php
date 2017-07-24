@@ -227,6 +227,9 @@ class UpdateController extends Controller
         $taux = request()->get('taux');
         $date_debut = request()->get('date_debut');
         $date_fin = request()->get('date_fin');
+        $active = request()->get('active');
+        if($active != true)
+            $active = false;
         //-----------------------------------------
 
         //checking data ---------------------------
@@ -270,7 +273,7 @@ class UpdateController extends Controller
                 'taux' => $taux,
                 'date_debut' => $debut,
                 'date_fin' => $fin,
-                'active' => true,
+                'active' => $active,
                 'deleted' => false
             ]);
 

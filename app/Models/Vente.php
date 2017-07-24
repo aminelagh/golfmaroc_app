@@ -38,7 +38,6 @@ class Vente extends Model
             $vente->id_paiement = $id_paiement;
             $vente->id_remise = null;
             $vente->id_client = $id_client;
-            $vente->id_promotion = null;
             $vente->annulee = false;
             //---------------------------------
             $vente->save();
@@ -68,7 +67,6 @@ class Vente extends Model
             $vente->id_paiement = $id_paiement;
             $vente->id_remise = $id_remise;
             $vente->id_client = $id_client;
-            $vente->id_promotion = null;
             $vente->annulee = false;
             //---------------------------------
             $vente->save();
@@ -76,6 +74,38 @@ class Vente extends Model
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withAlertDanger("Erreur de creation de la transaction.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+    }
+
+
+
+
+        public static function getDate($p_id)
+    {
+        $data = self::where('id_vente', $p_id)->get()->first();
+        if ($data != null)
+            return $data->date;
+        else return null;
+    }
+
+    public static function getMode($p_id)
+    {
+        $data = self::where('id_paiement', $p_id)->get()->first();
+        if ($data != null)
+            return Paiement::getMode_Paiement($data->id_paiement);
+        else return null;
+    }
+
+    public static function getNombreArticles($id_vente)
+    {
+        return collect(DB::select("select count(distinct(id_article)) as nbre from vente_articles where id_vente=" . $id_vente . " "))->first()->nbre;
+    }
+    public static function getNombrePieces($id_vente)
+    {
+        return collect(DB::select("select sum(quantite) as nbre from vente_articles where id_vente=" . $id_vente . " "))->first()->nbre;
+    }
+    public static function getVente_articles($id_vente)
+    {
+        return Vente_article::where('id_vente',$id_vente)->get();
     }
 
 }

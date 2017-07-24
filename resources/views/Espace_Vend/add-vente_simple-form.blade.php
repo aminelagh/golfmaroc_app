@@ -29,7 +29,7 @@
             <div class="col-lg-12">
                 {{-- *************** form ***************** --}}
                 <form role="form" name="myForm" id="myForm" method="post"
-                      action="{{ Route('magas.submitAddVente') }}">
+                      action="{{ Route('vend.submitAddVente') }}">
                     {{ csrf_field() }}
                     <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}"/>
                     <input type="hidden" name="type_vente" value="simple"/>

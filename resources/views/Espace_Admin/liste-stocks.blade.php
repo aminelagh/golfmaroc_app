@@ -8,9 +8,11 @@
         <strong>{{ $magasin->libelle }}</strong></h3>
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
+        <li class="breadcrumb-item "><a href="{{ route('admin.magasins') }}">Liste des magasins</a></li>
+        <li class="breadcrumb-item "><a
+                    href="{{ route('admin.magasin',['id'=>$magasin->id_magasin]) }}">{{ $magasin->libelle  }}</a></li>
         <li class="breadcrumb-item active">Stock</li>
     </ol>
 
@@ -33,7 +35,7 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th rowspan="2"> #</th>
+                        <th rowspan="2"></th>
                         <th rowspan="2">Reference</th>
                         <th rowspan="2">Code</th>
                         <th rowspan="2">Designation</th>
@@ -70,19 +72,21 @@
                     </tfoot>
                     <tbody>
                     @foreach( $data as $item )
-                        <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
+                        <tr ondblclick="window.open('{{ Route('admin.stock',[ 'p_id' => $item->id_stock ]) }}');">
 
-                            <td>{{ $loop->index+1 }}</td>
+                            <td></td>
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}
                                 {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
                             </td>
                             <td>{{ \App\Models\Article::getCode($item->id_article) }}</td>
                             <td>
-                                @if( App\Models\Article::getImage($item->id_article) != null) <img
-                                        src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
-                                        width="40px">@endif
-                                {{ \App\Models\Article::getDesignation($item->id_article) }}
+                                <a href="{{ route('admin.article',['id_article'=>$item->id_article]) }}">
+                                    @if( App\Models\Article::getImage($item->id_article) != null) <img
+                                            src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
+                                            width="40px">@endif
+                                    {{ \App\Models\Article::getDesignation($item->id_article) }}
+                                </a>
                             </td>
                             <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
                             <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
@@ -253,7 +257,7 @@
                                         @else
                                             <div class="row">
                                                 <div class="col-md-4"></div>
-                                                <div class="col-md-4"><b><i>Aucun taille</i></b></div>
+                                                <div class="col-md-4"><b><i>Aucune taille</i></b></div>
                                                 <div class="col-md-4"></div>
                                             </div>
 
@@ -285,6 +289,45 @@
     @if(!$data->isEmpty())
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
+                var table = $('#myTable').DataTable({
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
+                    "searching": true,
+                    "paging": true,
+                    //"autoWidth": true,
+                    "info": false,
+                    stateSave: false,
+                    "columnDefs": [
+                        {"visible": true, "targets": -1},
+
+                        {"searchable": false, "orderable": false, "targets": 0},
+                        //{"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
+                        {"width": "05%", "targets": 1, "type": "string", "visible": true},  //ref
+                        {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
+
+                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
+                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
+                        {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
+
+                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
+
+                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+
+                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                    ],
+                    "select": {
+                        items: 'column'
+                    }
+                });
+
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {
                     var title = $(this).text();
@@ -308,43 +351,14 @@
                     }
                 });
 
-
-                var table = $('#myTable').DataTable({
-                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
-                    "searching": true,
-                    "paging": true,
-                    "info": false,
-                    stateSave: false,
-                    "columnDefs": [
-                        {"visible": true, "targets": -1},
-                        {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
-                        {"width": "05%", "targets": 1, "type": "string", "visible": true},  //ref
-                        {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
-
-                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
-
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
-
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
-
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
-                    ],
-                    "select": {
-                        items: 'column'
-                    }
-                });
-
+                //footer input: hide text
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
                     column.visible(!column.visible());
                 });
 
+                //footer search
                 table.columns().every(function () {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
@@ -358,8 +372,8 @@
     @endif
 @endsection
 
-@section('menu_1')@include('Espace_vend._nav_menu_1')@endsection
-@section('menu_2')@include('Espace_vend._nav_menu_2')@endsection
+@section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
+@section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
 
 @section('styles')
     <style>

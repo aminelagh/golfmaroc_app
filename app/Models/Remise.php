@@ -21,7 +21,7 @@ class Remise extends Model
         parent::__construct($attributes);
     }*/
 
-    public function creer($id_remise, $taux, $raison)
+    public static function creer($id_remise, $taux, $raison)
     {
         try {
             $item = new Remise();

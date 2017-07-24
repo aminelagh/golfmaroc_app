@@ -6,9 +6,9 @@
     <h3 class="page-header">Nouvelle vente gros</h3>
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('vend.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item">Gestion des ventes</li>
-        <li class="breadcrumb-item active">Nouvelle vente simple</li>
+        <li class="breadcrumb-item active">Nouvelle vente gros</li>
     </ol>
 
     <div class="row">

@@ -11,7 +11,7 @@ class Vente_article extends Model
     protected $primaryKey = 'id_vente_article';
 
     protected $fillable = [
-        'id_vente_article', 'id_vente', 'id_article',
+        'id_vente_article', 'id_vente', 'id_article', 'id_promotion',
         'id_taille_article', 'quantite', 'prix', 'annulee',
     ];
 
@@ -22,13 +22,14 @@ class Vente_article extends Model
         return $result;
     }
 
-    public static function create($id_vente, $id_article, $id_taille_article, $prix, $quantite)
+    public static function create($id_vente, $id_article, $id_taille_article, $prix, $id_promotion, $quantite)
     {
         $item = new Vente_article();
         $item->id_vente = $id_vente;
         $item->id_article = $id_article;
         $item->id_taille_article = $id_taille_article;
         $item->quantite = $quantite;
+        $item->id_promotion = $id_promotion;
         $item->prix = $prix;
         $item->annulee = false;
 

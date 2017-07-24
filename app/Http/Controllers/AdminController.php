@@ -9,6 +9,9 @@ use App\Models\Magasin;
 use App\Models\Marque;
 use App\Models\Promotion;
 use App\Models\Role;
+use App\Models\Stock;
+use App\Models\Stock_taille;
+use App\Models\Taille_article;
 use App\Models\User;
 use Exception;
 use Hash;
@@ -207,6 +210,17 @@ class AdminController extends Controller
     //---------------------------------------------------------------
 
     //Articles ------------------------------------------------------
+    public function article($id_article)
+    {
+        $data = Article::find($id_article);
+        if ($data == null)
+            return redirect()->back()->withInput()->with('alert_warning', "L'article choisi n'existe pas.");
+
+        $marques = Marque::all();
+        $fournisseurs = Fournisseur::all();
+        $categories = Categorie::all();
+        return view('Espace_Admin.info-article')->withData($data)->withMarques($marques)->withFournisseurs($fournisseurs)->withCategories($categories);
+    }
     public function articles_nv()
     {
         $data = Article::nonValideArticles();
@@ -223,7 +237,6 @@ class AdminController extends Controller
 
     public function submitArticlesValide()
     {
-        //return 'a';
         //array des element du formulaire ******************
         $valide = request()->get('valide');
         $id_article = request()->get('id_article');
@@ -334,5 +347,49 @@ class AdminController extends Controller
         return view('Espace_Admin.info-promotion')->withData($data)->withMagasins($magasins);
     }
 
+    public function magasins()
+    {
+        $data = Magasin::where('deleted', false)->get();
+        //$data = \DB::table('magasins')->where('deleted', false);
+        return view('Espace_Admin.liste-magasins')->withData($data);
+    }
+
+    public function magasin($id_magasin)
+    {
+        $data = Magasin::find($id_magasin);
+        if ($data == null)
+            return redirect()->back()->withAlertWarning("Le magasin choisi n'existe pas.");
+
+        return view('Espace_Admin.info-magasin')->withData($data);
+    }
+
+    public function stocks($p_id)
+    {
+        $data = Stock::where('id_magasin', $p_id)->get();
+
+        if ($data->isEmpty())
+            return redirect()->back()->withAlertWarning("Le stock de ce magasin est vide.");
+
+        $magasin = Magasin::find($p_id);
+        $tailles = Taille_article::all();
+
+        return view('Espace_Admin.liste-stocks')->withData($data)->withMagasin($magasin)->withTailles($tailles);
+    }
+    public function stock($id_stock)
+    {
+        $stock = Stock::find($id_stock);
+
+        if ($stock == null)
+            return redirect()->back()->withAlertWarning("L'element du stock choisi n'existe pas.");
+        $article = Article::find($stock->id_article);
+        if (Stock_taille::hasTailles($id_stock))
+            $data = Stock_taille::where('id_stock', $id_stock)->get();
+        else
+            return redirect()->back()->withInput()->withAlertWarning("l'article choisi n'est pas disponible.");
+
+        $magasin = Magasin::find($stock->id_magasin);
+
+        return view('Espace_Admin.info-stock')->withData($data)->withMagasin($magasin)->withStock($stock)->withArticle($article);
+    }
 
 }
