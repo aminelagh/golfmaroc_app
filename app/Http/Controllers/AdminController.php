@@ -295,7 +295,7 @@ class AdminController extends Controller
     //Articles ------------------------------------------------------
     public function articles()
     {
-        $data = Article::whereDelete(false)->get();
+        $data = Article::whereDeleted(false)->get();
         return view('Espace_Admin.liste-articles')->withData($data);
     }
 
@@ -305,7 +305,7 @@ class AdminController extends Controller
         if ($data->isEmpty())
             return redirect()->back()->withInput()->withAlertInfo("Aucun nouvel article a valider");
 
-        return view('Espace_Admin.liste-articles_nv')->withData($data)->withAlertInfo("c")->withAlignInfo("right");
+        return view('Espace_Admin.liste-articles_nv')->withData($data);//->withAlertInfo("c")->withAlignInfo("right");
     }
 
     public function article($id_article)

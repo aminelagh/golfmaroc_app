@@ -4,6 +4,7 @@
 
 @section('main_content')
 
+
     <h3 class="page-header">Article</h3>
 
     <ol class="breadcrumb">
@@ -14,6 +15,12 @@
         <li class="breadcrumb-item active">{{ $data->designation  }}</li>
     </ol>
 
+    {{-- Form for Delete --}}
+    <form id="deleteForm" action="{{ route('magas.deleteArticle',[$data->id_article]) }}" method="post">
+        {{ csrf_field() }}
+        <input type="hidden" name="_method" value="DELETE" form="deleteForm">
+    </form>
+    {{-- / Form for Delete --}}
 
     <div class="row">
         <div class="col-lg-1"></div>
@@ -92,12 +99,14 @@
                                 <td>Reference</td>
                                 <th>
                                     <div class="col-lg-5">
-                                        <input class="form-control" type="text" name="ref" value="{{ $data->ref }}" required>
+                                        <input class="form-control" type="text" name="ref" value="{{ $data->ref }}"
+                                               required>
 
                                     </div>
                                     <div class="col-lg-1">-</div>
                                     <div class="col-lg-3">
-                                        <input class="form-control" type="text" name="alias" value="{{ $data->alias }}"></div>
+                                        <input class="form-control" type="text" name="alias" value="{{ $data->alias }}">
+                                    </div>
 
                                 </th>
                             </tr>
@@ -168,11 +177,24 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="panel-footer" align="center">
-                        <input type="submit" value="Valider"
-                               class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
-                        <input type="reset" value="Réinitialiser"
-                               class="btn btn-outline btn-primary">
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-lg-4"></div>
+                            <div class="col-lg-4">
+                                <input type="submit" value="Valider"
+                                       class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
+                                <input type="reset" value="Réinitialiser"
+                                       class="btn btn-outline btn-primary">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-2">
+
+                                <button type="submit" class="btn btn-danger btn-outline" form="deleteForm">
+                                    Supprimer
+                                </button>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
 

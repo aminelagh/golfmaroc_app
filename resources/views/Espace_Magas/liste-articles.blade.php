@@ -12,8 +12,6 @@
         <li class="breadcrumb-item active">Liste des articles</li>
     </ol>
 
-
-
     <!-- Table -->
     <div class="table-responsive">
         <div class="col-lg-12">
@@ -22,10 +20,10 @@
                     Afficher/Masquer:
                     <a class="toggle-vis" data-column="1">Reference</a> -
                     <a class="toggle-vis" data-column="2">Code</a> -
-                    <a class="toggle-vis" data-column="3">Categorie</a> -
-                    <a class="toggle-vis" data-column="4">Fournisseur</a> -
-                    <a class="toggle-vis" data-column="5">Marque</a> -
-                    <a class="toggle-vis" data-column="6">Designation</a> -
+                    <a class="toggle-vis" data-column="3">Designation</a> -
+                    <a class="toggle-vis" data-column="4">Categorie</a> -
+                    <a class="toggle-vis" data-column="5">Fournisseur</a> -
+                    <a class="toggle-vis" data-column="6">Marque</a> -
                     <a class="toggle-vis" data-column="7">Couleur</a> -
                     <a class="toggle-vis" data-column="8">Sexe</a> -
                     <a class="toggle-vis" data-column="9">Prix d'achat</a> -
@@ -33,37 +31,37 @@
                 </div>
             @endif
 
-            <table id="example" class="table table-striped table-bordered table-hover">
-                <thead bgcolor="#DBDAD8">
+            <table id="myTable" class="table table-striped table-bordered table-hover">
+                <thead bgcolor="#F6F2EB">
                 <tr>
-                    <th> #</th>
-                    <th> Reference</th>
-                    <th> Code</th>
-                    <th> Categorie</th>
-                    <th> Fournisseur</th>
-                    <th> Marque</th>
-                    <th> Designation</th>
-                    <th> Couleur</th>
-                    <th> Sexe</th>
-                    <th> Prix d'achat (HT)</th>
-                    <th> Prix de vente (TTC)</th>
+                    <th></th>
+                    <th>Reference</th>
+                    <th>Code</th>
+                    <th>Designation</th>
+                    <th>Categorie</th>
+                    <th>Fournisseur</th>
+                    <th>arque</th>
+                    <th>Couleur</th>
+                    <th>Sexe</th>
+                    <th title="Prix d'achat HT">Prix achat</th>
+                    <th title="Prix de vente TTC">Prix vente</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 @if( !$data->isEmpty() )
-                    <tfoot bgcolor="#DBDAD8">
+                    <tfoot bgcolor="#F6F2EB">
                     <tr>
                         <th></th>
                         <th>Reference</th>
                         <th>Code</th>
+                        <th> Designation</th>
                         <th>Categorie</th>
                         <th>Fournisseur</th>
                         <th>Marque</th>
-                        <th>Designation</th>
                         <th>Couleur</th>
                         <th>Sexe</th>
-                        <th title="prix HT">Prix d'achat</th>
-                        <th>Prix de vente</th>
+                        <th>Prix</th>
+                        <th></th>
                         <th></th>
                     </tr>
                     </tfoot>
@@ -76,101 +74,133 @@
                 @else
                     @foreach( $data as $item )
                         @if($item->valide == true)
-                            <tr calss="success"
-                                ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');">
+                            <tr ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');">
                         @else
                             <tr class="warning"
                                 ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');" {!! setPopOver("","Article non validé par l'administrateur") !!}>
                                 @endif
 
-                                <td>{{ $loop->index+1 }}</td>
+                                <td></td>
                                 <td align="right">{{ $item->ref }} - {{ $item->alias }}</td>
                                 <td align="right">{{ $item->code }}</td>
+                                <td>
+                                    @if( $item->image != null)
+                                        <img src="{{ $item->image }}" width="50px">
+                                    @endif
+                                    {{ $item->designation }}
+                                </td>
                                 <td>{{ \App\Models\Categorie::getLibelle($item->id_categorie) }}</td>
                                 <td>{{ \App\Models\Fournisseur::getLibelle($item->id_fournisseur) }}</td>
                                 <td>{{ \App\Models\Marque::getLibelle($item->id_marque) }}</td>
-                                <td>@if( $item->image != null) <img src="{{ $item->image }}"
-                                                                    width="50px">@endif {{ $item->designation }}
-                                </td>
                                 <td>{{ $item->couleur }}</td>
                                 <td>{{ $item->sexe }}</td>
-                                <td align="right">{{ $item->prix_a }} DH</td>
-                                <td align="right">{!! \App\Models\Article::getPrixTTC($item->prix_v) !!} DH
-                                </td>
-                                <td>
-                                    <div class="btn-group pull-right">
-                                        <button type="button"
-                                                class="btn green btn-sm btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-                                        <ul class="dropdown-menu pull-left" role="menu">
-                                            <li>
-                                                <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}"
-                                                        {!! setPopOver("","Afficher plus de detail") !!}><i
-                                                            class="glyphicon glyphicon-eye-open"></i> Plus de
-                                                    detail</a>
-                                            </li>
-                                            <li>
-                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
-                                                   href="#"
-                                                        {!! setPopOver("","Effacer l'article") !!}><i
-                                                            class="glyphicon glyphicon-trash"></i> Effacer</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                            <li>
-                                                <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
-                                                            class="glyphicon glyphicon-info-sign"
-                                                            aria-hidden="false"></i> Info-Bull</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
+                                <td align="right">{{ number_format($item->prix_a,2) }}</td>
+                                <td align="right">{!! \App\Models\Article::getPrixTTC($item->prix_v) !!}</td>
+                                <td align="center">
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
+                                        <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
+                                    </a>
+                                    <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
+                                       href="#" {!! setPopOver("","Effacer l'article") !!}>
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </a>
 
-                                {{-- Modal (pour afficher les details de chaque article) --}}
-                                <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog">
-                                    <div class="modal-dialog modal-sm">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">
-                                                    &times;
-                                                </button>
-                                                <h4 class="modal-title">{{ $item->designation }}</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p><b>reference</b> {{ $item->ref }} - {{ $item->alias }}</p>
+                                    {{-- Modal (pour afficher les details de chaque article) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog">
+                                        <div class="modal-dialog modal-md">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title">{{ $item->designation }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Reference</td>
+                                                            <th>{{ $item->ref }} - {{ $item->alias }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Code</td>
+                                                            <th>{{ $item->code }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Marque</td>
+                                                            <th>{{ \App\Models\Article::getMarque($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Categorie</td>
+                                                            <th>{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Fournisseur</td>
+                                                            <th>{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Couleur</td>
+                                                            <th>{{ $item->couleur }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Sexe</td>
+                                                            <th>{{ $item->sexe }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" align="center">Prix d'achat</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th align="right">{{ \App\Models\Article::getPrixAchatHT($item->id_article) }}
+                                                                Dhs HT
+                                                            </th>
+                                                            <th>{{ \App\Models\Article::getPrixAchatTTC($item->id_article) }}
+                                                                Dhs TTC
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" align="center">Prix de vente</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}
+                                                                Dhs HT
+                                                            </th>
+                                                            <th>{{ \App\Models\Article::getPrixTTC($item->id_article) }}
+                                                                Dhs TTC
+                                                            </th>
+                                                        </tr>
+                                                    </table>
+                                                    @if( $item->image != null) <img
+                                                            src="{{ asset($item->image) }}"
+                                                            width="150px">@endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-lg-4">
+                                                        <form action="{{ route('magas.deleteArticle',[$item->id_article]) }}" method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="_method" value="DELETE">
+                                                            <button type="submit" class="btn btn-danger btn-outline">
+                                                                Supprimer
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <a href="{{ route('magas.article',[$item->id_article]) }}"
+                                                           class="btn btn-info btn-outline">
+                                                            Modifier
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <button type="button" class="btn btn-info btn-outline"
+                                                                data-dismiss="modal">
+                                                            Fermer
+                                                        </button>
 
-                                                <p><b>code</b> {{ $item->code }}</p>
-
-                                                <p><b>Couleur</b> {{ $item->couleur }}</p>
-
-                                                <p><b>sexe</b> {{ $item->sexe }}</p>
-
-                                                <p><b>Prix d'achat</b></p>
-
-                                                <p>{{ number_format($item->prix_a, 2) }} DH
-                                                    HT, {{ number_format($item->prix_a*1.2, 2) }}
-                                                    Dhs TTC </p>
-
-                                                <p><b>Prix de vente</b></p>
-
-                                                <p>{{ number_format($item->prix_vente, 2) }} DH
-                                                    HT, {{ number_format($item->prix_vente+$item->prix_vente*0.2, 2) }}
-                                                    DH TTC </p>
-                                                @if( $item->image != null) <img
-                                                        src="{{ asset($item->image) }}"
-                                                        width="150px">@endif
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default"
-                                                        data-dismiss="modal">Fermer
-                                                </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                {{-- fin Modal (pour afficher les details de chaque article) --}}
+                                    {{-- fin Modal (pour afficher les details de chaque article) --}}
+                                </td>
 
                             </tr>
                             @endforeach
@@ -197,31 +227,30 @@
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function () {
                 // Setup - add a text input to each footer cell
-                $('#example tfoot th').each(function () {
+                $('#myTable tfoot th').each(function () {
                     var title = $(this).text();
                     if (title == "Reference" || title == "Code") {
-                        $(this).html('<input type="text" size="6" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="6" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Categorie" || title == "Fournisseur" || title == "Marque") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Designation") {
-                        $(this).html('<input type="text" size="15" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="15" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Couleur" || title == "Sexe") {
-                        $(this).html('<input type="text" size="5" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="5" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
-                    else if (title == "Prix d'achat" || title == "Prix de vente") {
-                        $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
+                    else if (title == "Prix") {
+                        $(this).html('<input type="text" size="4" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
                     }
                     else if (title != "") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                 });
 
-
-                var table = $('#example').DataTable({
-                    "lengthMenu": [[5, 10, 20, 30, 50, -1], [5, 10, 20, 30, 50, "Tout"]],
+                var table = $('#myTable').DataTable({
+                    "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
                     //"autoWidth": true,
@@ -232,21 +261,29 @@
                         {"width": "05%", "targets": 1, "type": "string", "visible": true},
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},
 
-                        {"width": "08%", "targets": 3, "type": "string", "visible": false},
+                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},
+
                         {"width": "08%", "targets": 4, "type": "string", "visible": false},
                         {"width": "08%", "targets": 5, "type": "string", "visible": false},
+                        {"width": "02%", "targets": 6, "type": "string", "visible": false},
 
-                        {"width": "02%", "targets": 7, "type": "string", "visible": false},
-                        {"width": "06%", "targets": 8, "type": "num-fmt", "visible": false},
-                        {"width": "06%", "targets": 9, "type": "string", "visible": true},
+                        {"width": "06%", "targets": 7, "type": "num-fmt", "visible": false},
+                        {"width": "06%", "targets": 8, "type": "string", "visible": false},
+
+                        {"width": "04%", "targets": 9, "type": "num-fmt", "visible": true},
                         {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
+                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
                     ]
-                    ,
-                    "select": {
-                        items: 'column'
-                    }
                 });
+
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
+
+
 
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
@@ -269,17 +306,25 @@
 
 @section('styles')
     <style>
-        #examplea {
+        #circle {
+            width: 15px;
+            height: 15px;
+            -webkit-border-radius: 25px;
+            -moz-border-radius: 25px;
+            border-radius: 25px;
+        }
+
+        #myTable {
             width: 100%;
-            border: 1px solid #D9D5BE;
+            border: 0px solid #D9D5BE;
             border-collapse: collapse;
             margin: 0px;
             background: white;
             font-size: 1em;
         }
 
-        #examplea td {
-            padding: 0.1px;
+        #myTable td {
+            padding: 5px;
         }
     </style>
 @endsection

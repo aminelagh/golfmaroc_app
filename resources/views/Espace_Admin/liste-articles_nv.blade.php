@@ -19,7 +19,7 @@
                     Afficher/Masquer:
                     <a class="toggle-vis" data-column="1">reference</a> -
                     <a class="toggle-vis" data-column="2">Code</a> -
-                    <a class="toggle-vis" data-column="3">Article</a> -
+                    <a class="toggle-vis" data-column="3">Desigantion</a> -
                     <a class="toggle-vis" data-column="4">Categorie</a> -
                     <a class="toggle-vis" data-column="5">Fournisseur</a> -
                     <a class="toggle-vis" data-column="6">Marque</a> -
@@ -38,19 +38,14 @@
                             <th></th>
                             <th>Reference</th>
                             <th>Code</th>
-
                             <th>Designation</th>
-
                             <th>Categorie</th>
                             <th>Fournisseur</th>
                             <th>Marque</th>
-
                             <th>Couleur</th>
                             <th>Sexe</th>
-
                             <th title="Prix d'achat HT">Prix achat</th>
                             <th title="Prix de vente TTC">Prix vente</th>
-
                             <th>Valide <br> <input type="checkbox" onclick="toggle(this);"/></th>
                             <th>Autres</th>
                         </tr>
@@ -82,16 +77,17 @@
                                 <td>{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias : '' }}</td>
                                 <td>{{ $item->code }}</td>
                                 <td>{{ $item->designation }}</td>
-                                <td>{{ $item->id_categorie  }}</td>
-                                <td>{{ $item->id_fournisseur }}</td>
-                                <td>{{ $item->id_marque }}</td>
+                                <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
+                                <td>{{ \App\Models\Article::getFournisseur($item->id_article)  }}</td>
+                                <td>{{ \App\Models\Article::getMarque($item->id_article)  }}</td>
                                 <td>{{ $item->couleur }}</td>
                                 <td>{{ $item->sexe }}</td>
                                 <td align="right">{{ $item->prix_a }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
-                                <td align="right"><input type="checkbox" id="valide"
-                                                         name="valide[{{ $loop->index+1 }}]"
-                                                         value="{{ $loop->index+1 }}"/></td>
+                                <td align="center">
+                                    <input type="checkbox" id="valide" name="valide[{{ $loop->index+1 }}]"
+                                           value="{{ $loop->index+1 }}"/>
+                                </td>
                                 <td align="center">
                                     <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
                                         <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
@@ -170,26 +166,20 @@
                                 </td>
                             </tr>
                         @endforeach
-
                         </tbody>
-
-
                     </table>
 
                     <div class="row" align="center">
-                        <input type="submit" name="submit" value="valider"
+                        <input type="submit" value="valider"
                                class="btn btn-primary" {!! setPopOver("","Cliquez ici pour marquer les articles cochés comme étant valide") !!}>
 
                     </div>
-
                 </form>
 
             </div>
         </div>
     </div>
     <br/>
-
-
 @endsection
 
 @section('scripts')
@@ -215,22 +205,22 @@
                 "columnDefs": [
                     {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
                     {"width": "05%", "targets": 1, "type": "string", "visible": true},
-                    {"width": "05%", "targets": 2, "type": "string", "visible": true},
+                    {"width": "2%", "targets": 2, "type": "string", "visible": true},
 
-                    {"width": "08%", "targets": 3, "type": "string", "visible": true},
+                    //{"width": "08%", "targets": 3, "type": "string", "visible": true},
 
-                    {"width": "08%", "targets": 4, "type": "string", "visible": true},
-                    {"width": "08%", "targets": 5, "type": "string", "visible": true},
-                    {"width": "08%", "targets": 6, "type": "string", "visible": true},
+                    {"width": "08%", "targets": 4, "type": "string", "visible": false},
+                    {"width": "08%", "targets": 5, "type": "string", "visible": false},
+                    {"width": "08%", "targets": 6, "type": "string", "visible": false},
 
-                    {"width": "02%", "targets": 7, "type": "string", "visible": true},
-                    {"width": "06%", "targets": 8, "type": "num-fmt", "visible": true},
+                    {"width": "02%", "targets": 7, "type": "string", "visible": false},
+                    {"width": "06%", "targets": 8, "type": "num-fmt", "visible": false},
 
-                    {"width": "06%", "targets": 9, "type": "string", "visible": true},
+                    {"width": "04%", "targets": 9, "type": "num-fmt", "visible": true},
                     {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
 
-                    {"width": "10%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
-                    {"width": "05%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
+                    {"width": "08%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false},
+                    {"width": "08%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
                 ]
             });
 
@@ -256,11 +246,8 @@
                     else if (title == "Couleur" || title == "Sexe") {
                         $(this).html('<input type="text" size="5" class="form-control input-md" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
-                    else if (title == "Prix d'achat" || title == "Prix de vente") {
+                    else if (title == "Prix") {
                         $(this).html('<input type="text" size="4" class="form-control input-md" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
-                    }
-                    else if (title == "valide") {
-                        //$(this).html('');
                     }
                     else if (title != "") {
                         $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');

@@ -80,7 +80,6 @@
                     <tbody>
                     @foreach( $data as $item )
                         <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
-
                             <td></td>
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}

@@ -155,6 +155,13 @@ Route::group(['middleware' => 'magas'], function () {
     Route::post('/magas/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('magas.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
 
+    //Delete -----------------------------------------------------------------------------------------------------------
+    Route::delete('magas/article/{id}', 'DeleteController@magasArticle')->name('magas.deleteArticle');
+    Route::delete('magas/marque/{id}', 'DeleteController@magasMarque')->name('magas.deleteMarque');
+    Route::delete('magas/categorie/{id}', 'DeleteController@magasCategorie')->name('magas.deleteCategorie');
+    //....
+    //------------------------------------------------------------------------------------------------------------------
+
 });
 
 /***************************************
@@ -217,11 +224,12 @@ Route::group(['middleware' => 'admin'], function () {
 
     //article
     Route::get('/admin/article/{id_article}', 'AdminController@article')->name('admin.article');
-    Route::post('/admin/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('admin.submitUpdateArticle');
+    Route::post('/admin/submitUpdateArticle', 'AdminController@submitUpdateArticle')->name('admin.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
 
     //Delete -----------------------------------------------------------------------------------------------------------
     Route::delete('admin/user/{id}', 'DeleteController@adminUser')->name('admin.deleteUser');
+    Route::delete('admin/article/{id}', 'DeleteController@adminArticle')->name('admin.deletearticle');
     //------------------------------------------------------------------------------------------------------------------
 
 });
