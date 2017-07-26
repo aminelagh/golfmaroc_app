@@ -1,9 +1,9 @@
+<!-- Alerts script -->
 <script>
-
     @if (session('alert_success'))
 $.notify({
         // options
-        icon: 'glyphicon glyphicon-warning-sign',
+        //icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! session('title_success')!=null ?  session('title_success') : ' ' !!}",
         message: "{!! session('alert_success') !!}",
         url: '{!! session('route_success')!=null ?  session('route_success') : '' !!}',
@@ -36,7 +36,7 @@ $.notify({
     @elseif(isset($alert_success))
 $.notify({
         // options
-        icon: 'glyphicon glyphicon-warning-sign',
+        //icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_success or '' !!}",
         message: "{!! $alert_success !!}",
         url: '{!! isset($route_success) ?  $route_success : '' !!}',
@@ -66,9 +66,6 @@ $.notify({
         icon_type: 'class'
     });
     @endif
-
-
-
 
     @if(session('alert_info'))
 $.notify({
@@ -106,7 +103,7 @@ $.notify({
     @elseif (isset($alert_info))
 $.notify({
         // options
-        icon: 'glyphicon glyphicon-warning-sign',
+        //icon: 'glyphicon glyphicon-warning-sign',
         title: "{!! $title_info or '' !!}",
         message: "{!! $alert_info !!}",
         url: '{!! isset($route_info) ?  $route_info : '' !!}',
@@ -279,9 +276,9 @@ $.notify({
         icon_type: 'class',
     });
     @endif
-
-
 </script>
+
+<!-- / Alerts script -->
 
 
 {{-- **************Alerts**************  }}

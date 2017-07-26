@@ -92,73 +92,87 @@
                                 <td align="right"><input type="checkbox" id="valide[{{ $loop->index+1 }}]"
                                                          name="valide[{{ $loop->index+1 }}]"
                                                          value="{{ $loop->index+1 }}"/></td>
-                                <td>
-                                    <div class="btn-group pull-right">
-                                        <button type="button"
-                                                class="btn green btn-sm btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-                                        <ul class="dropdown-menu pull-left" role="menu">
-                                            <li>
-                                                <a href="{{ Route('admin.article',['p_id'=> $item->id_article ]) }}"
-                                                        {!! setPopOver("","Afficher plus de detail") !!}><i
-                                                            class="glyphicon glyphicon-eye-open"></i> Plus de
-                                                    detail</a>
-                                            </li>
-                                            <li>
-                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
-                                                   href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
-                                                        {!! setPopOver("","Effacer l'article") !!}><i
-                                                            class="glyphicon glyphicon-trash"></i> Effacer</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                            <li>
-                                                <a data-toggle="modal" data-target="#modal{{ $loop->index+1 }}"><i
-                                                            class="glyphicon glyphicon-info-sign"
-                                                            aria-hidden="false"></i> Info-Bull</a>
-                                            </li>
-                                        </ul>
+                                <td align="center">
+                                    <a href="{{ Route('admin.article',['p_id'=> $item->id_article ]) }}"
+                                            {!! setPopOver("","Details") !!}><i
+                                                class="glyphicon glyphicon-eye-open"></i></a>
+
+                                    <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
+                                       href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
+                                            {!! setPopOver("","Effacer l'article") !!}><i
+                                                class="glyphicon glyphicon-trash"></i></a>
+
+
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
+                                                class="glyphicon glyphicon-info-sign"
+                                                aria-hidden="false"></i></a>
+                                    {{-- Modal (pour afficher les details de chaque article) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog">
+                                        <div class="modal-dialog modal-md">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title">{{ $item->designation }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Reference</td>
+                                                            <th>{{ $item->ref }} - {{ $item->alias }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Code</td>
+                                                            <th>{{ $item->code }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Couleur</td>
+                                                            <th>{{ $item->couleur }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Sexe</td>
+                                                            <th>{{ $item->sexe }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" align="center">Prix d'achat</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th align="right">{{ \App\Models\Article::getPrixAchatHT($item->id_article) }}
+                                                                Dhs HT
+                                                            </th>
+                                                            <th>{{ \App\Models\Article::getPrixAchatTTC($item->id_article) }}
+                                                                Dhs TTC
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" align="center">Prix de vente</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}
+                                                                Dhs HT
+                                                            </th>
+                                                            <th>{{ \App\Models\Article::getPrixTTC($item->id_article) }}
+                                                                Dhs TTC
+                                                            </th>
+                                                        </tr>
+                                                    </table>
+                                                    @if( $item->image != null) <img
+                                                            src="{{ asset($item->image) }}"
+                                                            width="150px">@endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default"
+                                                            data-dismiss="modal">Fermer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    {{-- fin Modal (pour afficher les details de chaque article) --}}
                                 </td>
                             </tr>
-                            {{-- Modal (pour afficher les details de chaque article) --}}
-                            <div class="modal fade" id="modal{{ $loop->index+1 }}" role="dialog">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                &times;
-                                            </button>
-                                            <h4 class="modal-title">{{ $item->designation }}</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p><b>reference</b> {{ $item->ref }} - {{ $item->alias }}</p>
-                                            <p><b>code</b> {{ $item->code }}</p>
-                                            <p><b>Couleur</b> {{ $item->couleur }}</p>
-                                            <p><b>sexe</b> {{ $item->sexe }}</p>
-                                            <p><b>Prix d'achat</b></p>
-                                            <p><b>{{ $item->prix_a }} DH
-                                                    HT</b>, {{ \App\Models\Article::getPrixTTC($item->prix_a) }}
-                                                Dhs TTC </p>
-                                            <p><b>Prix de vente</b></p>
-                                            <p>{{ $item->prix_v }} DH
-                                                HT, <b>{{ \App\Models\Article::getPrixTTC($item->prix_v) }}
-                                                    Dhs TTC </b></p>
-                                            @if( $item->image != null) <img
-                                                    src="{{ asset($item->image) }}"
-                                                    width="150px">@endif
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default"
-                                                    data-dismiss="modal">Fermer
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- fin Modal (pour afficher les details de chaque article) --}}
+
                         @endforeach
 
                         </tbody>
@@ -217,6 +231,12 @@
                         {"width": "05%", "targets": 12, "type": "num-fmt", "visible": true, "searchable": false},
                     ]
                 });
+
+                table.on('order.dt search.dt', function () {
+                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#example tfoot th').each(function () {

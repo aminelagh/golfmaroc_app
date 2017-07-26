@@ -397,7 +397,5 @@
         #myTable td {
             padding: 5px;
         }
-
-
     </style>
 @endsection

@@ -15,6 +15,7 @@ use App\Models\Taille_article;
 use App\Models\User;
 use Exception;
 use Hash;
+use Illuminate\Support\Facades\DB;
 use Sentinel;
 use Session;
 
@@ -109,6 +110,37 @@ class AdminController extends Controller
         if (User::EmailExist($email))
             return redirect()->back()->withInput(request()->except(['password']))->with('alert_warning', "L'email: <b>" . $email . "</b> existe deja.");
 
+
+        $role_name = request()->get('role_name');
+        $role = Sentinel::findRoleByName($role_name);
+
+        $user_id = request()->get('id_user');
+        $item = User::find($user_id);
+
+        if ($role->id == 3) {
+            $id_magasin = 1;
+            if (request()->get('id_magasin') != 1)
+                redirect()->back()->withAlertWarning("Pour le role magasinier, le magasin est <b>" . Magasin::getLibelle(1) . "</b>.");
+
+        } elseif ($role->id == 1) {
+            if (request()->get('id_magasin') != 0) {
+                $id_magasin = 0;
+                redirect()->back()->withAlertWarning("Pour le role \"administrateur\", pas besoin de choisir un magasin");
+            }
+        } elseif ($role->id == 2) {
+            if (request()->get('id_magasin') != 0) {
+                $id_magasin = 0;
+                redirect()->back()->withAlertWarning("Pour le role \"direction\", pas besoin de choisir un magasin");
+            }
+        } elseif ($role->id == 4) {
+            $id_magasin = request()->get('id_magasin');
+            if ($id_magasin == 0)
+                return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, veuillez choisir un magasin.");
+            if ($id_magasin == 1)
+                return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, le magasin ne peut pas etre " . Magasin::getLibelle(1) . ".");
+        }
+
+
         $credentials = [
             'email' => $email,
             'password' => $password,
@@ -128,55 +160,106 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de l'utilisateur.<br>Meessage d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "Creation de l'utilisateur <b>" . $nom . " " . $prenom . "</b> reussi.");
-
-
+        return redirect()->back()->withAlertSuccess("Creation de l'utilisateur <b>" . $nom . " " . $prenom . "</b> reussi.");
     }
 
-    public function listeUsers()
+    public function users()
     {
-        $data = User::where('id', '!=', Session::get('id_user'))->whereDeleted(false)->orWhere('deleted', null)->get();
+        $data = User::where('id', '!=', Session::get('id_user'))->whereDeleted(false)->get();
         return view('Espace_Admin.liste-users')->with('data', $data);
     }
 
-    public function infoUser($p_id)
+    public function user($p_id)
     {
         if (Session::get('id_user') == $p_id)
             return redirect()->back();
 
         $data = User::where('id', $p_id)->first();
+        if ($data == null)
+            return redirect()->back()->withInput()->withAlertWarning("L'utilisateur choisi n'existe pas.");
+        $roles = Role::all();
         $magasins = Magasin::all();
         if ($data == null)
-            return redirect()->back()->with('alert_warning', "L'utilisateur choisit n'esxiste pas.");
+            return redirect()->back()->with('alert_warning', "L'utilisateur choisi n'existe pas.");
 
-        return view('Espace_Admin.info-user')->withData($data)->withMagasins($magasins);
+        return view('Espace_Admin.info-user')->withData($data)->withMagasins($magasins)->withRoles($roles);
     }
 
     public function submitUpdateUser()
     {
         if (User::EmailExistForUpdateUser(request()->get('email'), request()->get('id_user')))
-            return redirect()->back()->withInput()->with('alert_danger', "L'email: <b>" . request()->get('email') . "</b> est deja utilisé pour un autre utilisateur.");
+            return redirect()->back()->withInput()->withAlertDanger("L'email: <b>" . request()->get('email') . "</b> est deja utilisé pour un autre utilisateur.");
 
-        else {
-            $user_id = request()->get('id_user');
-            $item = User::find($user_id);
-            try {
+        $role_name = request()->get('role_name');
+        $role = Sentinel::findRoleByName($role_name);
+
+        $user_id = request()->get('id_user');
+        $item = User::find($user_id);
+
+        if ($role->id == 3) {
+            $id_magasin = 1;
+            if (request()->get('id_magasin') != 1)
+                redirect()->back()->withAlertWarning("Pour le role magasinier, le magasin est <b>" . Magasin::getLibelle(1) . "</b>.");
+
+        } elseif ($role->id == 1) {
+            if (request()->get('id_magasin') != 0) {
+                $id_magasin = 0;
+                redirect()->back()->withAlertWarning("Pour le role \"administrateur\", pas besoin de choisir un magasin");
+            }
+        } elseif ($role->id == 2) {
+            if (request()->get('id_magasin') != 0) {
+                $id_magasin = 0;
+                redirect()->back()->withAlertWarning("Pour le role \"direction\", pas besoin de choisir un magasin");
+            } else $id_magasin = 0;
+        } elseif ($role->id == 4) {
+            $id_magasin = request()->get('id_magasin');
+            if ($id_magasin == 0)
+                return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, veuillez choisir un magasin.");
+            if ($id_magasin == 1)
+                return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, le magasin ne peut pas etre " . Magasin::getLibelle(1) . ".");
+        }
+
+
+        $password = request()->get('password');
+        if (strlen($password) > 0) {
+            if (strlen($password) < 8)
+                return redirect()->back()->withInput()->withAlertWarning("le mot de passe doit contenir au moins 7 caractères.");
+            else
+                $password = Hash::make(request()->get('password'));
+        }
+
+        try {
+            if (strlen($password) > 0) {
                 $item->update([
                     'nom' => request()->get('nom'),
                     'prenom' => request()->get('prenom'),
                     'ville' => request()->get('ville'),
                     'telephone' => request()->get('telephone'),
-                    'email' => request()->get('email')
+                    'email' => request()->get('email'),
+                    'id_magasin' => $id_magasin,
+                    'password' => $password
+                ]);
+                redirect()->back()->withAlertInfo("Modification du mode passe effectuée");
+            } else
+                $item->update([
+                    'nom' => request()->get('nom'),
+                    'prenom' => request()->get('prenom'),
+                    'ville' => request()->get('ville'),
+                    'telephone' => request()->get('telephone'),
+                    'email' => request()->get('email'),
+                    'id_magasin' => $id_magasin
                 ]);
 
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification de l'utilisateur. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
-            }
-            return redirect()->route('admin.user', ['p_id' => $user_id])->with('alert_success', "Modification de l'utilisateur reussi.");
+            DB::select("update role_users set role_id=" . $role->id . " where user_id=" . $user_id . " ");
+
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withAlertDanger("Erreur de Modification de l'utilisateur. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+        return redirect()->back()->withAlertSuccess("Modification de l'utilisateur reussie.");
+
     }
 
-    public function updateUserPassword($p_id)
+    /*public function updateUserPassword($p_id)
     {
         if (Session::get('id_user') == $p_id)
             return redirect()->back();
@@ -206,10 +289,25 @@ class AdminController extends Controller
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification du mot de passe.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
         return redirect()->route('admin.user', ['p_id' => $id_user])->with('alert_success', "Modification du mot de passe reussi.");
-    }
+    }*/
     //---------------------------------------------------------------
 
     //Articles ------------------------------------------------------
+    public function articles()
+    {
+        $data = Article::whereDelete(false)->get();
+        return view('Espace_Admin.liste-articles')->withData($data);
+    }
+
+    public function articles_nv()
+    {
+        $data = Article::nonValideArticles();
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertInfo("Aucun nouvel article a valider");
+
+        return view('Espace_Admin.liste-articles_nv')->withData($data)->withAlertInfo("c")->withAlignInfo("right");
+    }
+
     public function article($id_article)
     {
         $data = Article::find($id_article);
@@ -221,18 +319,44 @@ class AdminController extends Controller
         $categories = Categorie::all();
         return view('Espace_Admin.info-article')->withData($data)->withMarques($marques)->withFournisseurs($fournisseurs)->withCategories($categories);
     }
-    public function articles_nv()
-    {
-        $data = Article::nonValideArticles();
-        if ($data->isEmpty())
-            return redirect()->back()->withInput()->with('alert_warning', "Aucun nouvel article a valider");
-        return view('Espace_Admin.liste-articles_nv')->withData($data);
-    }
 
-    public function articles()
+    public function submitUpdateArticle()
     {
-        $data = Article::all();
-        return view('Espace_Admin.liste-articles')->withData($data);
+        $id_article = request()->get('id_article');
+        $code = request()->get('code');
+
+        if (Article::CodeExistForUpdate($id_article, $code))
+            return redirect()->back()->withInput()->with('alert_warning', "Le code: <b>" . $code . "</b> est deja utilisé pour un autre article.");
+
+        else {
+            $item = Article::find($id_article);
+            try {
+                $item->update([
+                    'id_categorie' => request()->get('id_categorie'),
+                    'id_marque' => request()->get('id_marque'),
+                    'id_fournisseur' => request()->get('id_fournisseur'),
+
+                    'code' => request()->get('code'),
+                    'ref' => request()->get('ref'),
+                    'alias' => request()->get('alias'),
+
+                    'designation' => request()->get('designation'),
+
+                    'couleur' => request()->get('couleur'),
+                    'sexe' => request()->get('sexe'),
+
+                    'prix_a' => request()->get('prix_a'),
+                    'prix_v' => request()->get('prix_v'),
+
+                    'valide' => true,
+                    'deleted' => false,
+                ]);
+
+            } catch (Exception $e) {
+                return redirect()->back()->withInput()->withAlertDanger("Erreur de Modification de l'article. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
+            }
+            return redirect()->route('admin.articles_nv')->with('alert_success', "Modification de l'utilisateur reussi.");
+        }
     }
 
     public function submitArticlesValide()
@@ -270,12 +394,9 @@ class AdminController extends Controller
         else if ($nbreArticles > 1)
             return redirect()->back()->with('alert_success', "Modification reussie de $nbreArticles articles.");
         else return redirect()->back()->withInput();
-
-
-        //****************************************************
     }
 
-    public function article_nv($p_id)
+    /*public function article_nv($p_id)
     {
         $data = Article::where('id_article', $p_id)->where('valide', false)->get()->first();
 
@@ -288,45 +409,7 @@ class AdminController extends Controller
 
 
         return view('Espace_Admin.info-article')->withData($data)->withMarques($marques)->withFournisseurs($fournisseurs)->withCategories($categories);
-    }
-
-    public function submitUpdateArticle()
-    {
-        $id_article = request()->get('id_article');
-        $code = request()->get('code');
-
-        if (Article::CodeExistForUpdate($id_article, $code))
-            return redirect()->back()->withInput()->with('alert_warning', "Le code: <b>" . $code . "</b> est deja utilisé pour un autre article.");
-
-        else {
-            $item = Article::find($id_article);
-            try {
-                $item->update([
-                    'id_categorie' => request()->get('id_categorie'),
-                    'id_marque' => request()->get('id_marque'),
-                    'id_fournisseur' => request()->get('id_fournisseur'),
-
-                    'code' => request()->get('code'),
-                    'ref' => request()->get('ref'),
-                    'alias' => request()->get('alias'),
-
-                    'designation' => request()->get('designation'),
-
-                    'couleur' => request()->get('couleur'),
-                    'sexe' => request()->get('sexe'),
-
-                    'prix_a' => request()->get('prix_a'),
-                    'prix_v' => request()->get('prix_v'),
-
-                    'valide' => true,
-                ]);
-
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification de l'article. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
-            }
-            return redirect()->route('admin.articles_nv')->with('alert_success', "Modification de l'utilisateur reussi.");
-        }
-    }
+    }*/
 
     //---------------------------------------------------------------
 
@@ -375,6 +458,7 @@ class AdminController extends Controller
 
         return view('Espace_Admin.liste-stocks')->withData($data)->withMagasin($magasin)->withTailles($tailles);
     }
+
     public function stock($id_stock)
     {
         $stock = Stock::find($id_stock);

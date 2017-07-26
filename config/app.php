@@ -184,8 +184,9 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
 
-        //Excel
-        
+        //Illuminate\Html\HtmlServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+
 
     ],
 
@@ -238,13 +239,18 @@ return [
 
         //Sentinel
         'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
-        'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
-        'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
+        'Reminder' => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
+        'Sentinel' => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
 
-        'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
-        'CustomAliasTwo' => Example\Support\Facades\CustomAliasTwo::class,
+        //'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
+        //'CustomAliasTwo' => Example\Support\Facades\CustomAliasTwo::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        
+
+        //'Form' => Illuminate\Html\FormFacade::class,
+        //'Html' => Illuminate\Html\HtmlFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
+
     ],
 
 ];

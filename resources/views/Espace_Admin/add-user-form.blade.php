@@ -14,7 +14,7 @@
         <div class="col-lg-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Modification du Profile
+                    Nouvel utilisateur
                 </div>
                 <div class="panel-body">
 
@@ -41,11 +41,11 @@
                                 <label>Magasin</label>
                                 <select class="form-control" name="id_magasin">
                                     <option value="0"><i>Aucun</i></option>
-                                    <option value="0"><i>Aucun</i></option>
                                     @if( !$magasins->isEmpty() )
-                                        @foreach( $magasins as $item )
-                                            <option value="{{ $item->id_magasin }}"
-                                                    @if( $item->id_magasin == old('id_magasin') ) selected @endif > {{ $item->libelle }}
+                                        @foreach( $magasins as $magasin )
+                                            <option value="{{ $magasin->id_magasin }}"
+                                                    @if( $magasin->id_magasin == old('id_magasin') ) selected @endif > {{ $magasin->libelle }}
+                                                <small>({{ $magasin->ville }})</small>
                                             </option>
                                         @endforeach
                                     @endif

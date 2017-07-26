@@ -3,23 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
-use Illuminate\Http\Request;
-use Auth;
-use DB;
-use Hash;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Magasin;
+use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\Fournisseur;
-use App\Models\Article;
+use App\Models\Magasin;
 use App\Models\Marque;
-use App\Models\Stock;
 use App\Models\Promotion;
-use \Exception;
+use App\Models\Stock;
+use App\Models\User;
+use DB;
+use Exception;
 
 class DeleteController extends Controller
 {
+    public function adminUser($id)
+    {
+        try {
+            DB::select("delete from users where id=" . $id . " ");
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withAlertDanger("Erreur de suppression de l'utilisateur.<br>Messagde d'erreur: <b>" . $e->getMessage() . "</b>");
+        }
+        return redirect()->route('admin.users')->withInput()->withAlertSuccess("L'utilisateur a été effacé avec succès");
+    }
 
     /******************************************
      * Fonction pour effacer une ligne d'une table

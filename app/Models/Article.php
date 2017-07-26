@@ -32,7 +32,7 @@ class Article extends Model
 
         if (Promotion::hasPromotion($p_id_article, $p_id_magasin)) {
             $taux = Promotion::getTauxPromo($p_id_article, $p_id_magasin);
-            $prix = self::applyTaux($prixTTC,$taux); //$prixTTC * (1 - $taux / 100);
+            $prix = self::applyTaux($prixTTC, $taux); //$prixTTC * (1 - $taux / 100);
             return $prix;
         } else {
             return $prixTTC;
@@ -47,7 +47,7 @@ class Article extends Model
 
         if (Promotion::hasPromotion($p_id_article)) {
             $taux = Promotion::getTauxPromo($p_id_article);
-            $prix = self::applyTaux($prixTTC,$taux);
+            $prix = self::applyTaux($prixTTC, $taux);
             return $prix;
         } else {
             return $prixTTC;
@@ -94,9 +94,7 @@ class Article extends Model
 
     public static function nonValideArticles()
     {
-        $data = self::where('valide', false)->where('deleted', false)->get();
-        return $data;
-
+        return self::where('valide', false)->where('deleted', false)->get();
     }
 
     public static function CodeExistForUpdate($p_id, $code)

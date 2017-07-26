@@ -5,9 +5,14 @@
             <li>
                 <a href="{{route('admin.home')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
             </li>
-
             <li>
                 <a href="{{ route('admin.users' ) }}"><i class="fa fa-dashboard fa-fw"></i> Utilisateurs</a>
+            </li>
+            <li>
+                <a href="{{ route('admin.promotions') }}"><i class="fa fa-dashboard fa-fw"></i> Promotions</a>
+            </li>
+            <li>
+                <a href="{{ route('admin.articles') }}"><i class="fa fa-dashboard fa-fw"></i> Articles</a>
             </li>
 
             <li>

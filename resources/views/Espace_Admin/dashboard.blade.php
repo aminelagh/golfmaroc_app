@@ -10,6 +10,9 @@
 
     <div class="row">
 
+
+
+
         {{-- Affiche  --}}
         @if(\App\Models\Article::hasNonValideArticles())
             <div class="col-lg-4">
@@ -29,6 +32,7 @@
                         <div class="panel-footer">
                             <span class="pull-left">Consulter</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
                             <div class="clearfix"></div>
                         </div>
                     </a>
@@ -42,3 +46,21 @@
 
 @section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
+
+
+{{-- Affiche
+        {{ Form::open(array('url' => 'foo/bar','method' => 'delete')) }}
+        {{ Form::text('email', 'example@gmail.com',array('class' => 'form-control')) }}
+        {{ Form::submit('Click Me!') }}
+        {{ Form::close() }}
+
+        <hr>
+
+        <form method="POST" action="http://golfmaroc/foo/bar" accept-charset="UTF-8">
+            <input name="_method" type="text" value="DELETE" readonly>
+            <input name="_token" type="hidden" value="N9ztUoKYkJzq1RUuQ0ZYD7FpG72EwUc80bbktXWn">
+            <input class="form-control" name="email" type="text" value="example@gmail.com">
+            <input type="submit" value="Click Me!">
+        </form>
+
+         Affiche  --}}

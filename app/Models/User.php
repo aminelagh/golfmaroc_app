@@ -65,9 +65,9 @@ class User extends Authenticatable
         Session::put('id_magasin', $user->id_magasin);
     }
 
-    public static function getRole($p_id)
+    public static function getRole($user_id)
     {
-        $role_id = \App\Models\Role_user::where('user_id', $p_id)->first()->role_id;
+        $role_id = \App\Models\Role_user::where('user_id', $user_id)->first()->role_id;
         $role = \App\Models\Role::where('id', $role_id)->first()->name;
         return $role;
     }

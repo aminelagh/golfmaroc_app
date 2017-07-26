@@ -9,14 +9,11 @@ Route::get('/home', function () {
 })->name('home');
 
 Route::get('/facture', function () {
-
     //return view('pdf.pdf-facture');
-
-
     $pdf = PDF::loadView('pdf.pdf-facture');
     return $pdf->stream('facture.pdf');
-
 });
+
 
 Route::get('/session', function () {
     dump(session()->all());
@@ -34,7 +31,7 @@ Route::get('/a', function () {
 
 
 /***************************************
- * Magas routes protected by adminMiddleware
+ * Magas routes protected by magasMiddleware
  ****************************************/
 Route::group(['middleware' => 'magas'], function () {
 
@@ -180,15 +177,14 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('/admin/submitUpdatePassword', 'AdminController@submitUpdatePassword')->name('admin.submitUpdatePassword');
     //------------------------------------------------------------------------------------------------------------------
     //Users-------------------------------------------------------------------------------------------------------------
-    Route::get('/admin/users', 'AdminController@listeUsers')->name('admin.users');
-    Route::get('/admin/user/{p_id}', 'AdminController@infoUser')->name('admin.user');
+    Route::get('/admin/users', 'AdminController@users')->name('admin.users');
+    Route::get('/admin/user/{p_id}', 'AdminController@user')->name('admin.user');
     Route::get('/admin/addUser', 'AdminController@addUser')->name('admin.addUser');
     Route::post('/admin/submitAddUser', 'AdminController@submitAddUser')->name('admin.submitAddUser');
     Route::post('/admin/submitUpdateUser', 'AdminController@submitUpdateUser')->name('admin.submitUpdateUser');
     Route::get('/admin/updateUserPassword/{p_id}', 'AdminController@updateUserPassword')->name('admin.updateUserPassword');
     Route::post('/admin/submitUpdateUserPassword', 'AdminController@submitUpdateUserPassword')->name('admin.submitUpdateUserPassword');
     //------------------------------------------------------------------------------------------------------------------
-
 
     //Article ----------------------------------------------------------------------------------------------------------
     Route::get('/admin/articles', 'AdminController@articles')->name('admin.articles');
@@ -224,12 +220,15 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('/admin/submitUpdateArticle', 'UpdateController@submitUpdateArticle')->name('admin.submitUpdateArticle');
     //------------------------------------------------------------------------------------------------------------------
 
+    //Delete -----------------------------------------------------------------------------------------------------------
+    Route::delete('admin/user/{id}', 'DeleteController@adminUser')->name('admin.deleteUser');
+    //------------------------------------------------------------------------------------------------------------------
 
 });
 
 
 /***************************************
- * Vend routes protected by adminMiddleware
+ * Vend routes protected by vendMiddleware
  ****************************************/
 Route::group(['middleware' => 'vend'], function () {
     Route::get('/vend', 'VendeurController@home')->name('vend.home');
@@ -256,7 +255,7 @@ Route::group(['middleware' => 'vend'], function () {
 });
 
 /***************************************
- * Direct routes protected by adminMiddleware
+ * Direct routes protected by directMiddleware
  ****************************************/
 Route::group(['middleware' => 'direct'], function () {
     Route::get('/direct', 'DirectController@home')->name('direct.home');

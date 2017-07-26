@@ -172,7 +172,7 @@
                         <input type="submit" value="Valider"
                                class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
                         <input type="reset" value="Réinitialiser"
-                               class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
+                               class="btn btn-outline btn-primary">
                     </div>
                 </div>
 
