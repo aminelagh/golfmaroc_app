@@ -47,7 +47,7 @@
                                 <table id="example" class="table table-striped table-bordered table-hover">
                                     <thead bgcolor="#DBDAD8">
                                     <tr>
-                                        <th>#</th>
+
                                         <th>Categorie</th>
                                         <th>Fournisseur</th>
                                         <th>Marque</th>
@@ -66,7 +66,7 @@
                                     </thead>
                                     <tfoot bgcolor="#DBDAD8">
                                     <tr>
-                                        <th></th>
+
                                         <th>Categorie</th>
                                         <th>Fournisseur</th>
                                         <th>Marque</th>
@@ -92,7 +92,7 @@
                                                 <input type="hidden" name="designation_c[{{ $loop->index+1 }}]"
                                                        value="{{ $item->designation_c }}">
 
-                                                <td>{{ $loop->index+1 }}</td>
+                                              
                                                 <td>{{ \App\Models\Categorie::getLibelle($item->id_categorie) }}</td>
                                                 <td>{{ \App\Models\Fournisseur::getLibelle($item->id_fournisseur) }}</td>
                                                 <td>{!! \App\Models\Marque::getLibelle($item->id_marque) !!}</td>

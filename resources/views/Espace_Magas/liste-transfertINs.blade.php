@@ -1,9 +1,9 @@
 @extends('layouts.main_master')
 
-@section('title') Transfert de stock @endsection
+@section('title') Transfert IN de stock @endsection
 
 @section('main_content')
-    <h3 class="page-header">Transfert de stock</h3>
+    <h3 class="page-header">Liste des Transferts de stock vers le magasin Principal</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
@@ -19,18 +19,18 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>User</th>
                         <th>Date</th>
                         <th>Magasin source</th>
                         <th>Articles</th>
                         <th>Total</th>
-                        <th>Actions</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
                     @if( !$data->isEmpty() )
                         <tfoot>
                         <tr>
-                            <th></th>
+                            <th>User</th>
                             <th>Date</th>
                             <th>Magasin source</th>
                             <th>Articles</th>
@@ -44,21 +44,24 @@
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td colspan="5" align="center"><i>Aucune entree de stock</i></td>
+                            <td colspan="5" align="center"><i>Aucun transfert de stock</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
                             <tr>
-                                <td></td>
-                                <td onclick="window.location.href='{{ route('magas.entree',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
+                              <td>{{ \App\Models\User::getNomUser($item->id_user) }}
+                              {{ \App\Models\User::getPrenomUser($item->id_user) }}
+                            </td>
+                                <td onclick="window.location.href='{{ route('magas.transfertOUT',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
+
                                 <td>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}
                                     ({{ \App\Models\Magasin::getVille($item->id_magasin) }})
                                 </td>
                                 <td align="right">{{ \App\Models\Transaction::getNombreArticles($item->id_transaction) }}
-                                    Articles
+                                    Article(s)
                                 </td>
                                 <td align="right">
-                                    {{ \App\Models\Transaction::getNombrePieces($item->id_transaction) }} pieces
+                                    {{ \App\Models\Transaction::getNombrePieces($item->id_transaction) }} pièce(s)
                                 </td>
                                 <td align="center">
                                     <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
@@ -70,9 +73,7 @@
                                                 class="glyphicon glyphicon-eye-open"></i>
                                     </a>
 
-                                    <a onclick="return confirm('Êtes-vous sure de vouloir annuler la transaction: {{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }} ?')"
-                                       href="#"
-                                       title="effacer"><i class="glyphicon glyphicon-trash"></i></a>
+
 
 
                                     {{-- Modal (pour afficher les details de chaque transaction) --}}
@@ -120,7 +121,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                        Close
+                                                        Fermer
                                                     </button>
                                                 </div>
                                             </div>
@@ -154,20 +155,20 @@
                     "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"width": "5%", "targets": 0},
+                        {"width": "20%", "targets": 0},
                         //{"width": "30%", "targets": 1},
+                        {"width": "20%", "targets": 1},
                         {"width": "20%", "targets": 2},
-                        {"width": "05%", "targets": 3},
-                        {"width": "05%", "targets": 4},
-                        {"width": "05%", "targets": 5},
+                        {"width": "20%", "targets": 3},
+                        {"width": "20%", "targets": 4},
                     ]
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {

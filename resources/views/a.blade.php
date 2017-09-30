@@ -4,13 +4,13 @@
 <head>
     <title>FormDen</title>
 
-    <!-- https://formden.com/static/cdn/bootstrap-iso.css -->
-    <link href="{{ asset('vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+    <!-- https://formden.com/static/cdn/bootstrap-iso.css
+    <link href="{{-- asset('vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker3.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker3.css') --}}"/>
 
     <script>
         ;(function($){
@@ -18,8 +18,8 @@
                 days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
                 daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
                 daysMin: ["d", "l", "ma", "me", "j", "v", "s"],
-                months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
-                monthsShort: ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+                months: ["janvier", "fÃ©vrier", "mars", "avril", "mai", "juin", "juillet", "aoÃ»t", "septembre", "octobre", "novembre", "dÃ©cembre"],
+                monthsShort: ["janv.", "fÃ©vr.", "mars", "avril", "mai", "juin", "juil.", "aoÃ»t", "sept.", "oct.", "nov.", "dÃ©c."],
                 today: "Aujourd'hui",
                 monthsTitle: "Mois",
                 clear: "Effacer",
@@ -41,10 +41,13 @@
         });
 
     </script>
+    -->
 </head>
 <body>
 
-<input class="form-control" id="date" name="date" placeholder="dd-mm-yyyy" type="text"/>
+<h1>Email</h1>
+
+<!-- <input class="form-control" id="date" name="date" placeholder="dd-mm-yyyy" type="text"/>-->
 
 </body>
 

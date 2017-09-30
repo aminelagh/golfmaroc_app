@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
+use App\Models\User;
 use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\Client;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Input;
+use Notification;
 
 class AddController extends Controller
 {
@@ -33,6 +35,11 @@ class AddController extends Controller
     public function addMagasin()
     {
         return view('Espace_Magas.add-magasin-form');
+    }
+
+    public function addMagasinAdmin()
+    {
+        return view('Espace_Admin.add-magasin-form');
     }
 
     public function addCategorie()
@@ -69,11 +76,16 @@ class AddController extends Controller
 
     public function addPromotions()
     {
-        $data = Article::where('valide', true)->where('deleted', false)->get();
+        //$data = Article::where('valide', true)->where('deleted', false)->get();
+        $data = collect(DB::select("
+                    SELECT a.*,c.libelle as libelle_c, f.libelle as libelle_f, m.libelle as libelle_m
+                    FROM articles a,categories c,fournisseurs f,marques m
+                    WHERE a.id_marque=m.id_marque AND a.id_categorie=c.id_categorie AND a.id_fournisseur=f.id_fournisseur;
+                    "));
         if ($data->isEmpty())
             return redirect()->back()->withInput()->withAlertWarning("veuillez creer des articles avant de proceder a la creation des promotions.");
 
-        $magasins = Magasin::where('deleted', false)->get();
+        $magasins = collect(DB::select("SELECT id_magasin,libelle,ville FROM magasins;"));//Magasin::where('deleted', false)->get();
         if ($magasins->isEmpty())
             return redirect()->back()->withInput()->withAlertWarning("veuillez creer des magasins avant de proceder a la creation des promotions.");
 
@@ -106,7 +118,11 @@ class AddController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation du client.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "Le client <b>" . $nom . " " . $prenom . "</b> a bien été créer");
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\AddClientNotification($user));
+        return redirect()->back()->with('alert_success', "Le client <b>" . $nom . " " . $prenom . "</b> a bien été crée");
+
+
     }
 
     public function submitAddMarque()
@@ -137,7 +153,7 @@ class AddController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de la marque.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "La marque <b>" . request()->get('libelle') . "</b> a bien été créer");
+        return redirect()->back()->with('alert_success', "La marque <b>" . request()->get('libelle') . "</b> a bien été crée");
     }
 
     public function submitAddCategorie()
@@ -154,7 +170,7 @@ class AddController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de la categorie.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été créer");
+        return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été crée");
     }
 
     public function submitAddFournisseur()
@@ -177,7 +193,7 @@ class AddController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de la categorie.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été créer");
+        return redirect()->back()->with('alert_success', "La categorie <b>" . request()->get('libelle') . "</b> a bien été crée");
     }
 
     public function submitAddAgent()
@@ -253,8 +269,10 @@ class AddController extends Controller
         } catch (Exception $ex) {
             return redirect()->back()->withInput()->with('alert_danger', "Une erreur s'est produite lors de l'ajout de l'article.<br>Message d'erreur: " . $ex->getMessage());
         }
-
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\AddArticleNotification($user));
         return redirect()->back()->with('alert_success', "L'article <b>" . request()->get('designation_c') . "</b> a bien été ajouté.");
+
 
     }
 
@@ -277,6 +295,8 @@ class AddController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur d'ajout du magasin <b>" . request()->get('libelle') . "</b>.<br> Message d'erreur: <b>" . $e->getMessage() . "</b>.");
         }
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\AddMagasinNotification($user));
         return redirect()->back()->with('alert_success', "Le Magasin <b>" . request()->get('libelle') . "</b> a bien été ajouté");
 
     }
@@ -399,9 +419,10 @@ class AddController extends Controller
 
         if ($error1 || $error2)
             return redirect()->back()->withInput();
-        else
-            return redirect()->back()->withInput()->withAlertSuccess("Creation ou mise a jour des promotions reussit. (" . $nbre_articles . " article(s))");
+        else {
+            $user = User::where('id', Session::get('id_user'))->get()->first();
+            //Notification::send(User::first(), new \App\Notifications\AddPromotionNotification($user));
+            //return redirect()->back()->withInput()->withAlertSuccess("Creation ou mise a jour des promotions reussit. (" . $nbre_articles . " article(s))");
+        }
     }
-
-
 }

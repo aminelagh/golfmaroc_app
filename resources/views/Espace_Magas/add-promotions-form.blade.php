@@ -48,12 +48,12 @@
                     {"width": "7%", "targets": 3},
                     {"width": "3%", "targets": 4},
                     //{"width": "6%", "targets": 5},
-                    {"width": "6%", "targets": 6},
-                    {"width": "5%", "targets": 7},
-                    {"width": "3%", "targets": 8},
+                    {"width": "6%", "targets": 5},
+                    {"width": "5%", "targets": 6},
+                    {"width": "3%", "targets": 7},
+                    {"width": "8%", "targets": 8},
                     {"width": "8%", "targets": 9},
-                    {"width": "8%", "targets": 10},
-                    {"width": "3%", "targets": 11}
+                    {"width": "3%", "targets": 10}
                 ]
             });
 
@@ -131,12 +131,12 @@
                         <div class="col-lg-12">
                             <div class="breadcrumb">
                                 Afficher/Masquer:
-                                <a class="toggle-vis" data-column="1">Categorie</a> -
-                                <a class="toggle-vis" data-column="2">Fournisseur</a> -
-                                <a class="toggle-vis" data-column="3">Numero</a> -
-                                <a class="toggle-vis" data-column="4">Code</a> -
-                                <a class="toggle-vis" data-column="5">Designation</a> -
-                                <a class="toggle-vis" data-column="6">Prix de vente</a>
+                                <a class="toggle-vis" data-column="0">Categorie</a> -
+                                <a class="toggle-vis" data-column="1">Fournisseur</a> -
+                                <a class="toggle-vis" data-column="2">Numero</a> -
+                                <a class="toggle-vis" data-column="3">Code</a> -
+                                <a class="toggle-vis" data-column="4">Designation</a> -
+                                <a class="toggle-vis" data-column="5">Prix de vente</a>
                             </div>
                             {{-- *************** form ***************** --}}
                             <form role="form" method="post"
@@ -271,4 +271,3 @@
 
 @section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection
 @section('menu_2') @include('Espace_Magas._nav_menu_2') @endsection
-

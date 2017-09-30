@@ -30,7 +30,14 @@
                     <div class="panel-body">
 
                         <table class="table table-hover" border="0" cellspacing="0" cellpadding="5">
+                            <tr>
+                              <td colspan="2">
+                                <center>  <a href="{{ Route('admin.stocks',['id_magasin'=> $data->id_magasin ]) }}"
+                                     class="btn btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
+                                      le stock</a>
 
+                              </td>
+                            </tr>
                             <tr>
                                 <td>Magasin</td>
                                 <th><input class="form-control" type="text" name="libelle" value="{{ $data->libelle }}"
@@ -81,17 +88,17 @@
                                     a {{ getTimeHelper($data->updated_at) }}     </th>
                             </tr>
                         </table>
+
                     </div>
                     <div class="panel-footer" align="center">
                         <input type="submit" value="Valider"
                                class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
                         <input type="reset" value="Réinitialiser"
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
-
-                        <a href="{{ Route('admin.stocks',['id_magasin'=> $data->id_magasin ]) }}"
-                           class="btn btn-success" {!! setPopOver("","Afficher le stock du magasin") !!}>Afficher
-                            le stock</a>
                     </div>
+
+
+
                 </div>
 
             </form>

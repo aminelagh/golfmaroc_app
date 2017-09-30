@@ -53,7 +53,6 @@ class User extends Authenticatable
             return true;
     }
 
-
     public static function updateSession($p_id)
     {
         $user = self::where('id', $p_id)->first();
@@ -75,8 +74,24 @@ class User extends Authenticatable
     public static function getMagasin($id)
     {
         $data = Magasin::where('id_magasin', $id)->get();
-        if($data->isEmpty())
+        if ($data->isEmpty())
             return null;
         else return $data->first()->libelle;
+    }
+
+    public static function getNomUser($p_id)
+    {
+        $data = User::find($p_id);
+        if ($data != null)
+            return $data->nom;
+        else return null;
+    }
+
+    public static function getPrenomUser($p_id)
+    {
+        $data = User::find($p_id);
+        if ($data != null)
+            return $data->prenom;
+        else return null;
     }
 }

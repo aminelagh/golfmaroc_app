@@ -3,14 +3,23 @@
 @section('title') {{ $data->nom }} {{ $data->prenom }} @endsection
 
 @section('main_content')
-    <br>
+
+
+    <h3 class="page-header">Utilisateur</h3>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item ">Gestion des utilisateurs</li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.users') }}">Liste
+                des utilisateurs</a></li>
+        <li class="breadcrumb-item active">{{ $data->nom }} {{ $data->prenom }}</li>
+    </ol>
 
     <form id="deleteForm" action="{{ route('admin.deleteUser',[$data->id]) }}" method="post">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="DELETE" form="deleteForm">
 
     </form>
-
 
     <div class="col-lg-2"></div>
     <form method="POST" action="{{ route('admin.submitUpdateUser') }}">

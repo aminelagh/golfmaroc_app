@@ -1,25 +1,25 @@
 @extends('layouts.main_master')
 
-@section('title') Vente simple @endsection
+@section('title') vente simple @endsection
 
 @section('main_content')
-    <h3 class="page-header">Nouvelle vente simple</h3>
+    <h3 class="page-header">Nouvelle vente</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('vend.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item">Gestion des ventes</li>
-        <li class="breadcrumb-item active">Nouvelle vente simple</li>
+        <li class="breadcrumb-item active">Nouvelle vente</li>
     </ol>
 
     <div class="row">
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Designation</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a>
+                <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Designation</a> -
+                <a class="toggle-vis" data-column="3">Marque</a> -
+                <a class="toggle-vis" data-column="4">Categorie</a>
             </div>
         @endif
     </div>
@@ -37,33 +37,33 @@
                     <table id="myTable" class="table table-striped table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th rowspan="2"> #</th>
                             <th rowspan="2">Reference</th>
                             <th rowspan="2">Code</th>
                             <th rowspan="2">Designation</th>
                             <th rowspan="2">Marque</th>
                             <th rowspan="2">Categorie</th>
-
-                            <th colspan="2">Prix Unitaire </th>
+                            <th colspan="2">Prix de gros</th>
+                            <th colspan="2">Prix</th>
                             <th rowspan="2">Etat</th>
                             <th rowspan="2">Actions</th>
-
                         </tr>
                         <tr>
-
+                            <th>HT</th>
+                            <th>TTC</th>
                             <th>HT</th>
                             <th>TTC</th>
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
-                            <th></th>
+
                             <th>Reference</th>
                             <th>Code</th>
                             <th>Designation</th>
                             <th>Marque</th>
                             <th>Categorie</th>
-
+                            <th>HT</th>
+                            <th>TTC</th>
                             <th>HT</th>
                             <th>TTC</th>
                             <th></th>
@@ -73,11 +73,12 @@
                         <tbody>
                         @foreach( $data as $item )
 
-                            <tr {{--ondblclick="window.open('{{ Route('vend.stock',[ 'p_id' => $item->id_stock ]) }}');" --}}>
+                            <tr @if( \App\Models\Promotion::hasPromotion($item->id_article))
+                                class="warning" @endif >
 
                                 <input type="hidden" name="id_stock[{{ $loop->index+1 }}]" value="{{ $item->id_stock }}"/>
 
-                                <td>{{ $loop->index+1 }}</td>
+
                                 <td>
                                     {{ \App\Models\Article::getRef($item->id_article) }}
                                     {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
@@ -94,6 +95,21 @@
                                 </td>
                                 <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
                                 <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
+                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
+
+                                @if( \App\Models\Promotion::hasPromotion($item->id_article))
+                                    <td align="right">
+                                        <div id="prix_{{ $loop->iteration }}"
+                                             title="{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}">{{ \App\Models\Article::getPrixPromoSimple($item->id_article) }}
+                                        </div>
+                                    </td>
+
+                                @else
+                                    <td align="right">
+                                        <div id="prix_{{ $loop->iteration }}"
+                                             title="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</div>
+                                    </td>
+                                @endif
 
                                 <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
                                 <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
@@ -154,17 +170,9 @@
                                                                     <td>Categorie</td>
                                                                     <th colspan="2">{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
                                                                 </tr>
-
-                                                                <td>Fournisseur</td>
-                                                                <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
-                                                                </tr>
                                                                 <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                                    <td>Fournisseur</td>
+                                                                    <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Couleur</td>
@@ -183,10 +191,6 @@
                                                                         {{ \App\Models\Article::getPrixTTC($item->id_article) }}
                                                                         Dhs TTC
                                                                     </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
                                                                 </tr>
                                                             </table>
                                                         </div>
@@ -272,13 +276,13 @@
                     </table>
 
                     <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div data-toggle="modal" data-target="#squarespaceModal"
-                                     class="btn btn-primary center-block">Paiement
-                                </div>
+                        <div class="col-lg-10"></div>
+                        <div class="col-lg-2">
+                            <div data-toggle="modal" data-target="#squarespaceModal"
+                                 class="btn btn-primary center-block">Paiement
                             </div>
                         </div>
+
                     </div>
                     <div class="modal fade" id="squarespaceModal" tabindex="-1" role="dialog"
                          aria-labelledby="modalLabel" aria-hidden="true">
@@ -328,10 +332,13 @@
                                                         <label>Montant sans remise</label>
                                                     </th>
                                                     <td>
-                                                        <input type="number" name="result" pattern=".##"
-                                                               disabled onchange=""
-                                                               id="total_prix"
-                                                               class="form-control"/>
+                                                        <div class="input-group">
+                                                            <input type="number" name="result" pattern=".##" step="0.01"
+                                                                   id="total_prix" name="total_prix" readonly
+
+                                                                   class="form-control"/>
+                                                            <span class="input-group-addon" id="basic-addon1">Dhs</span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -339,12 +346,19 @@
                                                     <td>
                                                         <div class="input-group">
                                                             <input type="number" pattern=".##" class="form-control"
-                                                                   placeholder="Montant total" id="montant"
-                                                                   aria-describedby="basic-addon1" disabled>
+                                                                   placeholder="Montant total" id="montant" name="montant"
+                                                                   aria-describedby="basic-addon1" readonly>
                                                             <span class="input-group-addon" id="basic-addon1">Dhs</span>
                                                         </div>
                                                     </td>
                                                 </tr>
+                                                <!--tr>
+                                                    <th><label>Nombre d'articles</label></th>
+                                                    <td>
+                                                        <input type="number" class="form-control"
+                                                               placeholder="Total" id="nombre_articles" disabled>
+                                                    </td>
+                                                </tr-->
                                             </table>
                                         </div>
                                         <div class="col-lg-6">
@@ -379,6 +393,7 @@
                                                     </th>
                                                     <td>
                                                         <select class="form-control" name="id_client">
+                                                            <option value="0">Aucun</option>
                                                             @foreach( $clients as $client )
                                                                 <option value="{{$client->id_client }}" {{$client->id_client==old('id_client') ? 'selected' : '' }}>{{ $client->nom }} {{ $client->prenom }}</option>
                                                             @endforeach
@@ -423,27 +438,33 @@
 
 @section('scripts')
     @if(!$data->isEmpty())
-
         <script>
             function calcQ(groupe, cpt) {
                 var total = 0;
                 var prix = document.getElementById("prix_" + groupe).title;
                 //var prix = document.getElementById("prix_" +groupe);
                 //alert("Prix = "+prix);
+                var qi;
                 for (i = 1; i <= cpt; i++) {
-                    var qi = document.getElementById("quantite_" + groupe + "_" + i).value;
+                    qi = document.getElementById("quantite_" + groupe + "_" + i).value;
                     //alert("QI = "+qi);
                     if (qi == "") {
                         qi = 0;
                     } else if (qi < 0) {
-                        //alert("Erreur, q<0");
                         break;
                     }
                     total += parseInt(qi);
                 }
-                //alert("total = "+total);
                 document.getElementById("sommeQ_" + groupe).value = total;
                 document.getElementById("total_" + groupe).value = total * parseFloat(prix);
+
+                /*if (document.getElementById("nombre_articles").value == "") {
+                    var x = 0;
+                } else {
+                    var x = parseInt(document.getElementById("nombre_articles").value);
+                }
+                document.getElementById("nombre_articles").value = parseInt(total + x);*/
+
             }
 
             function calcTotal(counter) {
@@ -457,8 +478,6 @@
                         alert("Erreur, totali<0");
                         break;
                     }
-
-
                     total += parseFloat(totali);
 
                 }
@@ -511,18 +530,18 @@
                         {"width": "05%", "targets": 1, "type": "string", "visible": true},  //ref
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
 
-                        {"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
+                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
+                        {"width": "08%", "targets": 3, "type": "string", "visible": false},     //Marque
+                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //caegorie
 
-                      //  {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
-                      //  {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 5, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 6, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 7, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 8, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 8, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "05%", "targets": 9, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 9, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'

@@ -3,7 +3,7 @@
 @section('title') Magasins @endsection
 
 @section('main_content')
-    <h1 class="page-header">Magasins </h1>
+    <h3 class="page-header">Magasins </h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
@@ -15,19 +15,17 @@
         <div class="table-responsive">
             <div class="col-lg-12">
                 <table id="example" class="table table-striped table-bordered table-hover">
-                    <thead bgcolor="#DBDAD8">
+                    <thead>
                     <tr>
-                        <th> #</th>
-                        <th> Magasin</th>
-                        <th> Ville</th>
-                        <th> Autres</th>
+                        <th>Magasin</th>
+                        <th>Ville</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
-                    <tfoot bgcolor="#DBDAD8">
+                    <tfoot>
                     <tr>
-                        <th></th>
-                        <th> Magasin</th>
-                        <th> Ville</th>
+                        <th>Magasin</th>
+                        <th>Ville</th>
                         <th></th>
                     </tr>
                     </tfoot>
@@ -41,35 +39,83 @@
                     @else
                         @foreach( $data as $item )
                             <tr ondblclick="window.open('{{ Route('magas.magasin',['p_id'=>$item->id_magasin]) }}');">
-                                <td>{{ $loop->index+1 }}</td>
-                                <td>{{ $item->libelle }}</td>
+
+                                <td><a href="{{ Route('magas.stocks',['id_magasin'=> $item->id_magasin ]) }}"> {{$item->libelle}}</a></td>
                                 <td>{{ $item->ville }}</td>
                                 <td align="center">
-                                    <div class="btn-group pull-right">
-                                        <button type="button"
-                                                class="btn green btn-sm btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
 
-                                        <ul class="dropdown-menu pull-left" role="menu">
-                                            <li>
-                                                <a href="{{ Route('magas.magasin',['p_id' => $item->id_magasin ]) }}"
-                                                        {!! setPopOver("","Afficher plus de detail") !!} ><i
-                                                            class="glyphicon glyphicon-eye-open"></i>
-                                                    Plus de detail
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer la categorie: {{ $item->libelle }} ?')"
-                                                   href="#"
-                                                   title="effacer"><i class="glyphicon glyphicon-trash"></i>
-                                                    Effacer</a>
-                                            </li>
-                                        </ul>
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
+                                        <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
+                                    </a>
 
+                                    <a href="{{ Route('magas.magasin',['p_id' => $item->id_magasin ]) }}"{!! setPopOver("","Afficher plus de detail") !!} >
+                                        <i class="glyphicon glyphicon-eye-open"></i></a>
+
+
+                                    {{-- Modal (pour afficher les details de chaque article) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog">
+                                        <div class="modal-dialog modal-md">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title">{{ $item->libelle }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Ville</td>
+                                                            <th>{{ $item->ville }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Adresse</td>
+                                                            <th>{{ $item->adresse }}</th>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Agent</td>
+                                                            <th>{{ $item->agent }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Telephone</td>
+                                                            <th>{{ $item->telephone }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Email</td>
+                                                            <th>{{ $item->email }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de création</td>
+                                                            <th>{{ getDateHelper($item->created_at) }} a {{ getTimeHelper($item->created_at) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de denière modification</td>
+                                                            <th>{{ getDateHelper($item->updated_at) }} a {{ getTimeHelper($item->updated_at) }}</th>
+                                                        </tr>
+
+
+                                                    </table>
+                                                    @if( $item->image != null) <img
+                                                            src="{{ asset($item->image) }}"
+                                                            width="150px">@endif
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-lg-4">
+                                                        <a href="{{ route('magas.magasin',[$item->id_magasin]) }}"
+                                                           class="btn btn-info btn-outline">Modifier</a>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <button type="button" class="btn btn-info btn-outline" data-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    {{-- fin Modal (pour afficher les details de chaque categorie) --}}
+
                                 </td>
                             </tr>
                         @endforeach
@@ -116,10 +162,9 @@
                     "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"width": "7%", "targets": 0, "searchable": false},
-                        //{"width": "30%", "targets": 1},
-                        {"width": "05%", "targets": 2},
-                        {"width": "05%", "targets": 3, "searchable": false},
+                        //{"width": "7%", "targets": 0, "searchable": true}
+                        {"width": "20%", "targets": 1},
+                        {"width": "10%", "targets": 2, "searchable": false},
                     ]
                 });
                 // Apply the search
@@ -134,6 +179,23 @@
             });
         </script>
     @endif
+@endsection
+
+@section('styles')
+    <style>
+        #example {
+            width: 100%;
+            border: 0px solid #D9D5BE;
+            border-collapse: collapse;
+            margin: 0px;
+            background: white;
+            font-size: 1em;
+        }
+
+        #example td {
+            padding: 10px;
+        }
+    </style>
 @endsection
 
 @section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection

@@ -12,19 +12,24 @@ use App\Models\Role;
 use App\Models\Stock;
 use App\Models\Stock_taille;
 use App\Models\Taille_article;
+use App\Models\Transaction;
+use App\Models\Trans_article;
+use App\Models\Type_transaction;
 use App\Models\User;
+use App\Models\Vente;
+use App\Models\Vente_article;
 use Exception;
 use Hash;
 use Illuminate\Support\Facades\DB;
 use Sentinel;
 use Session;
+use Notification;
 
 class AdminController extends Controller
 {
-
     public function home()
     {
-        return view('Espace_Admin.dashboard');
+        return view('Espace_Admin.dashboard')->withAlertInfo("Bienvenue dans votre espace Admin")->withAlignInfo("center")->withTimerInfo(2000);
     }
 
     /********************************************************
@@ -67,6 +72,9 @@ class AdminController extends Controller
                 return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification de votre profile.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
             }
             return redirect()->route('admin.profile')->with('alert_success', "Modification de votre Profile reussi.");
+            //$user = User::where('id', Session::get('id_user'))->get()->first();
+            //Notification::send(User::first(), new \App\Notifications\UpdateProfileNotification($user));
+
         }
     }
 
@@ -84,7 +92,11 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de Modification du mot de passe.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\UpdatePasswordNotification($user));
+
         return redirect()->route('admin.profile')->with('alert_success', "Modification du mot de passe reussi.");
+
     }
     //--------------------------------------------------------------
 
@@ -110,30 +122,23 @@ class AdminController extends Controller
         if (User::EmailExist($email))
             return redirect()->back()->withInput(request()->except(['password']))->with('alert_warning', "L'email: <b>" . $email . "</b> existe deja.");
 
-
         $role_name = request()->get('role_name');
         $role = Sentinel::findRoleByName($role_name);
 
-        $user_id = request()->get('id_user');
-        $item = User::find($user_id);
+        //$user_id = request()->get('id_user');
+        //$item = User::find($user_id);
 
-        if ($role->id == 3) {
+        //role admin
+        if ($role->id == 1) {
+            $id_magasin = null;
+        } //role magas
+        elseif ($role->id == 2) {
             $id_magasin = 1;
             if (request()->get('id_magasin') != 1)
                 redirect()->back()->withAlertWarning("Pour le role magasinier, le magasin est <b>" . Magasin::getLibelle(1) . "</b>.");
 
-        } elseif ($role->id == 1) {
-            if (request()->get('id_magasin') != 0) {
-                $id_magasin = 0;
-                redirect()->back()->withAlertWarning("Pour le role \"administrateur\", pas besoin de choisir un magasin");
-            }
-        } elseif ($role->id == 2) {
-            if (request()->get('id_magasin') != 0) {
-                $id_magasin = 0;
-                redirect()->back()->withAlertWarning("Pour le role \"direction\", pas besoin de choisir un magasin");
-            }
-        } elseif ($role->id == 4) {
-            $id_magasin = request()->get('id_magasin');
+        } //role vend
+        elseif ($role->id == 3) {
             if ($id_magasin == 0)
                 return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, veuillez choisir un magasin.");
             if ($id_magasin == 1)
@@ -160,12 +165,23 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de creation de l'utilisateur.<br>Meessage d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+        //$user1 = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\AddUserNotification($user1));
         return redirect()->back()->withAlertSuccess("Creation de l'utilisateur <b>" . $nom . " " . $prenom . "</b> reussi.");
+
+
     }
 
     public function users()
     {
-        $data = User::where('id', '!=', Session::get('id_user'))->whereDeleted(false)->get();
+        //$data = User::where('id', '!=', Session::get('id_user'))->whereDeleted(false)->orWhere('deleted', null)->get();
+        $data = collect(DB::select("
+            SELECT u.*, m.libelle, r.name
+            from users u JOIN magasins m on m.id_magasin=u.id_magasin
+			left JOIN role_users ru on ru.user_id=u.id
+            left JOIN roles r on ru.role_id=r.id
+            WHERE u.id!=1;"));
+        //dd($data);
         return view('Espace_Admin.liste-users')->with('data', $data);
     }
 
@@ -191,34 +207,28 @@ class AdminController extends Controller
             return redirect()->back()->withInput()->withAlertDanger("L'email: <b>" . request()->get('email') . "</b> est deja utilisé pour un autre utilisateur.");
 
         $role_name = request()->get('role_name');
+        $id_magasin = request()->get('id_magasin');
         $role = Sentinel::findRoleByName($role_name);
 
         $user_id = request()->get('id_user');
         $item = User::find($user_id);
 
-        if ($role->id == 3) {
+        //role admin
+        if ($role->id == 1) {
+            $id_magasin = null;
+        } //role magas
+        elseif ($role->id == 2) {
             $id_magasin = 1;
             if (request()->get('id_magasin') != 1)
                 redirect()->back()->withAlertWarning("Pour le role magasinier, le magasin est <b>" . Magasin::getLibelle(1) . "</b>.");
 
-        } elseif ($role->id == 1) {
-            if (request()->get('id_magasin') != 0) {
-                $id_magasin = 0;
-                redirect()->back()->withAlertWarning("Pour le role \"administrateur\", pas besoin de choisir un magasin");
-            }
-        } elseif ($role->id == 2) {
-            if (request()->get('id_magasin') != 0) {
-                $id_magasin = 0;
-                redirect()->back()->withAlertWarning("Pour le role \"direction\", pas besoin de choisir un magasin");
-            } else $id_magasin = 0;
-        } elseif ($role->id == 4) {
-            $id_magasin = request()->get('id_magasin');
+        } //role vend
+        elseif ($role->id == 3) {
             if ($id_magasin == 0)
                 return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, veuillez choisir un magasin.");
             if ($id_magasin == 1)
                 return redirect()->back()->withInput()->withAlertWarning("Pour le role vendeur, le magasin ne peut pas etre " . Magasin::getLibelle(1) . ".");
         }
-
 
         $password = request()->get('password');
         if (strlen($password) > 0) {
@@ -255,7 +265,10 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withAlertDanger("Erreur de Modification de l'utilisateur. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\UpdateUserNotification($user));
         return redirect()->back()->withAlertSuccess("Modification de l'utilisateur reussie.");
+
 
     }
 
@@ -296,6 +309,9 @@ class AdminController extends Controller
     public function articles()
     {
         $data = Article::whereDeleted(false)->get();
+
+        $data = collect(DB::select("select *,f.libelle as libelle_f,m.libelle as libelle_m,c.libelle as libelle_c from articles a,fournisseurs f,categories c,marques m WHERE a.deleted=false AND a.id_categorie=c.id_categorie AND a.id_marque=m.id_marque AND a.id_fournisseur=f.id_fournisseur"));
+        //dump($data);
         return view('Espace_Admin.liste-articles')->withData($data);
     }
 
@@ -355,7 +371,11 @@ class AdminController extends Controller
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withAlertDanger("Erreur de Modification de l'article. <br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
             }
+            //$user = User::where('id', Session::get('id_user'))->get()->first();
+            //Notification::send(User::first(), new \App\Notifications\UpdateArticleNotification($user));
+
             return redirect()->route('admin.articles_nv')->with('alert_success', "Modification de l'utilisateur reussi.");
+
         }
     }
 
@@ -388,12 +408,16 @@ class AdminController extends Controller
                 }
             }
         }
+        $user = User::where('id', Session::get('id_user'))->get()->first();
+        if ($nbreArticles == 1) {
 
-        if ($nbreArticles == 1)
+            //Notification::send(User::first(), new \App\Notifications\ArticleValideNotification($user));
             return redirect()->back()->with('alert_success', "Modification reussie de $nbreArticles artticle.");
-        else if ($nbreArticles > 1)
+
+        } else if ($nbreArticles > 1) {
+            //Notification::send(User::first(), new \App\Notifications\ArticleValideNotification($user));
             return redirect()->back()->with('alert_success', "Modification reussie de $nbreArticles articles.");
-        else return redirect()->back()->withInput();
+        } else return redirect()->back()->withInput();
     }
 
     /*public function article_nv($p_id)
@@ -415,8 +439,20 @@ class AdminController extends Controller
 
     public function promotions()
     {
-        $data = Promotion::where('deleted', false)->get();
-        $data = \DB::table('promotions')->where('deleted', false)->orderBy('id_magasin', 'desc')->get();
+        //$data = Promotion::where('deleted', false)->get();
+        //$data = \DB::table('promotions')->where('deleted', false)->orderBy('id_magasin', 'desc')->get();
+        /*$data = collect(DB::select("
+          SELECT 	p.*,a.*,m.libelle,m.ville,marques.libelle as libelle_m,fournisseurs.libelle as libelle_f,categories.libelle as libelle_c
+          FROM promotions p, articles a, magasins m,fournisseurs,marques,categories
+          WHERE p.id_article=a.id_article AND m.id_magasin=p.id_magasin AND fournisseurs.id_fournisseur=a.id_fournisseur AND marques.id_marque=a.id_marque AND categories.id_categorie=a.id_categorie AND p.deleted=false; "));
+*/
+
+        $data = collect(DB::select("
+          SELECT p.*,a.*,m.libelle,m.ville,marques.libelle as libelle_m,fournisseurs.libelle as libelle_f,categories.libelle as libelle_c
+          FROM promotions p LEFT JOIN articles a ON p.id_article=a.id_article, magasins m,fournisseurs,marques,categories
+          WHERE m.id_magasin=p.id_magasin AND fournisseurs.id_fournisseur=a.id_fournisseur AND marques.id_marque=a.id_marque AND categories.id_categorie=a.id_categorie AND p.deleted=false;
+          "));
+
         return view('Espace_Admin.liste-promotions')->withData($data);
     }
 
@@ -474,6 +510,130 @@ class AdminController extends Controller
         $magasin = Magasin::find($stock->id_magasin);
 
         return view('Espace_Admin.info-stock')->withData($data)->withMagasin($magasin)->withStock($stock)->withArticle($article);
+    }
+
+    public function entrees()
+    {
+        //$data = collect(DB::select("select * from transactions where id_type_transaction=1 order by id_transaction desc"));
+        /*$data = collect(DB::select("
+         select t.id_transaction,t.id_magasin,t.id_user,t.date,m.libelle,u.nom,u.prenom
+         FROM transactions t,users u,magasins m
+         WHERE id_type_transaction=1 AND t.id_user=u.id AND t.id_magasin=m.id_magasin AND t.annulee=false
+         ORDER BY id_transaction desc
+         "));*/
+
+        $data = collect(DB::select("
+         select t.*,m.libelle,u.nom,u.prenom
+         FROM transactions t LEFT JOIN users u ON t.id_user=u.id JOIN magasins m ON t.id_magasin=m.id_magasin
+         WHERE id_type_transaction=1 AND t.annulee=false
+         ORDER BY id_transaction desc
+         "));
+
+        return view('Espace_Admin.liste-entrees')->withData($data);
+    }
+
+    public function entree($p_id)
+    {
+        $data = Trans_article::where('id_transaction', $p_id)->get();
+        $transaction = Transaction::find($p_id);
+
+        if ($transaction == null)
+            return redirect()->back()->withAlertWarning("L'entree de stock choisie n'existe pas.");
+
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Aucun article");
+
+        return view('Espace_Admin.info-entree')->withData($data)->withTransaction($transaction);
+    }
+
+    public function sorties()
+    {
+        $data = collect(DB::select("
+         select t.*,m.libelle,u.nom,u.prenom
+         FROM transactions t LEFT JOIN users u ON t.id_user=u.id JOIN magasins m ON t.id_magasin=m.id_magasin
+         WHERE id_type_transaction=2 AND t.annulee=false
+         ORDER BY id_transaction desc
+         "));
+        return view('Espace_Admin.liste-sorties')->withData($data);
+    }
+
+    public function sortie($p_id)
+    {
+        $data = Trans_article::where('id_transaction', $p_id)->get();
+        $transaction = Transaction::find($p_id);
+
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Aucun article");
+
+        return view('Espace_Admin.info-sortie')->withData($data)->withTransaction($transaction);
+    }
+
+    public function transfertINs()
+    {
+        //$data = collect(DB::select("select * from transactions where id_type_transaction=3 order by id_transaction desc"));
+        $data = collect(DB::select("
+         select t.*,m.libelle,u.nom,u.prenom
+         FROM transactions t LEFT JOIN users u ON t.id_user=u.id JOIN magasins m ON t.id_magasin=m.id_magasin
+         WHERE id_type_transaction=3 AND t.annulee=false
+         ORDER BY id_transaction desc
+         "));
+
+        return view('Espace_Admin.liste-transfertINs')->withData($data);
+    }
+
+    public function transfertIN($p_id)
+    {
+        $data = Trans_article::where('id_transaction', $p_id)->get();
+        $transaction = Transaction::find($p_id);
+
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Aucun article");
+
+        return view('Espace_Admin.info-transfertIN')->withData($data)->withTransaction($transaction);
+    }
+
+    public function transfertOUTs()
+    {
+        $data = collect(DB::select("
+         select t.*,m.libelle,u.nom,u.prenom
+         FROM transactions t LEFT JOIN users u ON t.id_user=u.id JOIN magasins m ON t.id_magasin=m.id_magasin
+         WHERE id_type_transaction=4 AND t.annulee=false
+         ORDER BY id_transaction desc
+         "));
+        return view('Espace_Admin.liste-transfertOUTs')->withData($data);
+    }
+
+    public function transfertOUT($p_id)
+    {
+        $data = Trans_article::where('id_transaction', $p_id)->get();
+        $transaction = Transaction::find($p_id);
+
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Aucun article");
+
+        return view('Espace_Admin.info-transfertOUT')->withData($data)->withTransaction($transaction);
+    }
+
+    public function ventes()
+    {
+        $data = collect(DB::select("
+            SELECT v.*,u.nom,u.prenom,m.libelle
+            from ventes v LEFT JOIN magasins m on v.id_magasin=m.id_magasin LEFT JOIN users u on v.id_user=u.id
+            ORDER BY id_vente desc
+         "));
+
+        return view('Espace_Admin.liste-ventes')->withData($data);
+    }
+
+    public function vente($p_id)
+    {
+        $data = Vente_article::where('id_vente', $p_id)->get();
+        $vente = Vente::find($p_id);
+
+        if ($data->isEmpty())
+            return redirect()->back()->withInput()->withAlertWarning("Aucun article");
+
+        return view('Espace_Admin.info-vente')->withData($data)->withVente($vente);
     }
 
 }

@@ -4,7 +4,7 @@
 
 @section('main_content')
 
-    <h3 class="page-header">Promotion</h3>
+    <h3 class="page-header">Modifier la Promotion sur l'article : {{ \App\Models\Article::getDesignation($data->id_article) }} </h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Dashboard</a></li>

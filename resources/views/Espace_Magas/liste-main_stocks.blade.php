@@ -27,11 +27,11 @@
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Designation</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a> -
+                <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Designation</a> -
+                <a class="toggle-vis" data-column="3">Marque</a> -
+                <a class="toggle-vis" data-column="4">Categorie</a> -
             </div>
         @endif
     </div>
@@ -42,7 +42,6 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th rowspan="2"></th>
                         <th rowspan="2">Reference</th>
                         <th rowspan="2">Code</th>
                         <th rowspan="2">Designation</th>
@@ -51,8 +50,7 @@
                         <th colspan="2">Prix de gros</th>
                         <th colspan="2">Prix</th>
                         <th rowspan="2">Etat</th>
-                        <th rowspan="2">Actions</th>
-
+                        <th rowspan="2">Details</th>
                     </tr>
                     <tr>
                         <th>HT</th>
@@ -63,7 +61,6 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        <th></th>
                         <th>Reference</th>
                         <th>Code</th>
                         <th>Designation</th>
@@ -80,7 +77,6 @@
                     <tbody>
                     @foreach( $data as $item )
                         <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
-                            <td></td>
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}
                                 {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
@@ -254,54 +250,50 @@
                     "lengthMenu": [[10, 20, 30, 50, -1], [10, 20, 30, 50, "Tout"]],
                     "searching": true,
                     "paging": true,
-                    "info": false,
+                    "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"visible": true, "targets": -1},
-                        {"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
-                        {"width": "05%", "targets": 1, "type": "string", "visible": true},  //ref
+                        {"width": "03%", "targets": 0, "type": "num", "visible": true}, //#
+                        {"width": "03%", "targets": 1, "type": "string", "visible": true},  //ref
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
 
                         //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
+                        {"width": "05%", "targets": 3, "type": "string", "visible": true},     //Marque
+                        {"width": "05%", "targets": 4, "type": "string", "visible": true},     //caegorie
 
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "01%", "targets": 5, "type": "string", "visible": true},      //HT
+                        {"width": "01%", "targets": 6, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "01%", "targets": 7, "type": "string", "visible": true},      //HT
+                        {"width": "01%", "targets": 8, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "01%", "targets": 9, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
-                    ],
-                    "select": {
-                        items: 'column'
-                    }
+                        {"width": "01%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false}
+                    ]
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {
                     var title = $(this).text();
                     if (title == "Reference" || title == "Code") {
-                        $(this).html('<input type="text" size="10" class="form-control input-md" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-md" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Categorie" || title == "Marque") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="6" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Designation") {
                         $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "HT" || title == "TTC") {
-                        $(this).html('<input type="text" size="2" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="1" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
-                    else if (title == "Prix d'achat" || title == "Prix de vente") {
+                    else if (title == "Prix d'achat") {
                         $(this).html('<input type="text" size="4" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';"/>');
                     }
                     else if (title != "") {

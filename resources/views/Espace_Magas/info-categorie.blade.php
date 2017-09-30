@@ -19,7 +19,7 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("magas","categorie",$data->id_categorie) !!}
+
 
             <form method="POST" action="{{ route('magas.submitUpdateCategorie') }}">
                 {{ csrf_field() }}
@@ -70,7 +70,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading" align="center">Articles</div>
+                    <div class="panel-heading" align="center">Articles de la categorie <b>{{ $data->libelle }} </b></div>
                     <br>
 
                     <div class="table-responsive">
@@ -121,11 +121,11 @@
                                         <td>{{ $loop->index+1 }}</td>
                                         <td align="right">{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</td>
                                         <td align="right">{{ $item->code }}</td>
-                                        <td>{{ $item->designation }}</td>
+                                        <td><a href="{{ route('magas.article',[ $item->id_article]) }}"> {{$item->designation}}</a></td>
                                         <td>{{ $item->couleur }}</td>
                                         <td>{{ $item->sexe }}</td>
                                         <td align="right">{{ $item->prix_a }} DH</td>
-                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!}
+                                        <td align="right">{!! \App\Models\Article::getPrixTTC($item->id_article) !!}
                                             DH
                                         </td>
                                         <td>
@@ -143,13 +143,7 @@
                                                                     class="glyphicon glyphicon-eye-open"></i>
                                                             Plus de detail</a>
                                                     </li>
-                                                    <li>
-                                                        <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation_c }} ?')"
-                                                           href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
-                                                                {!! setPopOver("","Effacer l'article") !!}><i
-                                                                    class="glyphicon glyphicon-trash"></i>
-                                                            Effacer</a>
-                                                    </li>
+
                                                     <li class="divider"></li>
                                                     <li>
                                                         <a data-toggle="modal"

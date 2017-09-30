@@ -1,7 +1,5 @@
 <ul class="nav navbar-top-links navbar-right">
 
-
-
     {{-- Dropdown Alerts --}}
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -11,8 +9,7 @@
             <li>
                 <a href="#">
                     <div>
-                        <i class="fa fa-comment fa-fw"></i> New Comment
-                        <span class="pull-right text-muted small">4 minutes ago</span>
+                        <span class="pull-right text-muted small">Vous n'avez aucune notification enregistrée</span>
                     </div>
                 </a>
             </li>
@@ -24,7 +21,8 @@
     {{-- Dropdown User --}}
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="fa fa-user fa-fw"></i> {{ Session::get('nom') }} {{ Session::get('prenom') }} <i class="fa fa-caret-down"></i>
+            <i class="fa fa-user fa-fw"></i> {{ Session::get('nom') }} {{ Session::get('prenom') }} <i
+                    class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
             <li><a href="{{ route('magas.profile') }}"><i class="fa fa-user fa-fw"></i> Profil</a>

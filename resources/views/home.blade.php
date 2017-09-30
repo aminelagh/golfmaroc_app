@@ -20,7 +20,7 @@
     <!-- Custom Fonts -->
     <link href="home-resources/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-
+  <link rel="shortcut icon" href="{{{ asset('img/golfmaroc.ico') }}}">
 </head>
 
 <body>
@@ -49,7 +49,7 @@
 <header id="top" class="header">
     <div class="text-vertical-center">
         <h1>Bienvenue a GolfMaroc-App</h1>
-        <h3>Gestion de stock des différents Proshops du groupe GolfMaroc</h3>
+        <h3>Votre Application Gestion de stock des différents Proshops du groupe GolfMaroc</h3>
         <br>
         <a href="{{ Route('login') }}" class="btn btn-dark btn-lg">Se connecter</a>
     </div>
@@ -62,7 +62,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1 text-center">
-                <h4><strong>Start Bootstrap</strong>
+                <h4><strong>Golf Maroc</strong>
                 </h4>
                 <p>Magasin N 3A Bloc A1
                     <br>Résidence Tifaouine Av. Moukaouama - Agadir</p>
@@ -172,6 +172,3 @@
 </body>
 
 </html>
-
-
-

@@ -3,7 +3,7 @@
 @section('title') Marques @endsection
 
 @section('main_content')
-    <h1 class="page-header">Marques </h1>
+    <h3 class="page-header">Marques</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
@@ -11,23 +11,19 @@
         <li class="breadcrumb-item active">Liste des marques</li>
     </ol>
 
-
-
     <div class="row">
         <div class="table-responsive">
             <div class="col-lg-12">
                 <table id="example" class="table table-striped table-bordered table-hover">
-                    <thead bgcolor="#DBDAD8">
+                    <thead>
                     <tr>
-                        <th> #</th>
                         <th>Marque</th>
                         <td></td>
-                        <th>Autres</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
-                    <tfoot bgcolor="#DBDAD8">
+                    <tfoot>
                     <tr>
-                        <th></th>
                         <th>Marque</th>
                         <th></th>
                         <th></th>
@@ -35,57 +31,92 @@
                     </tfoot>
 
                     <tbody>
-
                     @if( $data->isEmpty() )
                         <tr>
-                            <td></td>
-                            <td align="center"><i>Aucune marque</i></td>
-                            <td></td>
-                            <td></td>
+                            <td colspan="3" align="center"><i>Aucune marque</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
                             <tr class="odd gradeA">
-                                <td>{{ $loop->index+1 }}</td>
-                                <td>{{ $item->libelle }}</td>
+
+                                  <td><a href="{{ route('magas.marque',[ $item->id_marque]) }}"> {{$item->libelle}}</a></td>
                                 <td>@if($item->image!=null)<img src="{{ asset($item->image) }}" height="60" width="60">@endif</td>
                                 <td align="center">
-                                    <div class="btn-group pull-right">
-                                        <button type="button"
-                                                class="btn green btn-sm btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
+                                        <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
+                                    </a>
 
-                                        <ul class="dropdown-menu pull-left" role="menu">
-                                            <li>
-                                                <a href="{{ Route('magas.marque',['p_id' => $item->id_marque ]) }}"
-                                                        {!! setPopOver("","Afficher plus de detail") !!} ><i
-                                                            class="glyphicon glyphicon-eye-open"></i>
-                                                    Plus de detail
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer le Fournisseur: {{ $item->nom }} {{ $item->prenom }} ?')"
-                                                   href=""
-                                                   title="effacer"><i class="glyphicon glyphicon-trash"></i>
-                                                    Effacer</a>
-                                            </li>
-                                        </ul>
+                                    {{-- Modal (pour afficher les details de chaque article) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog">
+                                        <div class="modal-dialog modal-md">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title">{{ $item->libelle }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Libelle</td>
+                                                            <th>{{ $item->libelle }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de création</td>
+                                                            <th>{{ getDateHelper($item->created_at) }}
+                                                                a {{ getTimeHelper($item->created_at) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de denière modification</td>
+                                                            <th>{{ getDateHelper($item->updated_at) }}
+                                                                a {{ getTimeHelper($item->updated_at) }}</th>
+                                                        </tr>
 
+
+                                                    </table>
+                                                    @if( $item->image != null) <img
+                                                            src="{{ asset($item->image) }}"
+                                                            width="150px">@endif
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-lg-4">
+                                                        <form action="{{ route('magas.deleteMarque',[$item->id_marque]) }}" method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="_method" value="DELETE">
+                                                            <button type="submit" class="btn btn-danger btn-outline">
+                                                                Supprimer
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <a href="{{ route('magas.marque',[$item->id_marque]) }}"
+                                                           class="btn btn-info btn-outline">
+                                                            Modifier
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <button type="button" class="btn btn-info btn-outline"
+                                                                data-dismiss="modal">
+                                                            Fermer
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    {{-- fin Modal (pour afficher les details de chaque categorie) --}}
                                 </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                              </tr>
+                              @endforeach
+                              @endif
+                              </tbody>
 
-    </div>
-
+                              </table>
+                              </div>
+                              </div>
 
     <!-- row -->
     <div class="row" align="center">
@@ -120,10 +151,10 @@
                 "info": true,
                 stateSave: false,
                 "columnDefs": [
-                    {"width": "10%", "targets": 0},
+                  {"width": "40%", "targets": 0},
                     //{"width": "30%", "targets": 1},
-                    {"width": "05%", "targets": 2},
-                    {"width": "05%", "targets": 3},
+                    {"width": "40%", "targets": 1},
+                    {"width": "20%", "targets": 2},
                 ]
             });
             // Apply the search

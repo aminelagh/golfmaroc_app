@@ -76,10 +76,7 @@ class Vente extends Model
         }
     }
 
-
-
-
-        public static function getDate($p_id)
+    public static function getDate($p_id)
     {
         $data = self::where('id_vente', $p_id)->get()->first();
         if ($data != null)
@@ -99,13 +96,15 @@ class Vente extends Model
     {
         return collect(DB::select("select count(distinct(id_article)) as nbre from vente_articles where id_vente=" . $id_vente . " "))->first()->nbre;
     }
+
     public static function getNombrePieces($id_vente)
     {
         return collect(DB::select("select sum(quantite) as nbre from vente_articles where id_vente=" . $id_vente . " "))->first()->nbre;
     }
+
     public static function getVente_articles($id_vente)
     {
-        return Vente_article::where('id_vente',$id_vente)->get();
+        return Vente_article::where('id_vente', $id_vente)->get();
     }
 
 }

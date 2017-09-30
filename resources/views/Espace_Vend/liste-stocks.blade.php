@@ -8,21 +8,21 @@
         <strong>{{ $magasin->libelle }}</strong></h3>
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('vend.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des magasins</li>
-        <li class="breadcrumb-item "><a href="{{ route('magas.magasin') }}">{{ $magasin->libelle  }}</a></li>
-        <li class="breadcrumb-item active">Stock</li>
+        <li class="breadcrumb-item ">{{ $magasin->libelle  }}</li>
+        <li class="breadcrumb-item active"><a href="{{ route('vend.stocks') }}">Stock</a></li>
     </ol>
 
     <div class="row">
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Designation</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a> -
+                <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Designation</a> -
+                <a class="toggle-vis" data-column="3">Marque</a> -
+                <a class="toggle-vis" data-column="4">Categorie</a> -
             </div>
         @endif
     </div>
@@ -33,7 +33,7 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th rowspan="2"> #</th>
+
                         <th rowspan="2">Reference</th>
                         <th rowspan="2">Code</th>
                         <th rowspan="2">Designation</th>
@@ -54,7 +54,7 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        <th></th>
+
                         <th>Reference</th>
                         <th>Code</th>
                         <th>Designation</th>
@@ -72,7 +72,7 @@
                     @foreach( $data as $item )
                         <tr ondblclick="window.open('{{ Route('magas.stock',[ 'p_id' => $item->id_stock ]) }}');">
 
-                            <td>{{ $loop->index+1 }}</td>
+
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}
                                 {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
@@ -330,9 +330,9 @@
                         {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
                         {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        //{"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                        //{"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'

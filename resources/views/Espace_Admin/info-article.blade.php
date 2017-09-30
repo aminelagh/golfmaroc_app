@@ -14,6 +14,11 @@
         <li class="breadcrumb-item active">{{ $data->designation  }}</li>
     </ol>
 
+    <form id="deleteForm" action="{{ route('admin.deleteArticle',[$data->id_article]) }}" method="post">
+        {{ csrf_field() }}
+        <input type="hidden" name="_method" value="DELETE" form="deleteForm">
+
+    </form>
 
     <div class="row">
         <div class="col-lg-1"></div>
@@ -26,6 +31,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" align="center">
                         <h4><b>{{ $data->designation }}</b></h4>
+                        @if($data->deleted==true)
+                            <h5>Deleted</h5>
+                        @endif
                     </div>
                     <div class="panel-body">
 
@@ -89,12 +97,14 @@
                                 <td>Reference</td>
                                 <th>
                                     <div class="col-lg-5">
-                                        <input class="form-control" type="text" name="ref" value="{{ $data->ref }}" required>
+                                        <input class="form-control" type="text" name="ref" value="{{ $data->ref }}"
+                                               required>
 
                                     </div>
                                     <div class="col-lg-1">-</div>
                                     <div class="col-lg-3">
-                                        <input class="form-control" type="text" name="alias" value="{{ $data->alias }}"></div>
+                                        <input class="form-control" type="text" name="alias" value="{{ $data->alias }}">
+                                    </div>
 
                                 </th>
                             </tr>
@@ -170,6 +180,9 @@
                                class="btn btn-primary" {!! setPopOver("","Valider les modification") !!}>
                         <input type="reset" value="Réinitialiser"
                                class="btn btn-outline btn-primary" {!! setPopOver("","Valider les modification") !!}>
+                        <button type="submit" class="btn btn-danger btn-outline" form="deleteForm">
+                            Supprimer
+                        </button>
                     </div>
                 </div>
 

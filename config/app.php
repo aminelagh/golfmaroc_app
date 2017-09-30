@@ -162,6 +162,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Khill\Lavacharts\Laravel\LavachartsServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -186,7 +187,8 @@ return [
 
         //Illuminate\Html\HtmlServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
 
@@ -236,7 +238,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Lava' => Khill\Lavacharts\Laravel\LavachartsFacade::class,
+        'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
         //Sentinel
         'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
         'Reminder' => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
@@ -250,6 +253,7 @@ return [
         //'Html' => Illuminate\Html\HtmlFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 

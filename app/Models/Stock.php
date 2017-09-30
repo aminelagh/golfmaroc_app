@@ -381,7 +381,8 @@ class Stock extends Model
                         //----------------------------------------------------------------------------------------------
 
                         //Creer une nouvelle ligne dans: trans_article -------------------------------------------------
-                        Trans_article::create($id_transaction, self::getIdArticle($id_stock), $id_taille_article, $quantite);
+                        //Trans_article::create($id_transaction, self::getIdArticle($id_stock), $id_taille_article, $quantite);
+                        Trans_article::create($id_transaction, $id_article, $id_taille_article, $quantite);
                         //----------------------------------------------------------------------------------------------
                     }
                     $i++;
@@ -478,6 +479,7 @@ class Stock extends Model
 
                         //Creer une nouvelle ligne dans: trans_article -------------------------------------------------
                         Trans_article::create($id_transaction, self::getIdArticle($id_stock_source), $id_taille_article, $quantite);
+                          //Trans_article::create($id_transaction, $id_article ,$id_taille_article, $quantite);
                         //----------------------------------------------------------------------------------------------
 
                     }

@@ -1,26 +1,26 @@
 @extends('layouts.main_master')
 
-@section('title') Creation des promotions @endsection
+@section('title') Création des promotions @endsection
 
 @section('main_content')
-    <h3 class="page-header">Creation des promotions</h3>
+    <h3 class="page-header">Création des promotions</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item">Gestion des promotions</li>
         <li class="breadcrumb-item"><a href="{{ route('admin.promotions') }}">Nouvelle vente simple</a></li>
-        <li class="breadcrumb-item active">Creation des promotions</li>
+        <li class="breadcrumb-item active">Création des promotions</li>
     </ol>
 
     <div class="row">
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Designation</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a>
+                <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Designation</a> -
+                <a class="toggle-vis" data-column="3">Marque</a> -
+                <a class="toggle-vis" data-column="4">Categorie</a>
             </div>
         @endif
     </div>
@@ -34,7 +34,7 @@
                     <table id="myTable" class="table table-striped table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th rowspan="2"> #</th>
+
                             <th rowspan="2">Reference</th>
                             <th rowspan="2">Code</th>
                             <th rowspan="2">Designation</th>
@@ -42,7 +42,7 @@
                             <th rowspan="2">Categorie</th>
                             <th colspan="2">Prix de gros</th>
                             <th colspan="2">Prix</th>
-                            <th rowspan="2">Actions</th>
+                            <th rowspan="2">Details</th>
                         </tr>
                         <tr>
                             <th>HT</th>
@@ -53,7 +53,6 @@
                         </thead>
                         <tfoot>
                         <tr>
-                            <th></th>
                             <th>Reference</th>
                             <th>Code</th>
                             <th>Designation</th>
@@ -74,30 +73,26 @@
                                 <input type="hidden" name="id_article[{{ $loop->iteration }}]"
                                        value="{{ $item->id_article }}"/>
 
-                                <td>{{ $loop->index+1 }}</td>
                                 <td>
-                                    {{ \App\Models\Article::getRef($item->id_article) }}
-                                    {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
+                                    {{ $item->ref }}
+                                    {{  $item->alias!=null ? ' - '.$item->alias:' ' }}
                                 </td>
-                                <td>{{ \App\Models\Article::getCode($item->id_article) }}</td>
+                                <td>{{  $item->code }}</td>
                                 <td>
-                                    @if( App\Models\Article::getImage($item->id_article) != null)
-                                        <img src="{{ asset(App\Models\Article::getImage($item->id_article)) }}"
+                                    @if( $item->image != null)
+                                        <img src="{{ asset($item->image) }}"
                                              width="40px"
-                                             onmouseover="overImage('{{ asset(App\Models\Article::getImage($item->id_article)) }}');"
+                                             onmouseover="overImage('{{ asset($item->image) }}');"
                                              onmouseout="outImage();">
                                     @endif
-                                    {{ \App\Models\Article::getDesignation($item->id_article) }}
+                                    {{ $item->designation }}
                                 </td>
-                                <td>{{ \App\Models\Article::getMarque($item->id_article) }}</td>
-                                <td>{{ \App\Models\Article::getCategorie($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                                <td align="right">
-                                    <div id="prix_{{ $loop->iteration }}"
-                                         title="{{ \App\Models\Article::getPrixTTC($item->id_article) }}">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</div>
-                                </td>
-                                <td align="right">{{ \App\Models\Article::getPrixHT($item->id_article) }}</td>
-                                <td align="right">{{ \App\Models\Article::getPrixTTC($item->id_article) }}</td>
+                                <td>{{ $item->libelle_m }}</td>
+                                <td>{{ $item->libelle_c }}</td>
+                                <td align="right">{{ number_format($item->prix_v,2) }}</td>
+                                <td align="right">{{ \App\Models\Article::HTtoTTC($item->prix_v) }}</td>
+                                <td align="right">{{ number_format($item->prix_v,2) }}</td>
+                                <td align="right">{{ \App\Models\Article::HTtoTTC($item->prix_v) }}</td>
 
                                 <td align="center">
                                     <div data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
@@ -114,7 +109,7 @@
                                                             aria-label="Close"><span
                                                                 aria-hidden="true">&times;</span></button>
                                                     <h3 class="modal-title" id="gridSystemModalLabel">
-                                                        <b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b>
+                                                        <b>{{ $item->designation }}</b>
                                                     </h3>
                                                 </div>
                                                 <div class="modal-body">
@@ -124,58 +119,54 @@
                                                             <table class="table table-striped table-bordered table-hover">
                                                                 <tr>
                                                                     <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                                    <th colspan="2">{{ $item->code }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Reference</td>
                                                                     <th colspan="2">
-                                                                        {{ \App\Models\Article::getRef($item->id_article) }}
-                                                                        {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
+                                                                        {{ $item->ref }}
+                                                                        {{ $item->alias!=null ? ' - '.$item->alias:' ' }}
                                                                     </th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Marque</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getMarque($item->id_article) }}</th>
+                                                                    <th colspan="2">{{ $item->libelle_m }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Categorie</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
+                                                                    <th colspan="2">{{ $item->libelle_c }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Fournisseur</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                                    <th colspan="2">{{ $item->libelle_f }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Couleur</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCouleur($item->id_article) }}</th>
+                                                                    <th colspan="2">{{ $item->couleur }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Sexe</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getSexe($item->id_article) }}</th>
+                                                                    <th colspan="2">{{ $item->sexe }}</th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Prix de vente</td>
-                                                                    <th>{{ \App\Models\Article::getPrixHT($item->id_article) }}
+                                                                    <th>{{ number_format($item->prix_v,2) }}
                                                                         Dhs HT
                                                                     </th>
                                                                     <th>
-                                                                        {{ \App\Models\Article::getPrixTTC($item->id_article) }}
+                                                                        {{ \App\Models\Article::HTtoTTC($item->prix_v) }}
                                                                         Dhs TTC
                                                                     </th>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Prix de gros</td>
-                                                                    <th>{{ \App\Models\Article::getPrixGrosHT($item->id_article) }}
+                                                                    <th>{{ number_format($item->prix_v,2) }}
                                                                         Dhs HT
                                                                     </th>
                                                                     <th>
-                                                                        {{ \App\Models\Article::getPrixGrosTTC($item->id_article) }}
+                                                                        {{ \App\Models\Article::HTtoTTC($item->prix_v) }}
                                                                         Dhs TTC
                                                                     </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Code</td>
-                                                                    <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
                                                                 </tr>
                                                             </table>
                                                             <table class="table table-striped table-bordered table-hover">
@@ -199,16 +190,16 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="date" class="form-control" id="date"
+                                                                        <input type="date" class="form-control"
+                                                                               
                                                                                name="date_debut[{{ $loop->iteration }}]"
-                                                                               value="{{ old('date_debut.'.($loop->iteration).'') }}"
-                                                                               placeholder="jj-mm-yyyy">
+                                                                               value="{{ old('date_debut.'.($loop->iteration).'') }}">
                                                                     </td>
                                                                     <td>
-                                                                        <input type="date" class="form-control" id="date"
+                                                                        <input type="date" class="form-control"
+                                                                               
                                                                                name="date_fin[{{ $loop->iteration }}]"
-                                                                               value="{{ old('date_fin.'.($loop->iteration).'') }}"
-                                                                               placeholder="jj-mm-yyyy">
+                                                                               value="{{ old('date_fin.'.($loop->iteration).'') }}">
                                                                     </td>
                                                                 </tr>
                                                             </table>
@@ -333,17 +324,17 @@
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
 
                         //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
+                        {"width": "08%", "targets": 3, "type": "string", "visible": false},     //Marque
+                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //caegorie
 
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 5, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 6, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 7, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 8, "type": "num-fmt", "visible": true},     //TTC
 
                         //{"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 9, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'
@@ -388,6 +379,16 @@
             });
         </script>
     @endif
+    <script>
+        $(function () {
+            if (!Modernizr.inputtypes.date) {
+                $('input[type=date]').datepicker({
+                            dateFormat: 'yy-mm-dd'
+                        }
+                );
+            }
+        });
+    </script>
 @endsection
 
 @section('styles')
@@ -420,5 +421,3 @@
 
 @section('menu_1')@include('Espace_Admin._nav_menu_1')@endsection
 @section('menu_2')@include('Espace_Admin._nav_menu_2')@endsection
-
-

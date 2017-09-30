@@ -15,11 +15,11 @@
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Designation</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a>
+                <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Designation</a> -
+                <a class="toggle-vis" data-column="3">Marque</a> -
+                <a class="toggle-vis" data-column="4">Categorie</a>
             </div>
         @endif
     </div>
@@ -37,7 +37,7 @@
                     <table id="myTable" class="table table-striped table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th rowspan="2"> #</th>
+
                             <th rowspan="2">Reference</th>
                             <th rowspan="2">Code</th>
                             <th rowspan="2">Designation</th>
@@ -58,7 +58,7 @@
                         </thead>
                         <tfoot>
                         <tr>
-                            <th></th>
+
                             <th>Reference</th>
                             <th>Code</th>
                             <th>Designation</th>
@@ -82,7 +82,7 @@
                                 <input type="hidden" name="id_stock[{{ $loop->index+1 }}]"
                                        value="{{ $item->id_stock }}"/>
 
-                                <td>{{ $loop->index+1 }}</td>
+
                                 <td>
                                     {{ \App\Models\Article::getRef($item->id_article) }}
                                     {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
@@ -519,17 +519,17 @@
                         {"width": "05%", "targets": 2, "type": "string", "visible": true},  //code
 
                         //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},     //caegorie
+                        {"width": "08%", "targets": 3, "type": "string", "visible": false},     //Marque
+                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //caegorie
 
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 7, "type": "num-fmt", "visible": true},     //TTC
-                        {"width": "02%", "targets": 8, "type": "string", "visible": true},      //HT
-                        {"width": "02%", "targets": 9, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 5, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 6, "type": "num-fmt", "visible": true},     //TTC
+                        {"width": "02%", "targets": 7, "type": "string", "visible": true},      //HT
+                        {"width": "02%", "targets": 8, "type": "num-fmt", "visible": true},     //TTC
 
-                        {"width": "05%", "targets": 10, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "05%", "targets": 9, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'

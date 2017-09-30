@@ -77,24 +77,7 @@
                                     a {{ getTimeHelper($data->updated_at) }}     </th>
                             </tr>
                             <tr>
-                                <td>
-                                    <div class="account-section-setting">
-                                        <label>
-                                            <span class="yt-uix-form-input-checkbox-container  checked">
-                                                <input type="checkbox" class="yt-uix-form-input-checkbox" name="annotations_on_default" checked="checked">
-                                                <span class="yt-uix-form-input-checkbox-element"></span></span>
-                                            Afficher les annotations et les notifications dans les vidéos
-                                        </label>
-                                        <span class="yt-uix-clickcard">
-                                            <span class="yt-uix-clickcard-target" data-position="topright">
-                                                <span class="yt-help-icon yt-sprite"></span>
-                                            </span>
-                                            <div class="yt-uix-clickcard-content">
-                                                <p class="yt">Autorise l&#39;affichage des messages et des zones mis en
-                                                    surbrillance sur les vidéos. Cette option n&#39;a aucune incidence
-                                                    sur les annonces qui peuvent être diffusées sur les vidéos.</p>
-                                            </div>
-                                </td>
+                        
                             </tr>
                         </table>
                     </div>

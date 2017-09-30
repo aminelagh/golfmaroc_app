@@ -18,11 +18,11 @@
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Article</a> -
-                <a class="toggle-vis" data-column="4">Marque</a> -
-                <a class="toggle-vis" data-column="5">Categorie</a> -
+                <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Article</a> -
+                <a class="toggle-vis" data-column="3">Marque</a> -
+                <a class="toggle-vis" data-column="4">Categorie</a> -
             </div>
         @endif
     </div>
@@ -33,7 +33,7 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th  >#</th>
+
                         <th  >Reference</th>
                         <th  >Code</th>
                         <th  >Article</th>
@@ -49,7 +49,7 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        <th></th>
+
                         <th>Reference</th>
                         <th>Code</th>
                         <th>Article</th>
@@ -65,7 +65,7 @@
                     @foreach( $data as $item )
                         <tr >
 
-                            <td>{{ $loop->index+1 }}</td>
+
                             <td>
                                 {{ \App\Models\Article::getRef($item->id_article) }}
                                 {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
@@ -227,32 +227,32 @@
                     "columnDefs": [
                         {"visible": true, "targets": -1},
 
-                        {"searchable": false, "orderable": false, "targets": 0},
+                        {"searchable": false, "orderable": false, "targets": 0, "width":"10%"},
                         //{"width": "04%", "targets": 0, "type": "num", "visible": true, "searchable": false}, //#
-                        {"width": "03%", "targets": 1, "type": "string", "visible": true},  //ref
-                        {"width": "03%", "targets": 2, "type": "string", "visible": false},  //code
+                        {"width": "10%", "targets": 1, "type": "string", "visible": true},  //ref
+                        {"width": "30%", "targets": 2, "type": "string", "visible": true},  //code
 
                         //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
-                        {"width": "08%", "targets": 4, "type": "string", "visible": false},     //Marque
-                        {"width": "08%", "targets": 5, "type": "string", "visible": true},     //caegorie
+                        {"width": "08%", "targets": 3, "type": "string", "visible": true},     //Marque
+                        {"width": "20%", "targets": 4, "type": "string", "visible": false},     //caegorie
 
-                        {"width": "02%", "targets": 6, "type": "string", "visible": true},      //HT
+                        {"width": "20%", "targets": 5, "type": "string", "visible": true},      //HT
 
 
-                        {"width": "05%", "targets": 7, "type": "num-fmt", "visible": true},     //etat
+                        {"width": "10%", "targets": 6, "type": "num-fmt", "visible": true},     //etat
 
-                        {"width": "04%", "targets": 8, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "10%", "targets": 7, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'
                     }
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {

@@ -92,9 +92,7 @@
                                     <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
                                         <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
                                     </a>
-                                    <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
-                                       href="{{ Route('admin.home') }}" {!! setPopOver("","Supprimer l'article") !!}>
-                                        <i class="glyphicon glyphicon-trash"></i></a>
+
                                     <a href="{{ Route('admin.article',['p_id'=> $item->id_article ]) }}"
                                             {!! setPopOver("","Details") !!}>
                                         <i class="glyphicon glyphicon-eye-open"></i>
@@ -155,6 +153,7 @@
                                                             width="150px">@endif
                                                 </div>
                                                 <div class="modal-footer">
+
                                                     <button type="button" class="btn btn-default"
                                                             data-dismiss="modal">Fermer
                                                     </button>

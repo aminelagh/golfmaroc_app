@@ -92,6 +92,14 @@ class Article extends Model
         else return true;
     }
 
+    public static function ValideArticles($id_article)
+    {
+        $data = self::where('id_article', $id_article)->where('valide', false)->where('deleted', false)->get();
+        if ($data->isEmpty())
+            return false;
+        else return true;
+    }
+
     public static function nonValideArticles()
     {
         return self::where('valide', false)->where('deleted', false)->get();
@@ -104,6 +112,11 @@ class Article extends Model
             return false;
         else
             return true;
+    }
+
+    public static function HTtoTTC($prix_HT)
+    {
+        return number_format($prix_HT * 1.2, 2);
     }
 
     //Getters

@@ -44,7 +44,7 @@
                     <table id="example" class="table table-striped table-bordered table-hover">
                         <thead bgcolor="#DBDAD8">
                         <tr>
-                            <th> #</th>
+
                             <th> Reference</th>
                             <th> Code</th>
                             <th> Categorie</th>
@@ -65,7 +65,7 @@
                         @if( !$articles->isEmpty() )
                             <tfoot bgcolor="#DBDAD8">
                             <tr>
-                                <th></th>
+
                                 <th>Reference</th>
                                 <th>Code</th>
                                 <th>Categorie</th>
@@ -91,7 +91,7 @@
                                     <input type="hidden" name="designation[{{ $loop->index+1 }}]"
                                            value="{{ $item->designation }}">
 
-                                    <td>{{ $loop->index+1 }}</td>
+                                    
                                     <td align="right">{{ $item->ref }} {{ $item->alias!=null? ' - '.$item->alias : '' }}</td>
                                     <td align="right">{{ $item->code }}</td>
 

@@ -17,17 +17,17 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>User</th>
                         <th>Date</th>
                         <th>Articles</th>
                         <th>Total</th>
-                        <th>Actions</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
                     @if( !$data->isEmpty() )
                         <tfoot>
                         <tr>
-                            <th></th>
+                            <th>User</th>
                             <th>Date</th>
                             <th>Articles</th>
                             <th>Total</th>
@@ -40,12 +40,14 @@
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td colspan="4" align="center"><i>Aucune entree de stock</i></td>
+                            <td colspan="5" align="center"><i>Aucune entree de stock</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
                             <tr>
-                                <td></td>
+                              <td>{{ \App\Models\User::getNomUser($item->id_user) }}
+                              {{ \App\Models\User::getPrenomUser($item->id_user) }}
+                            </td>
                                 <td onclick="window.location.href='{{ route('magas.entree',['p_id'=>$item->id_transaction]) }}'">{{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }}</td>
                                 <td align="right">{{ \App\Models\Transaction::getNombreArticles($item->id_transaction) }}
                                     Articles
@@ -62,9 +64,6 @@
                                                 class="glyphicon glyphicon-eye-open"></i>
                                     </a>
 
-                                    <a onclick="return confirm('Êtes-vous sure de vouloir annuler la transaction: {{ getDateHelper($item->date).' a '.getTimeHelper($item->date) }} ?')"
-                                       href="#"
-                                       title="effacer"><i class="glyphicon glyphicon-trash"></i></a>
 
 
                                     {{-- Modal (pour afficher les details de chaque transaction) --}}
@@ -146,19 +145,19 @@
                     "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"width": "5%", "targets": 0},
+                        {"width": "25%", "targets": 0},
                         //{"width": "30%", "targets": 1},
-                        {"width": "05%", "targets": 2},
-                        {"width": "05%", "targets": 3},
-                        {"width": "05%", "targets": 4},
+                        {"width": "25%", "targets": 1},
+                        {"width": "25%", "targets": 2},
+                        //{"width": "05%", "targets": 4},
                     ]
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {

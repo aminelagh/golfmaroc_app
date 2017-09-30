@@ -18,40 +18,40 @@
             @if( !$data->isEmpty() )
                 <div class="breadcrumb">
                     Afficher/Masquer:
-                    <a class="toggle-vis" data-column="1">Reference</a> -
-                    <a class="toggle-vis" data-column="2">Code</a> -
-                    <a class="toggle-vis" data-column="3">Designation</a> -
-                    <a class="toggle-vis" data-column="4">Categorie</a> -
-                    <a class="toggle-vis" data-column="5">Fournisseur</a> -
-                    <a class="toggle-vis" data-column="6">Marque</a> -
-                    <a class="toggle-vis" data-column="7">Couleur</a> -
-                    <a class="toggle-vis" data-column="8">Sexe</a> -
-                    <a class="toggle-vis" data-column="9">Prix d'achat</a> -
-                    <a class="toggle-vis" data-column="10">Prix de vente</a>
+                    <a class="toggle-vis" data-column="0">Reference</a> -
+                    <a class="toggle-vis" data-column="1">Code</a> -
+                    <a class="toggle-vis" data-column="2">Designation</a> -
+                    <a class="toggle-vis" data-column="3">Categorie</a> -
+                    <a class="toggle-vis" data-column="4">Fournisseur</a> -
+                    <a class="toggle-vis" data-column="5">Marque</a> -
+                    <a class="toggle-vis" data-column="6">Couleur</a> -
+                    <a class="toggle-vis" data-column="7">Sexe</a> -
+                    <a class="toggle-vis" data-column="8">Prix d'achat</a> -
+                    <a class="toggle-vis" data-column="9">Prix de vente</a>
                 </div>
             @endif
 
             <table id="myTable" class="table table-striped table-bordered table-hover">
                 <thead bgcolor="#F6F2EB">
                 <tr>
-                    <th></th>
+
                     <th>Reference</th>
                     <th>Code</th>
                     <th>Designation</th>
                     <th>Categorie</th>
                     <th>Fournisseur</th>
-                    <th>arque</th>
+                    <th>Marque</th>
                     <th>Couleur</th>
                     <th>Sexe</th>
                     <th title="Prix d'achat HT">Prix achat</th>
                     <th title="Prix de vente TTC">Prix vente</th>
-                    <th>Actions</th>
+                    <th>Details</th>
                 </tr>
                 </thead>
                 @if( !$data->isEmpty() )
                     <tfoot bgcolor="#F6F2EB">
                     <tr>
-                        <th></th>
+
                         <th>Reference</th>
                         <th>Code</th>
                         <th> Designation</th>
@@ -80,14 +80,14 @@
                                 ondblclick="window.open('{{ Route('magas.article',['p_id'=>$item->id_article]) }}');" {!! setPopOver("","Article non validé par l'administrateur") !!}>
                                 @endif
 
-                                <td></td>
+
                                 <td align="right">{{ $item->ref }} - {{ $item->alias }}</td>
                                 <td align="right">{{ $item->code }}</td>
                                 <td>
                                     @if( $item->image != null)
                                         <img src="{{ $item->image }}" width="50px">
                                     @endif
-                                    {{ $item->designation }}
+                                    <a href="{{ route('magas.article',[ $item->id_article]) }}"> {{$item->designation}}</a>
                                 </td>
                                 <td>{{ \App\Models\Categorie::getLibelle($item->id_categorie) }}</td>
                                 <td>{{ \App\Models\Fournisseur::getLibelle($item->id_fournisseur) }}</td>
@@ -100,10 +100,7 @@
                                     <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
                                         <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
                                     </a>
-                                    <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation }} ?')"
-                                       href="#" {!! setPopOver("","Effacer l'article") !!}>
-                                        <i class="glyphicon glyphicon-trash"></i>
-                                    </a>
+
 
                                     {{-- Modal (pour afficher les details de chaque article) --}}
                                     <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog">
@@ -263,24 +260,24 @@
 
                         //{"width": "08%", "targets": 3, "type": "string", "visible": true},
 
+                        {"width": "08%", "targets": 3, "type": "string", "visible": false},
                         {"width": "08%", "targets": 4, "type": "string", "visible": false},
-                        {"width": "08%", "targets": 5, "type": "string", "visible": false},
-                        {"width": "02%", "targets": 6, "type": "string", "visible": false},
+                        {"width": "02%", "targets": 5, "type": "string", "visible": false},
 
-                        {"width": "06%", "targets": 7, "type": "num-fmt", "visible": false},
-                        {"width": "06%", "targets": 8, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 6, "type": "num-fmt", "visible": false},
+                        {"width": "06%", "targets": 7, "type": "string", "visible": false},
 
+                        {"width": "04%", "targets": 8, "type": "num-fmt", "visible": true},
                         {"width": "04%", "targets": 9, "type": "num-fmt", "visible": true},
-                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true},
-                        {"width": "04%", "targets": 11, "type": "num-fmt", "visible": true, "searchable": false}
+                        {"width": "04%", "targets": 10, "type": "num-fmt", "visible": true, "searchable": false}
                     ]
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(-20, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
 
 

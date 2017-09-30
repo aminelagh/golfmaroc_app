@@ -4,7 +4,7 @@
 
 @section('main_content')
 
-    <h3 class="page-header">Stock du magasin principal:
+    <h3 class="page-header">Stock du magasin :
         <strong>{{ $magasin->libelle }}</strong></h3>
 
     <ol class="breadcrumb">

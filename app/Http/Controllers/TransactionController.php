@@ -6,6 +6,7 @@ use App\Models\Trans_article;
 use App\Models\Transaction;
 use App\Models\Type_transaction;
 use DB;
+use Notification;
 use Illuminate\Support\Facades\Session;
 
 class TransactionController extends Controller
@@ -63,7 +64,7 @@ class TransactionController extends Controller
         return view('Espace_Magas.info-sortie')->withData($data)->withTransaction($transaction);
     }
     //------------------------------------------------------------------------------------------------------------------
-    //sortie de stock --------------------------------------------------------------------------------------------------
+    //transfertIN de stock --------------------------------------------------------------------------------------------------
     public function transfertINs()
     {
         $id_type = Type_transaction::where('libelle', 'transfertIN')->get()->first()->id_type_transaction;
@@ -110,7 +111,7 @@ class TransactionController extends Controller
         if ($data->isEmpty())
             return redirect()->back()->withInput()->withAlertWarning("Aucun article");
 
-        return view('Espace_Magas.info-sortie')->withData($data)->withTransaction($transaction);
+        return view('Espace_Magas.info-transfertOUT')->withData($data)->withTransaction($transaction);
     }
     //------------------------------------------------------------------------------------------------------------------
 

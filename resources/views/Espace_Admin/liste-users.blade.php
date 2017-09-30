@@ -3,7 +3,7 @@
 @section('title') Utlisateurs @endsection
 
 @section('main_content')
-    <h3 class="page-header">Liste des Employes</h3>
+    <h3 class="page-header">Liste des utilisateurs</h3>
 
     {{-- div Table --}}
     <div class="table-responsive">
@@ -11,18 +11,16 @@
             <table id="example" class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Role</th>
                     <th>Nom et Prenom</th>
                     <th>Ville</th>
                     <th>Email</th>
                     <th>Magasin</th>
-                    <th>Autres</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                    <th></th>
                     <th>Role</th>
                     <th>Nom et Prenom</th>
                     <th>Ville</th>
@@ -39,13 +37,14 @@
                 @else
                     @foreach( $data as $item )
                         <tr ondblclick="window.open('{{ route('admin.user',[ $item->id ]) }}');">
-                            <td></td>
-                            <td>{{ \App\Models\User::getRole($item->id) }}</td>
-                            <td>{{ $item->nom }} {{ $item->prenom }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>
+                                <a href="{{ route('admin.user',[ $item->id]) }}"> {{ $item->nom }} {{ $item->prenom }}</a>
+                            </td>
                             <td>{{ $item->ville }}</td>
                             <td>{{ $item->email }}</td>
                             <td>
-                                <a href="{{ route('admin.magasin',[ $item->id_magasin]) }}"> {!! App\Models\User::getMagasin( $item->id_magasin )!=null ? App\Models\User::getMagasin( $item->id_magasin ) : '<i>Aucun</i>'   !!}</a>
+                                <a href="{{ route('admin.magasin',[ $item->id_magasin]) }}"> {!! $item->libelle!=null ? $item->libelle : '<i>Aucun</i>'   !!}</a>
                             </td>
                             <td align="center">
 
@@ -69,12 +68,12 @@
                                                 <table class="table table-striped  table-hover">
                                                     <tr>
                                                         <td>Role</td>
-                                                        <th>{{ \App\Models\User::getRole($item->id) }}</th>
+                                                        <th>{{ $item->name }}</th>
                                                     </tr>
                                                     @if($item->id_magasin!=null)
                                                         <tr>
                                                             <td>Magasin</td>
-                                                            <th>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}</th>
+                                                            <th>{{ $item->libelle }}</th>
                                                         </tr>
                                                     @endif
                                                     <tr>
@@ -97,7 +96,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <div class="col-lg-4">
-                                                    <form action="{{ route('admin.deleteUser',[$item->id]) }}" method="post">
+                                                    <form action="{{ route('admin.deleteUser',[$item->id]) }}"
+                                                          method="post">
                                                         {{ csrf_field() }}
                                                         <input type="hidden" name="_method" value="DELETE">
                                                         <button type="submit" class="btn btn-danger btn-outline">
@@ -133,23 +133,9 @@
         </div>
     </div>
 
-
-    <!--div class="row" align="center">
-        <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">Exporter<span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                <li><a target="_blank" href="{{-- Route('export',[ 'p_table' => 'users' ]) --}}"
-                       title="Exporter la liste des utilisateur">Excel</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-            </ul>
-        </div-->
     <div class="row" align="center">
         <a href="{{ Route('admin.addUser') }}" type="button"
-           class="btn btn-outline btn-default" {!! setPopOver("","Creer un nouvel utilisateur") !!}> Ajouter un
+           class="btn btn-outline btn-default" {!! setPopOver("","Créer un nouvel utilisateur") !!}> Ajouter un
             utilisateur</a>
     </div>
 @endsection
@@ -168,21 +154,15 @@
                     "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"width": "06%", "targets": 0, "type": "num", "visible": true, "searchable": false},//#
+                        {"width": "05%", "targets": 0, "type": "string", "visible": true},
                         {"width": "05%", "targets": 1, "type": "string", "visible": true},
-                        {"width": "05%", "targets": 2, "type": "string", "visible": true},
-                        {"width": "08%", "targets": 3, "type": "string", "visible": true},
-                        //{"width": "08%", "targets": 4, "type": "string", "visible": true},
-                        {"width": "08%", "targets": 5, "type": "string", "visible": true},
-                        {"width": "05%", "targets": 6, "type": "string", "visible": true, "searchable": false}
+                        {"width": "08%", "targets": 2, "type": "string", "visible": true},
+                        //{"width": "08%", "targets": 3, "type": "string", "visible": true},
+                        {"width": "08%", "targets": 4, "type": "string", "visible": true},
+                        {"width": "05%", "targets": 5, "type": "string", "visible": true, "searchable": false}
                     ]
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#example tfoot th').each(function () {

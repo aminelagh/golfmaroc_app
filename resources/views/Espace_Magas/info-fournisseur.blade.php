@@ -19,8 +19,6 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("magas","fournisseur",$data->id_fournisseur) !!}
-
             <form method="POST" action="{{ route('magas.submitUpdateFournisseurAgents') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_fournisseur" value="{{ $data->id_fournisseur }}">
@@ -172,11 +170,11 @@
                                         <td>{{ $loop->index+1 }}</td>
                                         <td align="right">{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</td>
                                         <td align="right">{{ $item->code }}</td>
-                                        <td>{{ $item->designation }}</td>
+                                        <td>  <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}" target="_blank">{{ $item->designation }}</a></td>
                                         <td>{{ $item->couleur }}</td>
                                         <td>{{ $item->sexe }}</td>
                                         <td align="right">{{ $item->prix_a }} DH</td>
-                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!}
+                                        <td align="right">{!! \App\Models\Article::getPrixTTC($item->id_article) !!}
                                             DH
                                         </td>
                                         <td>
@@ -194,13 +192,7 @@
                                                                     class="glyphicon glyphicon-eye-open"></i>
                                                             Plus de detail</a>
                                                     </li>
-                                                    <li>
-                                                        <a onclick="return confirm('Êtes-vous sure de vouloir effacer l\'article: {{ $item->designation_c }} ?')"
-                                                           href="{{ Route('magas.delete',['p_table' => 'articles' , 'p_id' => $item->id_article ]) }}"
-                                                                {!! setPopOver("","Effacer l'article") !!}><i
-                                                                    class="glyphicon glyphicon-trash"></i>
-                                                            Effacer</a>
-                                                    </li>
+
                                                     <li class="divider"></li>
                                                     <li>
                                                         <a data-toggle="modal"

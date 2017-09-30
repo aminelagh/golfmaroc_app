@@ -12,7 +12,7 @@
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i> Gestion des ventes <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                   <li>
-                      <a href="{{ Route('vend.stocks') }}"> Stock du magasin</a>
+                      <a href="{{ Route('vend.main_stocks') }}"> Stock du magasin</a>
                   </li>
                     <li>
                         <a href="{{ Route('vend.addVenteSimple') }}">Vente simple</a>
@@ -23,7 +23,7 @@
                     <li>
                         <a href="{{ Route('vend.ventes') }}"> Liste de Ventes</a>
                     </li>
-                    
+
                 </ul>
             </li>
             <li>

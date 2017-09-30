@@ -10,12 +10,14 @@
     <link href="{{ asset('vendor/morrisjs/morris.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('anime/anime.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-toggle.css') }}" rel="stylesheet">    
-    <link rel="shortcut icon" href="{{{ asset('img/golfmaroc.ico') }}}">
-    
+    <link href="{{ asset('css/bootstrap-toggle.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('img/logo_gm.png') }}">
+
     <script src="{{ asset('js/datatables.min.js') }}"></script>
 
+
     @yield('styles')
+
 </head>
 
 <body>
@@ -28,7 +30,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ Route('home') }}">GolfMaroc</a>
+            <a class="navbar-brand"><a href="{{ route("home") }}" ><img src="{{ asset('img/logo_gm2.png') }}" width="100px" height="50px"></a></a>
         </div>
 
         @yield('menu_1')
@@ -60,7 +62,7 @@
     });
 </script>
 <script type="text/javascript">
-    // conteneur de l'image zoomée
+    // conteneur de l'image zoomï¿½e
     document.write('<div id="div_zoom_image" style="position:absolute; visibility:hidden; left:-286px; top:0px; z-index:1000;">');
     document.write('<img id="img_zoom_image" src="" style="position:absolute; left:5px; top:5px; z-index:2000; hight:150px; width:150px;" />');
     document.write('</div>');

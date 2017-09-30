@@ -4,14 +4,12 @@
 
 @section('main_content')
 
-    <h1 class="page-header">Ajouter un agent</h1>
+    <h3 class="page-header">Ajouter un agent</h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des Articles</li>
-        <li class="breadcrumb-item active"><a
-                    href="{{ Route('magas.agents') }}"> Liste des
-                agents</a></li>
+        <li class="breadcrumb-item active"><a href="{{ Route('magas.agents') }}"> Liste des agents</a></li>
         <li class="breadcrumb-item active">Création d'un agent</li>
     </ol>
 

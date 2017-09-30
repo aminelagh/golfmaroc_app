@@ -51,6 +51,22 @@ class Promotion extends Model
 
     }
 
+
+    public static function getDateDebut($p_id)
+    {
+        $data = self::where('id_promotion', $p_id)->get()->first();
+        if ($data != null)
+            return $data->date_debut;
+        else return null;
+    }
+    public static function getDateFin($p_id)
+    {
+        $data = self::where('id_promotion', $p_id)->get()->first();
+        if ($data != null)
+            return $data->date_fin;
+        else return null;
+    }
+
     public static function Exists($id_magasin, $id_article)
     {
         $data = Promotion::where('id_article', $id_article)->where('id_magasin', $id_magasin)->where('active', true)->where('deleted', false)->get();

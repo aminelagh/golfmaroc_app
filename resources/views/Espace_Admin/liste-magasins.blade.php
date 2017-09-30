@@ -3,7 +3,7 @@
 @section('title') Magasins @endsection
 
 @section('main_content')
-    <h1 class="page-header">Magasins </h1>
+    <h3 class="page-header">Magasins </h3>
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Dashboard</a></li>
@@ -17,16 +17,16 @@
                 <table id="example" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th></th>
                         <th>Magasin</th>
+                        <th>Telephone</th>
                         <th>Ville</th>
-                        <th>Autres</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        <th></th>
                         <th>Magasin</th>
+                        <th>Telephone</th>
                         <th>Ville</th>
                         <th></th>
                     </tr>
@@ -41,32 +41,102 @@
                     @else
                         @foreach( $data as $item )
                             <tr ondblclick="window.open('{{ Route('admin.magasin',['p_id'=>$item->id_magasin]) }}');">
-                                <td></td>
-                                <td>{{ $item->libelle }}</td>
+                                <td>
+                                    <a href="{{ route('admin.magasin',[ $item->id_magasin]) }}"> {!! App\Models\User::getMagasin( $item->id_magasin )!=null ? App\Models\User::getMagasin( $item->id_magasin ) : '<i>Aucun</i>'   !!}</a>
+                                </td>
+                                <td>{{ $item->telephone }}</td>
                                 <td>{{ $item->ville }}</td>
                                 <td align="center">
-                                    <a href="{{ Route('admin.magasin',['p_id' => $item->id_magasin ]) }}"
-                                            {!! setPopOver("","Details") !!} >
-                                        <i class="glyphicon glyphicon-eye-open"></i>
-                                    </a>
-                                    <a onclick="return confirm('Êtes-vous sure de vouloir effacer la categorie: {{ $item->libelle }} ?')"
-                                       href="{{ '' }}" {!! setPopOver("","Effacer le magasin") !!}><i class="glyphicon glyphicon-trash"></i></a>
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
+                                                class="glyphicon glyphicon-info-sign"
+                                                aria-hidden="false"></i></a>
 
+                                    {{-- Modal (pour afficher les details de chaque magasin) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog"
+                                         tabindex="-1" aria-labelledby="gridSystemModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close"><span
+                                                                aria-hidden="true">&times;</span></button>
+                                                    <h3 class="modal-title" id="gridSystemModalLabel">
+                                                        <b>{{ $item->libelle }} </b></h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped  table-hover">
+                                                        <tr>
+                                                            <td>Ville</td>
+                                                            <th>{{ $item->ville }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Adresse</td>
+                                                            <th>{{ $item->adresse }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Agent</td>
+                                                            <th>{{ $item->agent }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Telephone</td>
+                                                            <th>{{ $item->telephone }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de création</td>
+                                                            <th>{{ getDateHelper($item->created_at) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de derniere modification</td>
+                                                            <th>{{ getDateHelper($item->updated_at) }}</th>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    {{-- Form for delete --}}
+                                                    <div class="col-lg-4">
+                                                        <form action="{{ route('admin.deleteMagasin',[$item->id_magasin]) }}"
+                                                              method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="_method" value="DELETE">
+                                                            <button type="submit" class="btn btn-danger btn-outline">
+                                                                Supprimer
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    {{-- end Form for delete --}}
+                                                    <div class="col-lg-4">
+                                                        <a href="{{ route('admin.magasin',[$item->id_magasin]) }}"
+                                                           class="btn btn-info btn-outline">
+                                                            Modifier
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <button type="button" class="btn btn-info btn-outline"
+                                                                data-dismiss="modal">
+                                                            Fermer
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- fin Modal (pour afficher les details de chaque magasin) --}}
                                 </td>
                             </tr>
+
                         @endforeach
                     @endif
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
 
     <!-- row -->
     <div class="row" align="center">
-        <a href="{{ Route('magas.addMagasin') }}" type="button"
+        <a href="{{ Route('admin.addMagasinAdmin') }}" type="button"
            class="btn btn-outline btn-default" {!! setPopOver("","Ajouter un nouveau magasin") !!}>
             <i class="glyphicon glyphicon-plus "></i> Ajouter un magasin</a>
     </div>
@@ -89,18 +159,20 @@
                     "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"width": "7%", "targets": 0, "searchable": false},
+                        //{"width": "7%", "targets": 0, "searchable": false},
                         //{"width": "30%", "targets": 1},
-                        {"width": "05%", "targets": 2},
-                        {"width": "05%", "targets": 3, "searchable": false},
+                        //{"width": "05%", "targets": 0},
+                        {"width": "15%", "targets": 1},
+                        {"width": "10%", "targets": 2},
+                        {"width": "10%", "targets": 3, "searchable": false},
                     ]
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                /*table.on('order.dt search.dt', function () {
+                 table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                 cell.innerHTML = i + 1;
+                 });
+                 }).draw();*/
 
                 // Setup - add a text input to each footer cell
                 $('#example tfoot th').each(function () {
@@ -135,5 +207,5 @@
     @endif
 @endsection
 
-@section('menu_1') @include('Espace_Magas._nav_menu_1') @endsection
-@section('menu_2') @include('Espace_Magas._nav_menu_2') @endsection
+@section('menu_1') @include('Espace_Admin._nav_menu_1') @endsection
+@section('menu_2') @include('Espace_Admin._nav_menu_2') @endsection

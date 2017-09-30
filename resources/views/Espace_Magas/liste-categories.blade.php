@@ -19,14 +19,14 @@
                 <table id="example" class="table table-striped table-bordered table-hover">
                     <thead bgcolor="#DBDAD8">
                     <tr>
-                        <th> #</th>
+
                         <th>Categorie</th>
-                        <th>Autres</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
                     <tfoot bgcolor="#DBDAD8">
                     <tr>
-                        <th></th>
+
                         <th>Categorie</th>
                         <th></th>
                     </tr>
@@ -37,51 +37,87 @@
                     @if( $data->isEmpty() )
                         <tr>
                             <td></td>
-                            <td align="center"><i>Aucune marque</i></td>
+                            <td align="center"><i>Aucune categorie</i></td>
                             <td></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
                             <tr class="odd gradeA">
-                                <td>{{ $loop->index+1 }}</td>
-                                <td>{{ $item->libelle }}</td>
+
+                                <td><a href="{{ route('magas.categorie',[ $item->id_categorie]) }}"> {{$item->libelle}}</a></td>
                                 <td align="center">
-                                    <div class="btn-group pull-right">
-                                        <button type="button"
-                                                class="btn green btn-sm btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <span {!! setPopOver("","Clisuez ici pour afficher les actions") !!}>Actions</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
+                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}">
+                                        <i class="glyphicon glyphicon-info-sign" aria-hidden="false"></i>
+                                    </a>
 
-                                        <ul class="dropdown-menu pull-left" role="menu">
-                                            <li>
-                                                <a href="{{ Route('magas.categorie',['p_id' => $item->id_categorie ]) }}"
-                                                        {!! setPopOver("","Afficher plus de detail") !!} ><i
-                                                            class="glyphicon glyphicon-eye-open"></i>
-                                                    Plus de detail
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a onclick="return confirm('Êtes-vous sure de vouloir effacer la categorie: {{ $item->libelle }} ?')"
-                                                   href="#"
-                                                   title="effacer"><i class="glyphicon glyphicon-trash"></i>
-                                                    Effacer</a>
-                                            </li>
-                                        </ul>
 
+                                    {{-- Modal (pour afficher les details de chaque article) --}}
+                                    <div class="modal fade" id="modal{{ $loop->iteration }}" role="dialog">
+                                        <div class="modal-dialog modal-md">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title">{{ $item->libelle }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped table-bordered table-hover">
+                                                        <tr>
+                                                            <td>Libelle</td>
+                                                            <th>{{ $item->libelle }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de création</td>
+                                                            <th>{{ getDateHelper($item->created_at) }}
+                                                                a {{ getTimeHelper($item->created_at) }}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Date de denière modification</td>
+                                                            <th>{{ getDateHelper($item->updated_at) }}
+                                                                a {{ getTimeHelper($item->updated_at) }}</th>
+                                                        </tr>
+
+                                                    </table>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-lg-4">
+                                                        <form action="{{ route('magas.deleteCategorie',[$item->id_categorie]) }}" method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="_method" value="DELETE">
+                                                            <button type="submit" class="btn btn-danger btn-outline">
+                                                                Supprimer
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <a href="{{ route('magas.categorie',[$item->id_categorie]) }}"
+                                                           class="btn btn-info btn-outline">
+                                                            Modifier
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <button type="button" class="btn btn-info btn-outline"
+                                                                data-dismiss="modal">
+                                                            Fermer
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    {{-- fin Modal (pour afficher les details de chaque categorie) --}}
                                 </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                              </tr>
+                              @endforeach
+                              @endif
+                              </tbody>
 
-    </div>
-
+                              </table>
+                              </div>
+                              </div>
 
     <!-- row -->
     <div class="row" align="center">
@@ -118,7 +154,7 @@
                 "columnDefs": [
                     {"width": "10%", "targets": 0},
                     //{"width": "30%", "targets": 1},
-                    {"width": "05%", "targets": 2},
+                    {"width": "05%", "targets": 1},
                 ]
             });
             // Apply the search

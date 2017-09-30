@@ -51,11 +51,10 @@ class Stock_taille extends Model
 
     public static function decrementer($p_id_stock, $p_id_taille_article, $p_quantite)
     {
-        $item = self::where('id_stock', $p_id_stock)->where('id_taille_article', $p_id_taille_article)->get()->first();
+        //$item = self::where('id_stock', $p_id_stock)->where('id_taille_article', $p_id_taille_article)->get()->first();
         try {
-            $item->update([
-                'quantite' => ($item->quantite - $p_quantite)
-            ]);
+            //$item->update(['quantite' => ($item->quantite - $p_quantite)]);
+            DB::select("update stock_tailles set quantite = quantite-" . $p_quantite . " where id_stock=" . $p_id_stock . " AND id_taille_article=" . $p_id_taille_article . " ; ");
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withAlertDanger("Erreur.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }

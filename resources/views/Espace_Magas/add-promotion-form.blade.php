@@ -18,15 +18,15 @@
     <div class="row">
         @if( !$articles->isEmpty() )
             <div class="breadcrumb">
-                Afficher/Masquer: <a class="toggle-vis" data-column="1">Reference</a> -
-                <a class="toggle-vis" data-column="2">Code</a> -
-                <a class="toggle-vis" data-column="3">Categorie</a> -
-                <a class="toggle-vis" data-column="4">Fournisseur</a> -
-                <a class="toggle-vis" data-column="5">Marque</a> -
-                <a class="toggle-vis" data-column="6">Designation</a> -
-                <a class="toggle-vis" data-column="7">Couleur</a> -
-                <a class="toggle-vis" data-column="8">Sexe</a> -
-                <a class="toggle-vis" data-column="9">Prix</a>
+                Afficher/Masquer: <a class="toggle-vis" data-column="0">Reference</a> -
+                <a class="toggle-vis" data-column="1">Code</a> -
+                <a class="toggle-vis" data-column="2">Categorie</a> -
+                <a class="toggle-vis" data-column="3">Fournisseur</a> -
+                <a class="toggle-vis" data-column="4">Marque</a> -
+                <a class="toggle-vis" data-column="5">Designation</a> -
+                <a class="toggle-vis" data-column="6">Couleur</a> -
+                <a class="toggle-vis" data-column="7">Sexe</a> -
+                <a class="toggle-vis" data-column="8">Prix</a>
             </div>
         @endif
     </div>
@@ -44,7 +44,7 @@
                     <table id="example" class="table table-striped table-bordered table-hover">
                         <thead bgcolor="#DBDAD8">
                         <tr>
-                            <th> #</th>
+
                             <th> Reference</th>
                             <th> Code</th>
                             <th> Categorie</th>
@@ -59,13 +59,13 @@
                             <th> Prix</th>
                             <th></th>
                             <th></th>
-                            <th>Actions</th>
+                            <th>Details</th>
                         </tr>
                         </thead>
                         @if( !$articles->isEmpty() )
                             <tfoot bgcolor="#DBDAD8">
                             <tr>
-                                <th></th>
+
                                 <th>Reference</th>
                                 <th>Code</th>
                                 <th>Categorie</th>
@@ -91,7 +91,7 @@
                                     <input type="hidden" name="designation[{{ $loop->index+1 }}]"
                                            value="{{ $item->designation }}">
 
-                                    <td>{{ $loop->index+1 }}</td>
+
                                     <td align="right">{{ $item->ref }} {{ $item->alias!=null? ' - '.$item->alias : '' }}</td>
                                     <td align="right">{{ $item->code }}</td>
 
@@ -238,13 +238,13 @@
 
                         //{"width": "02%", "targets": 6, "type": "string", "visible": true},
 
-                        {"width": "02%", "targets": 7, "type": "string", "visible": false},
-                        {"width": "06%", "targets": 8, "type": "string", "visible": false},
-                        {"width": "06%", "targets": 9, "type": "num-fmt", "visible": true},
+                        {"width": "02%", "targets": 6, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 7, "type": "string", "visible": false},
+                        {"width": "06%", "targets": 8, "type": "num-fmt", "visible": true},
 
+                        {"width": "04%", "targets": 9, "visible": true, "searchable": false},
                         {"width": "04%", "targets": 10, "visible": true, "searchable": false},
-                        {"width": "04%", "targets": 11, "visible": true, "searchable": false},
-                        {"width": "04%", "targets": 12, "visible": true, "searchable": false},
+                        //{"width": "04%", "targets": 12, "visible": true, "searchable": false},
                     ],
                 });
 

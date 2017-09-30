@@ -10,7 +10,10 @@ use App\Models\Fournisseur;
 use App\Models\Magasin;
 use App\Models\Marque;
 use App\Models\Promotion;
+use App\Models\User;
 use Carbon\Carbon;
+use Notification;
+use Session;
 use Mockery\Exception;
 
 class UpdateController extends Controller
@@ -36,11 +39,15 @@ class UpdateController extends Controller
                 'sexe' => $sexe,
                 'age' => $age,
                 'ville' => $ville,
+                'deleted' => false,
             ]);
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
-        return redirect()->back()->with('alert_success', "Modification reussie.");
+        return redirect()->back()->with('alert_success', "Modification reussie du client " . $nom . " " . $prenom);
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\UpdateClientNotification($user));
+
     }
 
     public function submitUpdateMarque()
@@ -189,14 +196,17 @@ class UpdateController extends Controller
             if (request()->hasFile('image')) {
                 $file_extension = request()->file('image')->extension();
                 $file_name = "marque_" . $id_marque . "." . $file_extension;
-                request()->file('image')->move("uploads/images/marques", $file_name);
-                $image = "/uploads/images/marques/" . $file_name;
+                request()->file('image')->move("uploads/images/articles", $file_name);
+                $image = "/uploads/images/articles/" . $file_name;
                 $item->update(['image' => $image]);
             }
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('alert_danger', "Erreur de modification.<br>Message d'erreur: <b>" . $e->getMessage() . "</b>");
         }
+
         return redirect()->back()->with('alert_success', "Modification reussie.");
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\UpdateArticleNotification($user));
     }
 
     public function submitUpdateMagasin()
@@ -216,7 +226,10 @@ class UpdateController extends Controller
             'telephone' => request()->get('telephone'),
             'adresse' => request()->get('adresse'),
         ]);
+
         return redirect()->back()->withInput()->with('alert_success', 'Modification du magasin reussi.');
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\UpdateMagasinNotification($user));
     }
 
     public function submitUpdatePromotion()
@@ -228,7 +241,7 @@ class UpdateController extends Controller
         $date_debut = request()->get('date_debut');
         $date_fin = request()->get('date_fin');
         $active = request()->get('active');
-        if($active != true)
+        if ($active != true)
             $active = false;
         //-----------------------------------------
 
@@ -282,7 +295,10 @@ class UpdateController extends Controller
         }
 
         //----------------------------------------------------------------------------------------------------------
+
         return redirect()->back()->withInput()->withAlertSuccess("Modification de la promotion reussie.");
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\UpdatePromotionNotification($user));
     }
 
 }

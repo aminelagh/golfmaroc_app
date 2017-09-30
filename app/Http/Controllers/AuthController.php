@@ -53,7 +53,7 @@ class AuthController extends Controller
 
         } catch (ThrottlingException $e) {
 
-            return redirect()->back()->withInput()->with('alert_success',"<b>Une activité suspecte s'est produite sur votre adresse IP, l'accès vous est refusé pour ".$e->getDelay()." seconde (s)</b>")->withTimerDanger($e->getDelay()*1000);
+            return redirect()->back()->withInput()->with('alert_success', "<b>Une activité suspecte s'est produite sur votre adresse IP, l'accès vous est refusé pour " . $e->getDelay() . " seconde (s)</b>")->withTimerDanger($e->getDelay() * 1000);
 
         }
     }
@@ -71,7 +71,7 @@ class AuthController extends Controller
         if (Sentinel::inRole('admin'))
             return redirect()->route('admin.home');
         else if (Sentinel::inRole('direct'))
-            return redirect()->route('direct.home');
+            return route('home');//redirect()->route('direct.home');
         else if (Sentinel::inRole('magas'))
             return redirect()->route('magas.home');
         else if (Sentinel::inRole('vend'))
@@ -82,8 +82,8 @@ class AuthController extends Controller
     {
         if (Sentinel::inRole('admin'))
             return "admin";
-        else if (Sentinel::inRole('direct'))
-            return "direct";
+        //else if (Sentinel::inRole('direct'))
+            //return "direct";
         else if (Sentinel::inRole('magas'))
             return "magas";
         else if (Sentinel::inRole('vend'))

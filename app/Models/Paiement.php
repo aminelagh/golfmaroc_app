@@ -14,6 +14,14 @@ class Paiement extends Model
       'id_paiement', '$id_mode_paiement', 'ref',
     ];
 
+    public static function getMode_Paiement($p_id)
+       {
+           $data = self::where('id_paiement', $p_id)->get()->first();
+           if ($data != null)
+               return Mode_paiement::getLibelle($data->id_mode_paiement);
+           else return null;
+       }
+
     public static function creer($id_paiement, $id_mode_paiement, $ref)
     {
         try{

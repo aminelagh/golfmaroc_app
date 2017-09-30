@@ -26,7 +26,7 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("magas","article",$data->id_article) !!}
+          
 
             <form method="POST" action="{{ route('magas.submitUpdateArticle') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}

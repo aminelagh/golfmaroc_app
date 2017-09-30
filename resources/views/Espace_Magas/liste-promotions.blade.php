@@ -8,7 +8,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('magas.home') }}">Dashboard</a></li>
         <li class="breadcrumb-item ">Gestion des promotions</li>
-        <li class="breadcrumb-item active">Liste des promotions</li>
+        <li class="breadcrumb-item active"><a href="{{ route('magas.promotions') }}">Liste des promotions</a></li>
     </ol>
 
     <div class="row">
@@ -17,20 +17,16 @@
                 <table id="example" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th></th>
-                        <th>Magasin</th>
                         <th>Article</th>
                         <th>Taux</th>
                         <th>Periode</th>
                         <th>Etat</th>
-                        <th>Actions</th>
+                        <th>Details</th>
                     </tr>
                     </thead>
                     @if( !$data->isEmpty() )
                         <tfoot>
                         <tr>
-                            <th></th>
-                            <th>Magasin</th>
                             <th>Article</th>
                             <th>Taux</th>
                             <th>Periode</th>
@@ -44,31 +40,31 @@
 
                     @if( $data->isEmpty() )
                         <tr>
-                            <td colspan="7" align="center"><i>Aucune promotion</i></td>
+                            <td colspan="5" align="center"><i>Aucune promotion</i></td>
                         </tr>
                     @else
                         @foreach( $data as $item )
-                            <tr class="odd gradeA">
-                                <td></td>
-                                <td>{{ \App\Models\Magasin::getLibelle($item->id_magasin) }}
-                                    <small>({{ \App\Models\Magasin::getVille($item->id_magasin) }})</small>
+                            <tr>
+                                <td>
+                                    <a href="{{ route('magas.article',[ $item->id_article]) }}"> {{ $item->designation }}</a>
                                 </td>
-                                <td>{{ \App\Models\Article::getDesignation($item->id_article) }}</td>
                                 <td align="right">{{ $item->taux }} %</td>
-                                <td align="middle">{{ (new DateTime($item->date_debut))->format('d-m-Y') }} - {{ (new DateTime($item->date_fin))->format('d-m-Y') }}</td>
+                                <td align="middle">{{ getDateHelper($item->date_debut) }}
+                                    -- {{ getDateHelper($item->date_fin) }} </td>
                                 <td align="middle">
-                                    @if($item->active == false)
+                                    @if(\App\Models\Promotion::hasPromotion($item->id_article) == false)
                                         <div id="circle"
-                                             style="background: darkred;" {!! setPopOver(""," inactive") !!}></div>
-                                    @else
+                                             style="background: darkred;" {!! setPopOver(""," Indisponible") !!}></div>
+                                    @elseif(\App\Models\Promotion::hasPromotion($item->id_article) == true)
                                         <div id="circle"
-                                             style="background: greenyellow;" {!! setPopOver("","active") !!}></div>
+                                             style="background: greenyellow;" {!! setPopOver("","Disponible") !!}></div>
                                     @endif
                                 </td>
                                 <td align="middle">
-                                    <a data-toggle="modal" data-target="#modal{{ $loop->iteration }}"><i
-                                                class="glyphicon glyphicon-info-sign"
-                                                aria-hidden="false"></i></a>
+                                    <a data-toggle="modal"
+                                       data-target="#modal{{ $loop->iteration }}" {!! setPopOver("","Details/Modifier/Supprimer") !!}><i
+                                                class="glyphicon glyphicon-info-sign"></i></a>
+                                    </a>
 
 
                                     {{-- Modal (pour afficher les details de chaque article) --}}
@@ -81,86 +77,67 @@
                                                             aria-label="Close"><span
                                                                 aria-hidden="true">&times;</span></button>
                                                     <h3 class="modal-title" id="gridSystemModalLabel">
-                                                        <b>{{ \App\Models\Article::getDesignation($item->id_article) }}</b>
+                                                        <b>{{ $item->designation }}</b>
                                                     </h3>
                                                 </div>
                                                 <div class="modal-body">
                                                     <table class="table table-striped table-bordered table-hover">
                                                         <tr>
                                                             <td>Code</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                            <th colspan="2">{{ $item->code }}</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Reference</td>
                                                             <th colspan="2">
-                                                                {{ \App\Models\Article::getRef($item->id_article) }}
-                                                                {{ \App\Models\Article::getAlias($item->id_article)!=null ? ' - '.\App\Models\Article::getAlias($item->id_article):' ' }}
+                                                                {{ $item->ref }}
+                                                                {{ $item->alias!=null ? ' - '.$item->alias:' ' }}
                                                             </th>
                                                         </tr>
                                                         <tr>
                                                             <td>Marque</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getMarque($item->id_article) }}</th>
+                                                            <th colspan="2">{{ $item->libelle_m }}</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Categorie</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getCategorie($item->id_article) }}</th>
-                                                        </tr>
-
-                                                        <td>Fournisseur</td>
-                                                        <th colspan="2">{{ \App\Models\Article::getFournisseur($item->id_article) }}</th>
+                                                            <th colspan="2">{{ $item->libelle_c }}</th>
                                                         </tr>
                                                         <tr>
-                                                            <td>Code</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Code</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getCode($item->id_article) }}</th>
+                                                            <td>Fournisseur</td>
+                                                            <th colspan="2">{{ $item->libelle_f }}</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Couleur</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getCouleur($item->id_article) }}</th>
+                                                            <th colspan="2">{{ $item->couleur }}</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Sexe</td>
-                                                            <th colspan="2">{{ \App\Models\Article::getSexe($item->id_article) }}</th>
+                                                            <th colspan="2">{{ $item->sexe }}</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Prix d'achat</td>
-                                                            <th>{{ \App\Models\Article::getPrixAchatHT($item->id_article) }}
-                                                                Dhs HT
-                                                            </th>
-                                                            <th>
-                                                                {{ \App\Models\Article::getPrixAchatTTC($item->id_article) }}
-                                                                Dhs TTC
-                                                            </th>
+                                                            <th>{{ \App\Models\Article::getPrixAchatHT($item->id_article) }} Dhs HT</th>
+                                                            <th>{{ \App\Models\Article::getPrixAchatTTC($item->id_article) }} Dhs TTC</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Prix de vente</td>
-                                                            <th>{{ \App\Models\Article::getPrixHT($item->id_article) }}
-                                                                Dhs HT
-                                                            </th>
-                                                            <th>
-                                                                {{ \App\Models\Article::getPrixTTC($item->id_article) }}
-                                                                Dhs TTC
-                                                            </th>
+                                                            <th>{{ \App\Models\Article::getPrixHT($item->id_article) }} Dhs HT</th>
+                                                            <th>{{ \App\Models\Article::getPrixTTC($item->id_article) }} Dhs TTC</th>
                                                         </tr>
                                                     </table>
-                                                    @if(\App\Models\Article::getImage($item->id_article)!=null)
-                                                        <img src="{{ \App\Models\Article::getImage($item->id_article) }}" width="200" hight="200">
+                                                    @if($item->image!=null)
+                                                        <img src="{{ $item->image }}"
+                                                             width="200" hight="200">
                                                     @endif
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <div class="col-lg-6">
-                                                        <a class="btn btn-info"
-                                                           href="{{ route('admin.promotion',['id_promotion'=>$item->id_promotion]) }}">
-                                                            Modifier
-                                                        </a>
+                                                    <div class="col-lg-4">
+
                                                     </div>
-                                                    <div class="col-lg-6">
+
+                                                    <div class="col-lg-4">
                                                         <button type="button" class="btn btn-default"
                                                                 data-dismiss="modal">
-                                                            Close
+                                                            Fermer
                                                         </button>
                                                     </div>
                                                 </div>
@@ -180,6 +157,7 @@
     </div>
 
 
+    <!-- row -->
 
 
 @endsection
@@ -187,8 +165,6 @@
 @section('scripts')
     @if( !$data->isEmpty() )
         <script>
-
-
             $(document).ready(function () {
 
                 // DataTable
@@ -199,56 +175,49 @@
                     "info": true,
                     stateSave: false,
                     "columnDefs": [
-                        {"visible": true, "targets": -1},
-                        {"width": "04%", "targets": 0, "searchable": false, "orderable": true,}, //#
-                        {"width": "05%", "targets": 1, "type": "string", "visible": true},  //magas
-                        //{"width": "05%", "targets": 2, "type": "string", "visible": true},  //article
-
-                        {"width": "05%", "targets": 3, "type": "string", "visible": true},    //taux
-                        //{"width": "10%", "targets": 4, "type": "string", "visible": true},     //date
-                        {"width": "08%", "targets": 5, "type": "string", "visible": true},     //etat
-
-                        {"width": "04%", "targets": 6, "type": "num-fmt", "visible": true, "searchable": false}
+                        //{"width": "40%", "targets": 0, "type": "string", "visible": true},
+                        {"width": "08%", "targets": 1, "type": "string", "visible": true},
+                        //{"width": "40%", "targets": 2, "type": "string", "visible": true},
+                        {"width": "05%", "targets": 3, "type": "string", "visible": true},
+                        {"width": "05%", "targets": 4, "type": "string", "visible": true}
+                        //{"width": "10%", "targets": 5, "type": "string", "visible": true},
+                        //{"width": "30%", "targets": 6, "type": "string", "visible": true}
                     ],
                     "order": [[1, 'asc']],
-                    "select": {
-                        items: 'column'
-                    }
+                    "select": {items: 'column'}
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#example tfoot th').each(function () {
                     var title = $(this).text();
                     if (title == "Magasin") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Article") {
-                        $(this).html('<input type="text" size="10" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="10" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title == "Taux") {
-                        $(this).html('<input type="text" size="1" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="1" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
-                    else if (title == "dates") {
-                        $(this).html('<input type="text" size="7" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                    else if (title == "Periode") {
+                        $(this).html('<input type="text" size="20" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                     else if (title != "") {
-                        $(this).html('<input type="text" size="8" class="form-control" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
+                        $(this).html('<input type="text" size="8" class="form-control input-sm" placeholder="' + title + '" title="Rechercher par ' + title + '" onfocus="this.placeholder= \'\';" />');
                     }
                 });
-
 
                 $('a.toggle-vis').on('click', function (e) {
                     e.preventDefault();
                     var column = table.column($(this).attr('data-column'));
                     column.visible(!column.visible());
                 });
-
 
                 table.columns().every(function () {
                     var that = this;
@@ -288,8 +257,6 @@
         #example td {
             padding: 2px;
         }
-
-
     </style>
 @endsection
 

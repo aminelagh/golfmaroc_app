@@ -19,8 +19,8 @@
         @if( !$data->isEmpty() )
             <div class="breadcrumb">
                 Afficher/Masquer:
-                <a class="toggle-vis" data-column="1">Date de vente</a> -
-                <a class="toggle-vis" data-column="2">Mode de paiement</a> -
+                <a class="toggle-vis" data-column="0">Date de vente</a> -
+                <a class="toggle-vis" data-column="1">Mode de paiement</a> -
                 <!-- <a class="toggle-vis" data-column="3">Promotion</a> -->
 
             </div>
@@ -33,7 +33,7 @@
                 <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th  >#</th>
+
                         <th  >Date de vente</th>
                         <th  >Mode de paiement</th>
                         <th  >Promotion</th>
@@ -45,7 +45,7 @@
                     </thead>
                     <tfoot>
                     <tr>
-                      <th  >#</th>
+
                       <th  >Date de vente</th>
                       <th  >Mode de paiement</th>
                       <th  >Promotion</th>
@@ -57,7 +57,7 @@
                     @foreach( $data as $item )
                         <tr >
 
-                            <td>{{ $loop->index+1 }}</td>
+
                             <td>
                                 {{ getDateHelper(\App\Models\Vente::getDate($item->id_vente)) }}</td>
                             <td>{{ \App\Models\Vente::getMode($item->id_paiement) }}</td>
@@ -106,26 +106,26 @@
                         {"visible": true, "targets": -1},
 
                         {"searchable": false, "orderable": false, "targets": 0},
-                        {"width": "04%", "targets": 1, "type": "num", "visible": true, "searchable": false}, //#
-                        {"width": "03%", "targets": 2, "type": "string", "visible": true},  //ref
+                        {"width": "30%", "targets": 1, "type": "num", "visible": true, "searchable": false}, //#
+                        {"width": "30%", "targets": 2, "type": "string", "visible": true},  //ref
                         //{"width": "03%", "targets": 2, "type": "string", "visible": true},  //code
 
                         //{"width": "08%", "targets": 3, "type": "string", "visible": true},    //desi
                     //    {"width": "08%", "targets": 4, "type": "string", "visible": true},     //Marque
 
 
-                        {"width": "04%", "targets": 3, "type": "num-fmt", "visible": true, "searchable": false}
+                        //{"width": "04%", "targets": 3, "type": "num-fmt", "visible": true, "searchable": false}
                     ],
                     "select": {
                         items: 'column'
                     }
                 });
 
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-                        cell.innerHTML = i + 1;
-                    });
-                }).draw();
+                // table.on('order.dt search.dt', function () {
+                //     table.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                //         cell.innerHTML = i + 1;
+                //     });
+                // }).draw();
 
                 // Setup - add a text input to each footer cell
                 $('#myTable tfoot th').each(function () {

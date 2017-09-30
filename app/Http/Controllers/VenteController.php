@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\User;
 use App\Models\Client;
 use App\Models\Magasin;
 use App\Models\Mode_paiement;
@@ -10,6 +11,8 @@ use App\Models\Stock;
 use App\Models\Stock_taille;
 use App\Models\Vente;
 use App\Models\Vente_article;
+use Illuminate\Support\Facades\DB;
+use Notification;
 use Illuminate\Support\Facades\Session;
 use PDF;
 
@@ -19,6 +22,16 @@ class VenteController extends Controller
     {
         $data = Vente::all();
         return view('Espace_Magas.liste-ventes')->withData($data);
+    }
+
+    public function vente($id_vente)
+    {
+        $data = Vente_article::where('id_vente', $id_vente)->get();
+
+        //  $vente1=Vente::find($data->id_vente);
+        //  $magasin = Magasin::find($vente1->id_magasin);
+
+        return view('Espace_Magas.info-vente')->withData($data);//->withMagasin($magasin);
     }
 
     public function addVenteSimple()
@@ -53,17 +66,12 @@ class VenteController extends Controller
 
     public static function printfacture()
     {
-        $pdf = PDF::loadHTML('<h1>Facture</h1>');
+        $pdf = PDF::loadView('Espace_Magas.pdf-facture');
         return $pdf->download('facture.pdf');
     }
 
     public function submitAddVente()
     {
-        //return public_path();
-        //return PDF::loadFile(public_path().'/myfile.html')->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
-        //dump(request()->all());
-        //return 'a';
-
         //variables du formulaires -------------------------------------------------------------------------------------
         $id_magasin = request()->get('id_magasin');
         $id_stocks = request()->get('id_stock');
@@ -84,9 +92,6 @@ class VenteController extends Controller
         $total_sans_remise = request()->get('total_prix');
         $total_avec_remise = request()->get('montant');
         //--------------------------------------------------------------------------------------------------------------
-
-        //dump("taux remise: " . $taux_remise);
-        //dump("raison: " . $raison);
 
         //verifier la validitee des donnees ----------------------------------------------------------------------------
         $hasData = false;
@@ -145,7 +150,12 @@ class VenteController extends Controller
         //--------------------------------------------------------------------------------------------------------------
         //return redirect()->back()->withAlertSuccess("Sortie de stock effectuée avec succès");
         //return view('Espace_Magas.add-vente_2-form')->withAlertInfo("Un nouveau panier a ete cree.");
-        return $this->printfacture(5);
-        return redirect()->route('magas.validerVente');
+
+        //$user = User::where('id', Session::get('id_user'))->get()->first();
+        //Notification::send(User::first(), new \App\Notifications\AddVenteMNotification($user));
+        //return $this->printfacture(5);
+
+
+        return redirect()->route('magas.addVente')->withAlertSuccess("Vente effectuée avec succès");
     }
 }

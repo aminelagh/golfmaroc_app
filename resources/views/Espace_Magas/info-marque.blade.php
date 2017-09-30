@@ -19,7 +19,7 @@
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
 
-            {!! setNavigation("magas","marque",$data->id_marque) !!}
+
 
             <form method="POST" action="{{ route('magas.submitUpdateMarque') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
@@ -138,11 +138,11 @@
                                         <td>{{ $loop->index+1 }}</td>
                                         <td align="right">{{ $item->ref }} {{ $item->alias!=null ? ' - '.$item->alias: '' }}</td>
                                         <td align="right">{{ $item->code }}</td>
-                                        <td>{{ $item->designation }}</td>
+                                        <td>  <a href="{{ Route('magas.article',['p_id'=> $item->id_article ]) }}" target="_blank">{{ $item->designation }}</a></td>
                                         <td>{{ $item->couleur }}</td>
                                         <td>{{ $item->sexe }}</td>
                                         <td align="right">{{ $item->prix_a }} DH</td>
-                                        <td align="right">{!! \App\Models\Article::getPrix_TTC($item->prix_v) !!}
+                                        <td align="right">{!! \App\Models\Article::getPrixTTC($item->id_article) !!}
                                             DH
                                         </td>
                                         <td>
